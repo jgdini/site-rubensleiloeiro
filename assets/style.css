@@ -119,6 +119,14 @@ button, input, select { font: inherit; color: inherit; }
 .menu a { padding: 7px 12px; border-radius: 8px; font-size: 14px; font-weight: 550; color: var(--texto-2); transition: color 0.15s, background 0.15s; }
 .menu a:hover { color: var(--texto); background: var(--bg-2); }
 .menu a[aria-current='page'] { color: var(--texto); background: var(--bg-2); }
+/* Destaque dourado do "Quem é o Rubens" */
+.menu a.menu__rubens { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 8px; margin-left: 6px; padding: 4px 14px 4px 4px; border-radius: 99px; background: linear-gradient(180deg, #ecd394, var(--ouro) 60%, #b38b34); color: #14110a; font-weight: 700; box-shadow: 0 0 0 1px rgb(236 211 148 / 0.4), 0 6px 20px -8px rgb(201 164 76 / 0.7); transition: filter 0.15s, box-shadow 0.15s, transform 0.15s; }
+.menu a.menu__rubens:hover { color: #14110a; background: linear-gradient(180deg, #f3dea6, #d4b05a 60%, #b38b34); box-shadow: 0 0 0 1px rgb(236 211 148 / 0.6), 0 8px 26px -8px rgb(201 164 76 / 0.9); transform: translateY(-1px); }
+.menu a.menu__rubens[aria-current='page'] { color: #14110a; background: linear-gradient(180deg, #ecd394, var(--ouro) 60%, #b38b34); box-shadow: 0 0 0 2px #07111f, 0 0 0 3px var(--ouro-2); }
+.menu__rubens img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px #07111f; }
+.menu__rubens::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.55), transparent); transform: skewX(-20deg); animation: brilho-ouro 5s ease-in-out 1.5s infinite; pointer-events: none; }
+@keyframes brilho-ouro { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+
 .insta { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 12px 0 8px; border-radius: 99px; border: 1px solid var(--linha); font-size: 13px; font-weight: 600; color: var(--texto); flex: none; transition: border-color 0.15s, background 0.15s; }
 .insta:hover { border-color: #e1306c; background: rgb(225 48 108 / 0.08); }
 .insta svg { width: 20px; height: 20px; fill: none; stroke: #e1306c; stroke-width: 2; }
@@ -130,6 +138,8 @@ button, input, select { font: inherit; color: inherit; }
   .menu { margin-left: 10px; }
   .menu a { padding: 6px 8px; font-size: 13px; white-space: nowrap; }
   .marca > span:last-child { display: none; }
+  .menu__longo { display: none; }
+  .menu a.menu__rubens { margin-left: 0; padding-right: 12px; }
   .conta__nome { display: none; }
   .topo__dir { gap: 10px; }
   .menu a:first-child { display: none; }
