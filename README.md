@@ -50,7 +50,7 @@ plataforma Suporte Leilões, como o E-Leilões.
 | Filtro/ordem por preço | bloqueado 🔒 | liberado |
 | WhatsApp do Rubens | só pra assinar | em cada card + botão flutuante, com mensagem pronta citando o carro |
 
-Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (**placeholder 5511999999999**), `CONFIG.precoPlano` (placeholder R$ 49,90/mês).
+Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (+55 11 94758-1678), `CONFIG.precoPlano` (placeholder R$ 49,90/mês).
 Login de teste: `assinante@teste.com` / `leilao2026`.
 
 ⚠️ **O login atual é simulado no navegador.** Serve pra demonstrar, mas não protege nada: `data/lotes.json` continua

@@ -1,7 +1,7 @@
 // ============ Configuração do negócio ============
 const CONFIG = {
-  // WhatsApp do Rubens (DDI+DDD+número, só dígitos). PLACEHOLDER — trocar pelo número real.
-  whatsapp: '5511999999999',
+  // WhatsApp do Rubens (DDI+DDD+número, só dígitos): +55 11 94758-1678
+  whatsapp: '5511947581678',
   nomeContato: 'Rubens',
   precoPlano: 'R$ 49,90/mês', // PLACEHOLDER
 };
