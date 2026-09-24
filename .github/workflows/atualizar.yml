@@ -1,0 +1,32 @@
+name: Atualizar anúncios
+
+on:
+  schedule:
+    - cron: '17 */3 * * *' # a cada 3 horas
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-anuncios
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scraper/run.js
+      - name: Publicar dados
+        run: |
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add data/lotes.json
+          git diff --cached --quiet && echo "sem mudanças" && exit 0
+          git commit -m "dados: $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git push

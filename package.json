@@ -1,0 +1,13 @@
+{
+  "name": "leilao-carros",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agregador de anúncios de carros em leilão (Leilo, Mega Leilões, Leilão VIP).",
+  "scripts": {
+    "coletar": "node scraper/run.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
