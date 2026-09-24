@@ -14,7 +14,8 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 - `scraper/classify.js`: filtro "só carros" (tira motos, caminhões, ônibus, sucata, carcaça, trailer…).
 - `scraper/run.js`: roda tudo, remove encerrados/duplicados e grava `data/lotes.json`.
   Se uma fonte falhar, mantém os lotes dela da coleta anterior.
-- `.github/workflows/atualizar.yml`: roda a coleta **a cada 3h** no GitHub Actions e commita o JSON.
+- `.github/workflows/atualizar.yml`: roda a coleta **1x por dia (06:00 de Brasília)** no GitHub Actions e commita o JSON.
+  Dá pra rodar na hora pelo botão "Run workflow" na aba Actions. O site esconde sozinho os lotes que encerram ao longo do dia.
   Com o GitHub Pages ligado, o site se atualiza sozinho.
 
 ### Fontes atuais
@@ -64,6 +65,6 @@ Depois é só servir a pasta (ex.: `serve.ps1 -Root "C:\Claude Sites\leilao-carr
 
 - Mostramos só o resumo do anúncio (título, 1 foto, valor, data) com link para a origem, e não copiamos
   editais nem descrições completas. As imagens são carregadas direto do servidor do leiloeiro.
-- Os coletores fazem poucas requisições espaçadas (~1 por segundo) e só a cada 3h.
+- Os coletores fazem poucas requisições espaçadas (~1 por segundo) e só uma vez por dia.
 - Se algum leiloeiro pedir remoção, basta tirar a fonte de `FONTES`.
 - O ideal, a médio prazo, é formalizar parceria/afiliação com os leiloeiros (muitos pagam por lead).

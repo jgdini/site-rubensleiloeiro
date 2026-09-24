@@ -155,6 +155,9 @@ async function iniciar() {
     return;
   }
   nomesFonte = Object.fromEntries(dados.fontes.map((f) => [f.id, f.nome]));
+  // Os dados são coletados 1x por dia: esconde o que já encerrou desde a coleta (tolerância de 1h).
+  dados.lotes = dados.lotes.filter((l) => !l.encerra || new Date(l.encerra) > Date.now() - 36e5);
+  dados.total = dados.lotes.length;
 
   // Leiloeiros distintos: fontes diretas + os que publicam via portal (campo leiloeiroSite).
   const leiloeiros = new Set(dados.fontes.filter((f) => f.id !== 'leiloesjudiciais').map((f) => f.id));

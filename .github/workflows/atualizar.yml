@@ -2,7 +2,7 @@ name: Atualizar anúncios
 
 on:
   schedule:
-    - cron: '17 */3 * * *' # a cada 3 horas
+    - cron: '0 9 * * *' # todo dia às 06:00 (horário de Brasília = 09:00 UTC)
   workflow_dispatch:
 
 permissions:
