@@ -53,6 +53,17 @@ const unicos = [...new Map(lotes.map((l) => [l.id, l])).values()].filter(
 );
 unicos.sort((a, b) => (a.encerra ? new Date(a.encerra) : Infinity) - (b.encerra ? new Date(b.encerra) : Infinity));
 
+const geradoEm = new Date().toISOString();
 await mkdir(path.dirname(saida), { recursive: true });
-await writeFile(saida, JSON.stringify({ geradoEm: new Date().toISOString(), total: unicos.length, fontes, lotes: unicos }, null, 1));
-console.log(`\n${unicos.length} carros gravados em data/lotes.json`);
+await writeFile(saida, JSON.stringify({ geradoEm, total: unicos.length, fontes, lotes: unicos }, null, 1));
+
+// Vitrine gratuita: sem preço, sem link, sem leiloeiro/órgão (é o que o assinante paga pra ver).
+// Em produção, SÓ este arquivo fica público; lotes.json deve ser servido apenas a usuários logados.
+const PRIVADOS = ['lance', 'lanceInicial', 'lances', 'valorMercado', 'desconto', 'url', 'fonte', 'comitente', 'leiloeiro', 'leiloeiroSite', 'codigo', 'tituloOriginal'];
+const vitrine = unicos.map((l) => Object.fromEntries(Object.entries(l).filter(([k]) => !PRIVADOS.includes(k))));
+const leiloeiros = new Set([...fontes.filter((f) => f.id !== 'leiloesjudiciais').map((f) => f.id), ...unicos.map((l) => l.leiloeiroSite).filter(Boolean)]);
+await writeFile(
+  path.join(path.dirname(saida), 'vitrine.json'),
+  JSON.stringify({ geradoEm, total: vitrine.length, leiloeiros: leiloeiros.size, lotes: vitrine }, null, 1)
+);
+console.log(`\n${unicos.length} carros gravados em data/lotes.json (+ data/vitrine.json sem preços)`);

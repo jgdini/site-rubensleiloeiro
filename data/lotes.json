@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-09-24T15:49:23.193Z",
+ "geradoEm": "2026-09-24T16:03:15.779Z",
  "total": 460,
  "fontes": [
   {
@@ -8,7 +8,7 @@
    "site": "https://www.leiloesjudiciais.com.br",
    "total": 310,
    "ok": true,
-   "atualizado": "2026-09-24T15:49:23.189Z"
+   "atualizado": "2026-09-24T15:59:14.244Z"
   },
   {
    "id": "megaleiloes",
@@ -16,7 +16,7 @@
    "site": "https://www.megaleiloes.com.br",
    "total": 56,
    "ok": true,
-   "atualizado": "2026-09-24T15:45:50.237Z"
+   "atualizado": "2026-09-24T16:03:15.773Z"
   },
   {
    "id": "lancejudicial",
@@ -24,7 +24,7 @@
    "site": "https://www.lancejudicial.com.br",
    "total": 57,
    "ok": true,
-   "atualizado": "2026-09-24T15:45:52.478Z"
+   "atualizado": "2026-09-24T15:59:19.145Z"
   },
   {
    "id": "leilaovip",
@@ -32,7 +32,7 @@
    "site": "https://www.leilaovip.com.br",
    "total": 29,
    "ok": true,
-   "atualizado": "2026-09-24T15:45:55.954Z"
+   "atualizado": "2026-09-24T15:59:22.437Z"
   },
   {
    "id": "d1lance",
@@ -40,7 +40,7 @@
    "site": "https://d1lance.com.br",
    "total": 14,
    "ok": true,
-   "atualizado": "2026-09-24T15:45:57.216Z"
+   "atualizado": "2026-09-24T15:59:23.752Z"
   },
   {
    "id": "eleiloes",
@@ -48,7 +48,7 @@
    "site": "https://www.e-leiloes.com.br",
    "total": 7,
    "ok": true,
-   "atualizado": "2026-09-24T15:45:59.087Z"
+   "atualizado": "2026-09-24T15:59:24.719Z"
   }
  ],
  "lotes": [
@@ -689,7 +689,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127652",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/santa-cruz-do-rio-pardo/direitos-sobre-carro-chevrolet-classic-life-2005-j127652"
   },
   {
@@ -712,7 +712,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128386",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-ford-ecosport-xlt-16-20042004-j128386"
   },
   {
@@ -735,7 +735,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128400",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sao-bernardo-do-campo/carro-honda-city-lx-flex-20092010-j128400"
   },
   {
@@ -1008,7 +1008,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127651",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/mogi-guacu/caminhonete-ford-courier-l-16-flex-2011-j127651"
   },
   {
@@ -1031,7 +1031,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127908",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-lr-freelander-2sd4s-2011-j127908"
   },
   {
@@ -3209,7 +3209,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128421",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-carro-volkswagen-passat-var-20t-2012-j128421"
   },
   {
@@ -3232,7 +3232,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128422",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-volkswagen-fusca-1300-l-19811982-j128422"
   },
   {
@@ -3255,7 +3255,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128423",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-bmw-550i-nw51-security-2008-j128423"
   },
   {
@@ -3875,7 +3875,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128514",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-volkswagen-parati-16v-plus-2001-j128514"
   },
   {
@@ -3898,7 +3898,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128515",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-fiat-idea-hlx-flex-2006-j128515"
   },
   {
@@ -3921,7 +3921,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128516",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-dodge-journey-sxt-2010-j128516"
   },
   {
@@ -3944,7 +3944,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128517",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-dodge-journey-sxt-2010-lote-04-j128517"
   },
   {
@@ -3967,7 +3967,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128518",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-carro-mercedes-benz-slk-200k-2008-j128518"
   },
   {
@@ -3990,7 +3990,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128519",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-carro-land-rover-discovery-4-30-se-2010-j128519"
   },
   {
@@ -4013,7 +4013,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127404",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/ni/nao-informando/carro-hyundai-sonata-gls-20112012-preto-j127404"
   },
   {
@@ -4036,7 +4036,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127932",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/pr/curitiba/direitos-sobre-carro-peugeot-3008-allure-20122013-j127932"
   },
   {
@@ -4059,7 +4059,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128481",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sao-jose-do-rio-preto/carro-fiat-mobi-like-20212022-j128481"
   },
   {
@@ -4082,7 +4082,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128512",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/santa-cruz-do-rio-pardo/direitos-sobre-carro-volkswagen-spacefox-2010-j128512"
   },
   {
@@ -4105,7 +4105,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128521",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sao-paulo/carro-fiat-marea-weekend-hlx-20002001-j128521"
   },
   {
@@ -4710,7 +4710,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127929",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/ce/fortaleza/carro-volkswagen-fox-20092010-j127929"
   },
   {
@@ -6078,7 +6078,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127936",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-chevrolet-corsa-gl-w-1998-j127936"
   },
   {
@@ -6101,7 +6101,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127980",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-volkswagen-gol-1000-1994-j127980"
   },
   {
@@ -6124,7 +6124,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127979",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/guarulhos/camioneta-renault-kangoo-rl-10-2001-j127979"
   },
   {
@@ -6622,7 +6622,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128352",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sorocaba/carro-volkswagen-passat-ls-1982-j128352"
   },
   {
@@ -6645,7 +6645,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127960",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-ford-fiesta-16-flex-20122013-j127960"
   },
   {
@@ -6843,7 +6843,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128351",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-volkswagen-fox-16-gii-20132014-j128351"
   },
   {
@@ -7212,7 +7212,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128847",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/santa-cruz-do-rio-pardo/direitos-sobre-carro-ford-fusion-2010-j128847"
   },
   {
@@ -7435,7 +7435,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129402",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/americana/carro-ford-fiesta-sedan-16-flex-20042005-j129402"
   },
   {
@@ -7458,7 +7458,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129404",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-peugeot-passion-207-xs-2010-j129404"
   },
   {
@@ -7481,7 +7481,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128362",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/tanabi/carro-fiat-fiorino-flex-20082009-j128362"
   },
   {
@@ -7504,7 +7504,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129403",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-volkswagen-voyage-16-comfort-20092010-j129403"
   },
   {
@@ -7977,7 +7977,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128528",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sao-paulo/direitos-sobre-caminhonete-renault-master-11m325dci-20122013-j128528"
   },
   {
@@ -8000,7 +8000,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128355",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-citroen-picasso-16glxf-2007-j128355"
   },
   {
@@ -8023,7 +8023,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128356",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/carro-ford-fiesta-street-2004-j128356"
   },
   {
@@ -8046,7 +8046,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129409",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/sao-jose-do-rio-preto/carro-fiat-siena-el-flex-2011-j129409"
   },
   {
@@ -9751,7 +9751,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129029",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/ni/nao-informando/carro-ford-escort-gl-19871988-j129029"
   },
   {
@@ -9774,7 +9774,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J127938",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-carro-toyota-hilux-swsrxa4fd-2018-j127938"
   },
   {
@@ -9797,7 +9797,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J128485",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/direitos-sobre-carro-mercedes-benz-a200-amg-line-2023-j128485"
   },
   {
@@ -9965,7 +9965,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129604",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/miguelopolis/carro-peugeot-206-14-moonlifx-2007-j129604"
   },
   {
@@ -9988,7 +9988,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129608",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/si/sem-informacao/caminhonete-toyota-hilux-cdsrva4fd-2019-j129608"
   },
   {
@@ -10208,7 +10208,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129406",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/sp/mogi-das-cruzes/direitos-sobre-carro-volkswagen-t-cross-20192020-j129406"
   },
   {
@@ -10256,7 +10256,7 @@
    "comitente": null,
    "lotes": 1,
    "codigo": "J129513",
-   "imagem": "https://www.megaleiloes.com.br/images/card-no-image-320x240.png",
+   "imagem": null,
    "url": "https://www.megaleiloes.com.br/veiculos/carros/rs/cangucu/carro-fiat-palio-ex-j129513"
   },
   {

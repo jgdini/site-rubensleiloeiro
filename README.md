@@ -40,6 +40,25 @@ WebLeilões (9 carros), Klöckner (0), Leilão Brasil, Hasta Pública, Fidalgo, 
 Destak, CCJ, Lance Total, Leilões PB, Bueno Leilões. Klöckner, Bueno, Leilões PB e Leilão Brasil usam a
 plataforma Suporte Leilões, como o E-Leilões.
 
+## Planos: gratuito × assinante (protótipo)
+
+| | Gratuito | Assinante |
+|---|---|---|
+| Arquivo carregado | `data/vitrine.json` (sem preço, link, leiloeiro, órgão) | `data/lotes.json` (completo) |
+| Preço / desconto | borrado com cadeado | visível |
+| Clique no carro | abre o plano ("Quero assinar pelo WhatsApp") | abre o anúncio original |
+| Filtro/ordem por preço | bloqueado 🔒 | liberado |
+| WhatsApp do Rubens | só pra assinar | em cada card + botão flutuante, com mensagem pronta citando o carro |
+
+Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (**placeholder 5511999999999**), `CONFIG.precoPlano` (placeholder R$ 49,90/mês).
+Login de teste: `assinante@teste.com` / `leilao2026`.
+
+⚠️ **O login atual é simulado no navegador.** Serve pra demonstrar, mas não protege nada: `data/lotes.json` continua
+acessível pra quem souber o endereço. Na versão definitiva:
+1. publicar só `vitrine.json`; servir `lotes.json` por uma rota que exige sessão válida (PHP/Node/WordPress);
+2. cadastro/login real (ex.: WordPress + plugin de assinatura, ou backend próprio) e cobrança recorrente
+   (Mercado Pago, Asaas, Stripe…).
+
 ## Rodar localmente
 
 ```bash

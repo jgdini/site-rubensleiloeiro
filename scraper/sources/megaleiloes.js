@@ -45,7 +45,8 @@ function parseCard(key, html) {
     comitente: null,
     lotes: 1,
     codigo: clean(html.match(/class="card-number[^"]*">([\s\S]*?)<\/div>/)?.[1] || '') || null,
-    imagem: img ? img.replace(/_320x240\./, '_640x480.') : null,
+    // "card-no-image" é o logo do Mega usado quando o lote não tem foto.
+    imagem: img && !/no-image/.test(img) ? img.replace(/_320x240\./, '_640x480.') : null,
     url: href,
   };
 }

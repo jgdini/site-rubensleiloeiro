@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Radar de Leilões — carros de leilão judicial num só lugar</title>
-  <meta name="description" content="Carros em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis. Clique e dê seu lance no site do leiloeiro." />
+  <meta name="description" content="Carros em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis." />
   <meta name="referrer" content="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +21,10 @@
         </span>
         <span>Radar<b>de Leilões</b></span>
       </a>
-      <p class="topo__meta" id="meta">Carregando anúncios…</p>
+      <div class="topo__dir">
+        <p class="topo__meta" id="meta">Carregando anúncios…</p>
+        <div class="conta" id="conta"></div>
+      </div>
     </div>
   </header>
 
@@ -29,12 +32,23 @@
     <div class="wrap">
       <p class="hero__eyebrow">Leilões judiciais de veículos</p>
       <h1>Carros de leilão judicial.<br /><span>Uma busca só.</span></h1>
-      <p class="hero__sub">Reunimos os carros levados a leilão pela Justiça, publicados pelos leiloeiros oficiais. Encontre, compare e dê seu lance direto no site do leiloeiro.</p>
+      <p class="hero__sub">Reunimos os carros levados a leilão pela Justiça, publicados pelos leiloeiros oficiais de todo o país. Encontre, compare e arremate com assessoria.</p>
       <label class="busca">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
         <input id="q" type="search" placeholder="Busque por marca, modelo ou cidade — ex.: Onix, Hilux, Curitiba" autocomplete="off" />
       </label>
       <div class="fontes" id="fontes" aria-label="Leiloeiros"></div>
+
+      <div class="plano" id="plano" hidden>
+        <div class="plano__txt">
+          <span class="plano__selo">Vitrine gratuita</span>
+          <p><b>Você está vendo só as fotos e os modelos.</b> Assinantes veem o lance de cada carro, o desconto sobre a avaliação, o link do leilão e falam direto com o Rubens pra arrematar com segurança.</p>
+        </div>
+        <div class="plano__acoes">
+          <button type="button" class="btn btn--primario" data-acao="assinar">Quero assinar</button>
+          <button type="button" class="btn btn--linha" data-acao="entrar">Já sou assinante</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -42,7 +56,7 @@
     <div class="filtros" id="filtros">
       <select id="f-marca" aria-label="Marca"><option value="">Todas as marcas</option></select>
       <select id="f-uf" aria-label="Estado"><option value="">Todo o Brasil</option></select>
-      <select id="f-preco" aria-label="Preço máximo">
+      <select id="f-preco" aria-label="Preço máximo" data-premium>
         <option value="">Qualquer preço</option>
         <option value="15000">Até R$ 15 mil</option>
         <option value="30000">Até R$ 30 mil</option>
@@ -59,9 +73,9 @@
       </select>
       <select id="f-ordem" aria-label="Ordenar">
         <option value="encerra">Encerram primeiro</option>
-        <option value="menor">Menor preço</option>
-        <option value="maior">Maior preço</option>
-        <option value="desconto">Maior desconto</option>
+        <option value="menor" data-premium>Menor preço</option>
+        <option value="maior" data-premium>Maior preço</option>
+        <option value="desconto" data-premium>Maior desconto</option>
         <option value="novo">Mais novos</option>
       </select>
       <button id="limpar" class="limpar" type="button" hidden>Limpar filtros</button>
@@ -75,29 +89,69 @@
 
   <footer class="rodape">
     <div class="wrap">
-      <p><b>Radar de Leilões</b> é um agregador: exibimos anúncios publicados pelos leiloeiros e direcionamos você ao site oficial de cada um. Lances, pagamentos, editais e condições são de responsabilidade exclusiva do leiloeiro. Valores e datas podem mudar — sempre confira no anúncio original antes de dar um lance.</p>
+      <p><b>Radar de Leilões</b> reúne anúncios publicados por leiloeiros oficiais em leilões judiciais. Lances, pagamentos, editais e condições são de responsabilidade exclusiva do leiloeiro. Valores e datas podem mudar — sempre confira no anúncio original antes de dar um lance.</p>
       <p class="rodape__fontes" id="rodape-fontes"></p>
     </div>
   </footer>
 
+  <!-- WhatsApp flutuante (assinantes) -->
+  <a class="wpp-flutuante" id="wpp-flutuante" target="_blank" rel="noopener" hidden aria-label="Falar com o Rubens no WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.7a10.7 10.7 0 0 1-5.5-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.7 10.7 0 1 1 16 26.7Zm5.9-8c-.3-.2-1.9-1-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.6 3.6 0 0 0-1.1 2.7 6.3 6.3 0 0 0 1.3 3.3 14.4 14.4 0 0 0 5.5 4.9c2 .9 2.8 1 3.9.8a3.3 3.3 0 0 0 2.1-1.5 2.7 2.7 0 0 0 .2-1.5c0-.2-.3-.3-.7-.5Z" /></svg>
+  </a>
+
+  <!-- Login -->
+  <dialog class="modal" id="modal-login" aria-labelledby="login-titulo">
+    <form method="dialog" class="modal__caixa" id="form-login">
+      <button class="modal__fechar" value="cancelar" formnovalidate aria-label="Fechar">×</button>
+      <h2 id="login-titulo">Entrar</h2>
+      <p class="modal__sub">Área do assinante: preços, links dos leilões e contato direto com o Rubens.</p>
+      <label>E-mail<input type="email" name="email" autocomplete="username" required /></label>
+      <label>Senha<input type="password" name="senha" autocomplete="current-password" required /></label>
+      <p class="modal__erro" id="login-erro" hidden>E-mail ou senha incorretos.</p>
+      <button type="submit" class="btn btn--primario btn--cheio" value="entrar">Entrar</button>
+      <p class="modal__teste">Protótipo — acesso de teste: <code>assinante@teste.com</code> / <code>leilao2026</code></p>
+      <p class="modal__rodape">Ainda não é assinante? <button type="button" class="link" data-acao="assinar">Conheça o plano</button></p>
+    </form>
+  </dialog>
+
+  <!-- Paywall -->
+  <dialog class="modal" id="modal-plano" aria-labelledby="plano-titulo">
+    <div class="modal__caixa">
+      <form method="dialog"><button class="modal__fechar" aria-label="Fechar">×</button></form>
+      <span class="plano__selo">Assinatura</span>
+      <h2 id="plano-titulo">Veja o preço e arremate com o Rubens</h2>
+      <div class="modal__carro" id="plano-carro" hidden></div>
+      <ul class="beneficios">
+        <li>Lance atual e valor de avaliação de todos os carros</li>
+        <li>Desconto de cada praça e filtro por faixa de preço</li>
+        <li>Link direto pro edital e pra página do leilão</li>
+        <li>Contato no WhatsApp com o Rubens pra tirar dúvidas e arrematar</li>
+      </ul>
+      <p class="preco-plano" id="preco-plano"></p>
+      <a class="btn btn--wpp btn--cheio" id="btn-assinar-wpp" target="_blank" rel="noopener">Quero assinar pelo WhatsApp</a>
+      <p class="modal__rodape">Já é assinante? <button type="button" class="link" data-acao="entrar">Entrar</button></p>
+    </div>
+  </dialog>
+
   <template id="tpl-card">
-    <a class="card" target="_blank" rel="noopener nofollow">
-      <div class="card__foto">
+    <article class="card">
+      <a class="card__foto card__link">
         <img loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="" />
         <span class="card__fonte"></span>
         <span class="card__tempo"></span>
-      </div>
+      </a>
       <div class="card__corpo">
-        <h3 class="card__titulo"></h3>
+        <h3 class="card__titulo"><a class="card__link"></a></h3>
         <p class="card__specs"></p>
         <div class="card__preco">
           <span class="card__rotulo"></span>
           <strong class="card__valor"></strong>
           <span class="card__fipe"></span>
         </div>
-        <p class="card__rodape"><span class="card__natureza"></span><span class="card__cta">Ver no leiloeiro <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg></span></p>
+        <div class="card__acoes"></div>
+        <p class="card__natureza"></p>
       </div>
-    </a>
+    </article>
   </template>
 
   <script src="assets/app.js" type="module"></script>
