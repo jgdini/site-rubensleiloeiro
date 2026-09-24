@@ -6,9 +6,12 @@ import path from 'node:path';
 
 import * as leilaovip from './sources/leilaovip.js';
 import * as megaleiloes from './sources/megaleiloes.js';
-import * as leilo from './sources/leilo.js';
+import * as lancejudicial from './sources/lancejudicial.js';
+import * as leiloesjudiciais from './sources/leiloesjudiciais.js';
 
-const FONTES = [leilo, megaleiloes, leilaovip];
+// Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
+const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip];
+const soJudicial = (l) => l.natureza === 'Judicial';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');
 
@@ -27,7 +30,7 @@ for (const f of FONTES) {
   }
   const t0 = Date.now();
   try {
-    const itens = await f.coletar();
+    const itens = (await f.coletar()).filter(soJudicial);
     lotes.push(...itens);
     fontes.push({ ...f.fonte, total: itens.length, ok: true, atualizado: new Date().toISOString() });
     console.log(`✔ ${f.fonte.nome}: ${itens.length} carros (${((Date.now() - t0) / 1000).toFixed(1)}s)`);

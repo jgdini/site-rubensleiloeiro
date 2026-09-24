@@ -1,4 +1,4 @@
-const CORES = { leilo: '#7c5cff', megaleiloes: '#ff5a1f', leilaovip: '#2ecc71' };
+const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71' };
 const POR_PAGINA = 36;
 
 const $ = (s) => document.querySelector(s);
@@ -30,7 +30,8 @@ function relativo(iso) {
 }
 
 function desconto(l) {
-  return l.valorMercado && l.lance ? Math.round((1 - l.lance / l.valorMercado) * 100) : null;
+  if (l.valorMercado && l.lance) return Math.round((1 - l.lance / l.valorMercado) * 100);
+  return l.desconto ?? null;
 }
 
 function filtrar() {
@@ -95,7 +96,7 @@ function card(l) {
     valor.classList.add('sem');
   }
   const d = desconto(l);
-  el.querySelector('.card__fipe').textContent = d > 0 ? `−${d}% vs. valor de mercado` : l.desconto ? `${l.desconto}% abaixo da 1ª praça` : '';
+  el.querySelector('.card__fipe').textContent = l.valorMercado && d > 0 ? `−${d}% vs. valor de mercado` : l.desconto ? `${l.desconto}% abaixo da avaliação` : '';
   el.querySelector('.card__natureza').textContent = [l.natureza, l.comitente].filter(Boolean).join(' · ') || l.status || '';
   return el;
 }

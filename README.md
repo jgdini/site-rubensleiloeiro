@@ -1,6 +1,7 @@
-# Radar de Leilões — agregador de carros em leilão
+# Radar de Leilões — agregador de carros de leilão judicial
 
-Espelha os anúncios de **carros** de vários leiloeiros num site único e filtrável.
+Espelha os anúncios de **carros em leilões JUDICIAIS** de vários leiloeiros num site único e filtrável.
+Lotes extrajudiciais (financeiras, bancos, DETRAN, seguradoras) são descartados.
 Ao clicar num anúncio, o visitante vai para a página oficial do lote no leiloeiro.
 
 ## Como funciona
@@ -18,14 +19,17 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 
 ### Fontes atuais
 
-| Leiloeiro | Como coleta | Observação |
+| Leiloeiro | Como coleta | Filtro judicial |
 |---|---|---|
-| Leilo | API JSON do próprio site (`api.leilo.com.br/v1/lote/busca-elastic`), tipo = Carros | dados ricos: km, ano, valor de mercado, lance atual |
-| Mega Leilões | HTML de `/veiculos/carros?pagina=N` | 1ª/2ª praça, desconto |
-| Leilão VIP | POST `/agenda?handler=pesquisarEventos` com segmento Veículos | mistura motos/caminhões, e o `classify.js` filtra |
+| Leilões Judiciais | API `api.leiloesjudiciais.com.br/core/api/get-lotes` (categoria 4 = Carros) | título/descrição com Justiça, Vara, Tribunal, processo… e sem DETRAN/banco/prefeitura |
+| Mega Leilões | HTML de `/veiculos/carros?pagina=N` | etiqueta "Judicial" do card |
+| Lance Judicial (Grupo Lance) | HTML de `grupolance.com.br/veiculos/carros?pagina=N` | etiqueta "Judicial" do card |
+| Leilão VIP | POST `/agenda?handler=pesquisarEventos` com segmento Veículos | etiqueta "Judicial" do card; o `classify.js` tira motos/caminhões |
+
+`scraper/sources/leilo.js` existe mas está **desligado**, porque o Leilo é 100% extrajudicial.
 
 Avaliados e **deixados de fora** por bloquearem acesso automatizado (403/Cloudflare): Sodré Santoro, Superbid, MGL, Milan.
-Candidatos para as próximas fontes: Freitas Leiloeiro, Palácio dos Leilões, Parque dos Leilões, Lance no Leilão.
+Candidatos judiciais para as próximas fontes: D1Lance, E-Leilões, WebLeilões, Fidalgo, Viva Leilões.
 
 ## Rodar localmente
 
