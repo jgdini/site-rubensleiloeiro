@@ -16,11 +16,12 @@ const CONFIG = {
 };
 
 // Composição do custo total para um valor de arremate.
-function calcularCustos(valor) {
+function calcularCustos(valor, comissaoLote) {
   const c = CONFIG.custos;
+  const pct = comissaoLote > 0 ? comissaoLote : c.comissaoPct; // comissão do edital, quando a fonte informa
   const itens = [
     { rotulo: 'Valor da arrematação', valor },
-    { rotulo: `Comissão do leiloeiro (${c.comissaoPct}%)`, valor: Math.round(valor * c.comissaoPct) / 100 },
+    { rotulo: `Comissão do leiloeiro (${pct}%)`, valor: Math.round(valor * pct) / 100 },
     { rotulo: 'Condução do oficial de justiça', valor: c.oficialJustica },
     { rotulo: 'Expedição da carta de arrematação', valor: c.cartaArrematacao },
     { rotulo: 'Transferência do veículo (aprox.)', valor: c.transferencia, aprox: true },
@@ -34,7 +35,7 @@ function calcularCustos(valor) {
 const USUARIOS_TESTE = [{ email: 'assinante@teste.com', senha: 'leilao2026', nome: 'Cliente Teste' }];
 // ================================================
 
-const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9' };
+const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9', tjsp: '#a29bfe' };
 const POR_PAGINA = 36;
 const CHAVE_SESSAO = 'radar-sessao';
 
@@ -143,7 +144,7 @@ function card(l) {
     img.onerror = () => foto.classList.add('ok', 'sem');
   } else foto.classList.add('ok', 'sem');
 
-  el.querySelector('.card__fonte').textContent = pro ? nomesFonte[l.fonte] : 'Leilão judicial';
+  el.querySelector('.card__fonte').textContent = pro ? (l.fonte === 'tjsp' && l.leiloeiro) || nomesFonte[l.fonte] : 'Leilão judicial';
   const t = tempoRestante(l.encerra);
   const tempo = el.querySelector('.card__tempo');
   tempo.textContent = t.txt;
@@ -179,7 +180,7 @@ function card(l) {
   if (pro) {
     links.forEach((a) => Object.assign(a, { href: l.url, target: '_blank', rel: 'noopener nofollow' }));
     if (l.lance) {
-      const c = calcularCustos(l.lance);
+      const c = calcularCustos(l.lance, l.comissao);
       total.innerHTML =
         `<span class="card__total-rot">Custo total estimado</span>` +
         `<strong>${brl(c.total)}</strong>` +
@@ -188,7 +189,7 @@ function card(l) {
     } else {
       total.innerHTML = `<span class="card__total-rot">Custo total</span><span class="card__total-sem">informe o lance no simulador</span>`;
     }
-    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${l.lance ? 'Lance: ' + brl(l.lance) + ' · custo total estimado: ' + brl(calcularCustos(l.lance).total) + '\n' : ''}${l.url}`;
+    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${l.lance ? 'Lance: ' + brl(l.lance) + ' · custo total estimado: ' + brl(calcularCustos(l.lance, l.comissao).total) + '\n' : ''}${l.url}`;
     acoes.innerHTML =
       `<a class="btn btn--wpp btn--linha-toda" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
       `<button type="button" class="btn btn--linha" data-simular>${ICONE_CALC}Simular</button>` +
@@ -289,7 +290,7 @@ function abrirSimulador(l) {
   const input = $('#calc-lance');
   const atualizar = () => {
     const v = Math.max(0, parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0);
-    const c = calcularCustos(v);
+    const c = calcularCustos(v, l.comissao);
     $('#calc-tabela').innerHTML = tabelaCustos(c);
     const msg = `Olá ${CONFIG.nomeContato}! Fiz uma simulação no Radar de Leilões:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\nLance simulado: ${brl(v)}\nCusto total estimado: ${brl(c.total)}\n${l.url}\nPodemos conversar?`;
     $('#calc-wpp').href = linkWhats(msg);
@@ -379,7 +380,7 @@ async function carregarDados() {
   // Coleta é diária: esconde o que já encerrou desde então (tolerância de 1h).
   dados.lotes = dados.lotes.filter((l) => !l.encerra || new Date(l.encerra) > Date.now() - 36e5);
   if (!dados.leiloeiros) {
-    const s = new Set(dados.fontes.filter((f) => f.id !== 'leiloesjudiciais').map((f) => f.id));
+    const s = new Set(dados.fontes.filter((f) => !['leiloesjudiciais', 'tjsp'].includes(f.id)).map((f) => f.id));
     dados.lotes.forEach((l) => l.leiloeiroSite && s.add(l.leiloeiroSite));
     dados.leiloeiros = s.size;
   }

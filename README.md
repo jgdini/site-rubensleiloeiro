@@ -29,6 +29,20 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 | D1Lance | JSON do Livewire (`wire:initial-data`) em `/navegar-pelo-mapa?tipo_filtro=veiculos` | campo `modalidade = JUDICIAL` |
 | E-Leilões | API `/api/categorias/automoveis?judicial=1` (plataforma Suporte Leilões) | filtro `judicial=1` da própria API |
 
+| Credenciados TJSP (plataforma "Sua Plataforma de Leilão") | `GET /busca/` (token) + `POST /ApiEngine/GetBusca/1/60/0`, em 28 sites da lista do Rubens | campo `LabelModalidade` = Judicial; traz a **comissão do edital** (usada no custo total) |
+
+### Lista TJSP do Rubens (`Arquivos/LEILAO TJSP.htm.html`)
+
+236 sites de gestores judiciais. Triagem feita em 24/09/2026:
+- **Integrados:** 28 sites da "Sua Plataforma de Leilão" (`scraper/sources/plataforma-spl.js`, lista em `SITES`);
+  18 deles tinham carros judiciais abertos no dia (Legis, Sublime, Leilão Oficial Online, Destak, Portal Bayit, Casa Reis…).
+  Os ~10 da rede Leilões Judiciais (Rigolon, Gilson, Giordano, Planalto, Fábio…) já entram pelo portal.
+- **Plataforma B** (cloudfront `d1mdxpzu4pgcoh`, 37 sites: Lotti, 3 Torres, Tribuna, Machado…): busca em
+  `/lotes/search?tipo=veiculo&categoria_id=N`, mas a data/cidade só está na página de cada lote. Os maiores
+  (Lance Leilões 1.469, Rico 1.323, Machado 225) são pátio/DETRAN; os judiciais têm 1–9 carros cada. **Próximo passo.**
+- **Outras plataformas ainda não integradas:** Suporte Leilões (14 sites), Bomvalor (7), Plataforma Leiloar (5), leilao.pro, leilotech.
+- **Bloqueiam robô (Cloudflare/403):** Sodré Santoro, Sold, MGL, Milan, Leje e ~20 outros menores.
+
 O portal Leilões Judiciais publica lotes de ~30 leiloeiros oficiais (Deonizia, JR, Rio Leilões, Rigolon, Fidelis…),
 então o site cobre ~35 leiloeiros no total. O campo `leiloeiroSite` guarda a origem.
 

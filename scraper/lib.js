@@ -90,9 +90,12 @@ export function anoDe(texto = '') {
   const ano2 = (a) => (2000 + +a > new Date().getFullYear() + 1 ? 1900 + +a : 2000 + +a);
   let m = texto.match(/\b(19[5-9]\d|20[0-3]\d)\s*\/\s*(19[5-9]\d|20[0-3]\d)\b/);
   if (m) return Math.max(+m[1], +m[2]);
+  // "1995/96", "2006/07"
+  m = texto.match(/\b(19[5-9]\d|20[0-3]\d)\s*\/\s*(\d{2})\b/);
+  if (m) return Math.max(+m[1], +(m[1].slice(0, 2) + m[2]) + (+m[2] < +m[1].slice(2) ? 100 : 0));
   m = texto.match(/\bANO\s*(\d{2})\s*\/\s*(\d{2})\b/i);
   if (m) return Math.max(ano2(m[1]), ano2(m[2]));
-  m = texto.match(/(?:\bANO\s*|-\s*)(19[5-9]\d|20[0-3]\d)\b/i);
+  m = texto.match(/(?:\bANO\s*|\bMODELO\s*|-\s*)(19[5-9]\d|20[0-3]\d)\b/i);
   return m ? +m[1] : null;
 }
 
@@ -100,6 +103,8 @@ export function anoDe(texto = '') {
 export function limparTitulo(s = '') {
   return titulo(
     s
+      .replace(/^\s*\d+\s*[).-]\s*/, '') // "1) Mercedes..."
+      .replace(/\s*\|.*$/, '') // "... | Modelo 2015"
       .replace(/^nova oportunidade de adquirir (esse|este) ve[ií]culo:\s*/i, '')
       .replace(/\b(direitos sobre\s+)?ve[ií]culos?\b\s*/gi, (m, d) => (d ? 'Direitos sobre ' : ''))
       .replace(/\b(marcas?|modelos?)\s*:?\s*/gi, '')
@@ -111,6 +116,8 @@ export function limparTitulo(s = '') {
       .replace(/\bplacas?\s+[a-z]{3}-?\d[a-z0-9]\d{2}\b.*$/i, '')
       // só pares "2012 2013" / "fab/mod 2009/2010" (não corta modelos como "Peugeot 2008")
       .replace(/\s+(fab\/mod\s*)?(19|20)\d{2}\s*\/?\s*(19|20)\d{2}\b.*$/i, '')
+      .replace(/\s+(19|20)\d{2}\s*\/\s*\d{2}\b.*$/, '') // "... 2006/07"
+      .replace(/[\s-]+$/, '')
       .replace(/\s+-\s*$/, '')
       .replace(/\s{2,}/g, ' ')
       .trim()

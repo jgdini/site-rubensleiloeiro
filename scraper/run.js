@@ -10,9 +10,10 @@ import * as lancejudicial from './sources/lancejudicial.js';
 import * as leiloesjudiciais from './sources/leiloesjudiciais.js';
 import * as d1lance from './sources/d1lance.js';
 import * as eleiloes from './sources/eleiloes.js';
+import * as plataformaSpl from './sources/plataforma-spl.js';
 
 // Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
-const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes];
+const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl];
 const soJudicial = (l) => l.natureza === 'Judicial';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');
@@ -59,9 +60,9 @@ await writeFile(saida, JSON.stringify({ geradoEm, total: unicos.length, fontes, 
 
 // Vitrine gratuita: mostra o preço, mas sem link e sem leiloeiro/órgão (o assinante paga pra chegar ao leilão).
 // Em produção, SÓ este arquivo fica público; lotes.json deve ser servido apenas a usuários logados.
-const PRIVADOS = ['url', 'fonte', 'comitente', 'leiloeiro', 'leiloeiroSite', 'codigo', 'tituloOriginal'];
+const PRIVADOS = ['url', 'processo', 'fonte', 'comitente', 'leiloeiro', 'leiloeiroSite', 'codigo', 'tituloOriginal'];
 const vitrine = unicos.map((l) => Object.fromEntries(Object.entries(l).filter(([k]) => !PRIVADOS.includes(k))));
-const leiloeiros = new Set([...fontes.filter((f) => f.id !== 'leiloesjudiciais').map((f) => f.id), ...unicos.map((l) => l.leiloeiroSite).filter(Boolean)]);
+const leiloeiros = new Set([...fontes.filter((f) => !['leiloesjudiciais', 'tjsp'].includes(f.id)).map((f) => f.id), ...unicos.map((l) => l.leiloeiroSite).filter(Boolean)]);
 await writeFile(
   path.join(path.dirname(saida), 'vitrine.json'),
   JSON.stringify({ geradoEm, total: vitrine.length, leiloeiros: leiloeiros.size, lotes: vitrine }, null, 1)
