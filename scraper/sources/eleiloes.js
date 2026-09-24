@@ -28,6 +28,7 @@ function mapear(l) {
     uf: uf?.trim().toUpperCase() || null,
     lance,
     lanceInicial: l.valorInicial || null,
+    segundaPraca: l.valorInicial2 || null,
     lances: l.totalLances || 0,
     valorMercado: null,
     desconto: avaliacao && lance && lance < avaliacao ? Math.round((1 - lance / avaliacao) * 100) : null,

@@ -60,6 +60,7 @@ function mapear(dom, base, l) {
     uf: l.UF || null,
     lance,
     lanceInicial: rt.ValorMinimoLancePrimeiraPraca || null,
+    segundaPraca: rt.QtdPracas > 1 && rt.ValorMinimoLanceSegundaPraca > 0 ? rt.ValorMinimoLanceSegundaPraca : null,
     lances: l.Lances || 0,
     valorMercado: null,
     desconto: avaliacao && lance && lance < avaliacao ? Math.round((1 - lance / avaliacao) * 100) : null,

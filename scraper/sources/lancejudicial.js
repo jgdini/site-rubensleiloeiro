@@ -46,6 +46,7 @@ function parseCard(key, html) {
     uf: UFS.includes((uf || '').toUpperCase()) ? uf.toUpperCase() : null,
     lance: ativa.valor ?? brl(clean(html.match(/class="card-price">([\s\S]*?)<\/div>/)?.[1] || '')),
     lanceInicial: pracas[0]?.valor ?? null,
+    segundaPraca: pracas[1]?.valor ?? null,
     valorMercado: null,
     desconto: desconto ? +desconto : null,
     encerra: ativa.data || null,

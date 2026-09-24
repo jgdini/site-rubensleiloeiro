@@ -33,6 +33,7 @@ function mapear(l) {
     uf: uf?.trim().toUpperCase().slice(0, 2) || null,
     lance: ativa.valor ?? null,
     lanceInicial: pracas[0]?.valor ?? null,
+    segundaPraca: pracas[1]?.valor ?? null,
     lances: l.quantidade_de_lances_lote || 0,
     valorMercado: null,
     desconto: ativa.desconto && ativa.desconto < 100 ? 100 - ativa.desconto : null,

@@ -65,7 +65,9 @@ plataforma Suporte Leilões, como o E-Leilões.
 | Filtro por leiloeiro | escondido | liberado |
 | WhatsApp do Rubens | só pra assinar | em cada card, no simulador e botão flutuante, com mensagem pronta |
 
-**Custo total** = lance + 5% comissão do leiloeiro + R$ 115 oficial de justiça + R$ 80 carta de arrematação
+**Valor exibido = 2ª praça (2º leilão)**; sem 2ª praça, o valor único ("Praça única"). Desconto = 2ª praça vs. 1ª (avaliação).
+
+**Custo total** = valor da 2ª praça + 5% comissão do leiloeiro + R$ 115 oficial de justiça + R$ 80 carta de arrematação
 + ~R$ 600 transferência + R$ 2.700 consultoria (1ª). Valores em `CONFIG.custos`.
 
 Sucatas inservíveis (só podem ir pra reciclagem) são descartadas na coleta.

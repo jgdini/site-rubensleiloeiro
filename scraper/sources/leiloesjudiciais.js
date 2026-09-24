@@ -40,7 +40,9 @@ function mapear(l) {
     cidade: l.nm_cidade ? titulo(l.nm_cidade) : null,
     uf: l.nm_estado || null,
     lance: num(l.vl_lance) ?? num(l.vl_lanceinicial),
-    lanceInicial: num(l.vl_lanceinicial),
+    // Na 2ª praça o portal troca vl_lanceinicial pelo valor da 2ª; o da 1ª fica em vl_lanceminimo.
+    lanceInicial: Math.max(num(l.vl_lanceminimo) || 0, num(l.vl_lanceinicial) || 0) || null,
+    segundaPraca: num(l.vl_lanceinicialsegundoleilao),
     lances: l.nu_qtdelances || 0,
     valorMercado: null,
     encerra: dt,

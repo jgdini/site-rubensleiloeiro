@@ -24,13 +24,16 @@ function parseCard(html) {
   const img = html.match(/<img[^>]+src="([^"]+)"[^>]*class="card-img-top/)?.[1];
 
   // Praças: cada .anc-event tem data, hora e (às vezes) valor.
-  const pracas = [...html.matchAll(/<div class="anc-event">([\s\S]*?)<div class="anc-row-4">\s*<span class="anc-hour">([^<]*)<\/span>/g)].map(
-    ([, bloco, hora]) => ({
-      data: dataBR(clean(bloco.match(/anc-date[^>]*>([^<]*)/)?.[1] || bloco), hora),
+  // (a 1ª praça às vezes vem sem horário, então cada bloco .anc-event é lido separadamente)
+  const pracas = html
+    .split('<div class="anc-event">')
+    .slice(1)
+    .map((b) => b.split('<div class="anc-footer">')[0])
+    .map((bloco) => ({
+      data: dataBR(clean(bloco.match(/anc-date[^>]*>([\s\S]*?)<\/span>/)?.[1] || ''), clean(bloco.match(/anc-hour[^>]*>([\s\S]*?)<\/span>/)?.[1] || '')),
       valor: brl(bloco.match(/R\$\s*[\d.,]+/)?.[0]),
       passada: /anc-past/.test(bloco),
-    })
-  );
+    }));
   // fallback p/ layout de leilão único: "Até: 24/09/2026 15:00" / "Leilão Único: 24/09/2026"
   if (!pracas.length) {
     const t = clean(html);
@@ -58,6 +61,7 @@ function parseCard(html) {
     uf: null,
     lance: ativa.valor ?? null,
     lanceInicial: primeira.valor ?? null,
+    segundaPraca: pracas.length > 1 ? pracas[1].valor ?? null : null,
     valorMercado: null,
     encerra: ativa.data || null,
     status: status || null,

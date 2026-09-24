@@ -81,8 +81,14 @@ function relativo(iso) {
   const h = Math.round(min / 60);
   return h < 24 ? `há ${h}h` : `há ${Math.round(h / 24)} dia(s)`;
 }
+// Valor exibido: o da 2ª praça (2º leilão). Sem 2ª praça (leilão único), o valor do próprio lote.
+function preco(l) {
+  return l.segundaPraca || l.lance || null;
+}
+// Desconto da 2ª praça sobre a 1ª (a 1ª praça normalmente é a avaliação).
 function desconto(l) {
-  if (l.valorMercado && l.lance) return Math.round((1 - l.lance / l.valorMercado) * 100);
+  if (l.segundaPraca && l.lanceInicial > l.segundaPraca) return Math.round((1 - l.segundaPraca / l.lanceInicial) * 100);
+  if (l.valorMercado && preco(l)) return Math.round((1 - preco(l) / l.valorMercado) * 100);
   return l.desconto ?? null;
 }
 function localDe(l) {
@@ -96,7 +102,7 @@ function filtrar() {
     if (estado.fontes.size && !estado.fontes.has(l.fonte)) return false;
     if (estado.marca && l.marca !== estado.marca) return false;
     if (estado.uf && l.uf !== estado.uf) return false;
-    if (estado.preco && !(l.lance && l.lance <= +estado.preco)) return false;
+    if (estado.preco && !(preco(l) && preco(l) <= +estado.preco)) return false;
     if (estado.ano && !(l.ano && l.ano >= +estado.ano)) return false;
     if (termos.length) {
       const alvo = l._busca || (l._busca = semAcento([l.titulo, l.tituloOriginal, l.marca, l.cidade, l.uf, l.ano, nomesFonte[l.fonte]].join(' ')));
@@ -107,8 +113,8 @@ function filtrar() {
   const nulo = (v, alto) => (v == null ? (alto ? Infinity : -Infinity) : v);
   const ord = {
     encerra: (a, b) => nulo(a.encerra && +new Date(a.encerra), 1) - nulo(b.encerra && +new Date(b.encerra), 1),
-    menor: (a, b) => nulo(a.lance, 1) - nulo(b.lance, 1),
-    maior: (a, b) => nulo(b.lance, 0) - nulo(a.lance, 0),
+    menor: (a, b) => nulo(preco(a), 1) - nulo(preco(b), 1),
+    maior: (a, b) => nulo(preco(b), 0) - nulo(preco(a), 0),
     desconto: (a, b) => nulo(desconto(b), 0) - nulo(desconto(a), 0),
     novo: (a, b) => nulo(b.ano, 0) - nulo(a.ano, 0),
   }[estado.ordem] || (() => 0);
@@ -160,17 +166,18 @@ function card(l) {
   const acoes = el.querySelector('.card__acoes');
   const links = el.querySelectorAll('.card__link');
 
-  // Preço do carro: visível para todos.
-  if (l.lance) {
-    rotulo.textContent = l.lances ? `Lance atual · ${l.lances} lance${l.lances > 1 ? 's' : ''}` : l.lotes > 1 ? 'A partir de' : 'Lance mínimo';
-    valor.textContent = brl(l.lance);
+  // Preço do carro (2ª praça): visível para todos.
+  const p = preco(l);
+  if (p) {
+    rotulo.textContent = l.segundaPraca ? '2º leilão (2ª praça)' : l.lotes > 1 ? 'A partir de' : 'Praça única';
+    valor.textContent = brl(p);
   } else {
     rotulo.textContent = l.lotes > 1 ? `${l.lotes} lotes neste leilão` : 'Valor';
     valor.textContent = 'Valores no edital';
     valor.classList.add('sem');
   }
   const d = desconto(l);
-  el.querySelector('.card__fipe').textContent = l.valorMercado && d > 0 ? `−${d}% vs. valor de mercado` : l.desconto ? `${l.desconto}% abaixo da avaliação` : '';
+  el.querySelector('.card__fipe').textContent = d > 0 ? `${d}% abaixo da avaliação` : '';
 
   // Custo total da operação.
   const total = document.createElement('div');
@@ -179,8 +186,8 @@ function card(l) {
 
   if (pro) {
     links.forEach((a) => Object.assign(a, { href: l.url, target: '_blank', rel: 'noopener nofollow' }));
-    if (l.lance) {
-      const c = calcularCustos(l.lance, l.comissao);
+    if (p) {
+      const c = calcularCustos(p, l.comissao);
       total.innerHTML =
         `<span class="card__total-rot">Custo total estimado</span>` +
         `<strong>${brl(c.total)}</strong>` +
@@ -189,7 +196,7 @@ function card(l) {
     } else {
       total.innerHTML = `<span class="card__total-rot">Custo total</span><span class="card__total-sem">informe o lance no simulador</span>`;
     }
-    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${l.lance ? 'Lance: ' + brl(l.lance) + ' · custo total estimado: ' + brl(calcularCustos(l.lance, l.comissao).total) + '\n' : ''}${l.url}`;
+    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${p ? (l.segundaPraca ? '2º leilão: ' : 'Valor: ') + brl(p) + ' · custo total estimado: ' + brl(calcularCustos(p, l.comissao).total) + '\n' : ''}${l.url}`;
     acoes.innerHTML =
       `<a class="btn btn--wpp btn--linha-toda" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
       `<button type="button" class="btn btn--linha" data-simular>${ICONE_CALC}Simular</button>` +
@@ -286,7 +293,7 @@ function abrirPlano(l) {
 }
 function abrirSimulador(l) {
   const m = $('#modal-calc');
-  $('#calc-carro').innerHTML = `${l.imagem ? `<img src="${esc(l.imagem)}" alt="" referrerpolicy="no-referrer">` : ''}<div><b>${esc(l.titulo)}</b><span>${esc([l.ano, localDe(l)].filter(Boolean).join(' · '))}</span>${l.lance ? `<span>Lance atual: ${brl(l.lance)}</span>` : ''}</div>`;
+  $('#calc-carro').innerHTML = `${l.imagem ? `<img src="${esc(l.imagem)}" alt="" referrerpolicy="no-referrer">` : ''}<div><b>${esc(l.titulo)}</b><span>${esc([l.ano, localDe(l)].filter(Boolean).join(' · '))}</span>${preco(l) ? `<span>${l.segundaPraca ? '2º leilão' : 'Praça única'}: ${brl(preco(l))}</span>` : ''}</div>`;
   const input = $('#calc-lance');
   const atualizar = () => {
     const v = Math.max(0, parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0);
@@ -297,7 +304,7 @@ function abrirSimulador(l) {
   };
   $('#calc-wpp').innerHTML = `${ICONE_WPP}Enviar simulação ao ${esc(CONFIG.nomeContato)}`;
   const fmt = (v) => v.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
-  input.value = l.lance ? fmt(l.lance) : '';
+  input.value = preco(l) ? fmt(preco(l)) : '';
   input.oninput = atualizar;
   input.onblur = () => input.value && (input.value = fmt(parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0));
   // Atalhos: +R$ 1.000 / +R$ 5.000 sobre o lance atual (a disputa costuma subir).
