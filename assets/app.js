@@ -138,7 +138,7 @@ function tabelaCustos(c) {
 function card(l) {
   const el = $('#tpl-card').content.firstElementChild.cloneNode(true);
   const pro = premium();
-  el.style.setProperty('--c', CORES[l.fonte] || 'var(--laranja)');
+  el.style.setProperty('--c', CORES[l.fonte] || 'var(--ouro)');
   el.classList.toggle('card--travado', !pro);
 
   const foto = el.querySelector('.card__foto');
