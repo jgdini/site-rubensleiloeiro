@@ -34,7 +34,10 @@ const MODELOS_CARRO = [
 ];
 
 // Nunca entram, mesmo citando modelo de carro (não é um carro inteiro/rodando).
-const BLOQUEIO_FORTE = [/\bREBOQUES?\b/, /\bSEMI-?REBOQUE\b/, /\bCARGO\s?\d{3,4}/, /\b\d-?EIXOS\b/, /\bCAMINH(AO|ÃO|OES|ÕES)\b/, /\bMOTOCICLETA\b/,/\bCARCA(CA|ÇA)S?\b/, /\bSOMENTE LATARIA\b/, /\bTRAILERS?\b/, /\bSUCATAS?\b/, /\bPE(CAS|ÇAS)\b/, /\bMOTOR(ES)? (AVULSO|DE)\b/];
+const BLOQUEIO_FORTE = [
+  // modelos de moto inequívocos (às vezes aparecem em categorias "Carros")
+  /\bNXR\b/, /\bBROS\b/, /\bCG\s?1\d{2}\b/, /\bBIZ\b/, /\bXRE\b/, /\bYBR\b/, /\bCBR\b/, /\bNMAX\b/, /\bPCX\b/, /\bXTZ\b/, /\bFACTOR\b/, /\bBURGMAN\b/, /\bPOP\s?1[01]0\b/, /\bCB\s?\d{3}\b/,
+/\bREBOQUES?\b/, /\bSEMI-?REBOQUE\b/, /\bCARGO\s?\d{3,4}/, /\b\d-?EIXOS\b/, /\bCAMINH(AO|ÃO|OES|ÕES)\b/, /\bMOTOCICLETA\b/,/\bCARCA(CA|ÇA)S?\b/, /\bSOMENTE LATARIA\b/, /\bTRAILERS?\b/, /\bSUCATAS?\b/, /\bPE(CAS|ÇAS)\b/, /\bMOTOR(ES)? (AVULSO|DE)\b/];
 
 function norm(s) {
   return ' ' + s.toUpperCase().replace(/[\/,()]/g, ' ').replace(/\s+/g, ' ') + ' ';

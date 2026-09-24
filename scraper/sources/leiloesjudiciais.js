@@ -71,6 +71,9 @@ export async function coletar({ porPagina = 100, maxPaginas = 30 } = {}) {
     for (const l of j.items || []) {
       if (!/aberto|aguardando/i.test(l.nm_statuslote || '')) continue;
       if (!ehJudicial(l)) continue;
+      // Sucata inservível (vai pra prensa, só empresas de reciclagem compram) — não é carro pro cliente.
+      const extras = (l.usuariovistorialotexstatusliberacaoextra || []).map((x) => x.nm).join(' ');
+      if (/SUCATA/i.test(`${extras} ${l.nm_titulo_lote} ${semHtml(l.nm_descricao)}`)) continue;
       if (!ehCarro(l.nm_titulo_lote, { categoriaCarro: true })) continue;
       itens.push(mapear(l));
     }

@@ -4,7 +4,30 @@ const CONFIG = {
   whatsapp: '5511947581678',
   nomeContato: 'Rubens',
   precoPlano: 'R$ 49,90/mês', // PLACEHOLDER
+
+  // Custos da operação de arremate (mostrados ao assinante).
+  custos: {
+    consultoria: 2700, // primeira consultoria do Rubens
+    comissaoPct: 5, // comissão do leiloeiro sobre o valor arrematado
+    oficialJustica: 115, // condução do oficial de justiça
+    cartaArrematacao: 80, // expedição da carta de arrematação
+    transferencia: 600, // transferência do veículo (estimativa)
+  },
 };
+
+// Composição do custo total para um valor de arremate.
+function calcularCustos(valor) {
+  const c = CONFIG.custos;
+  const itens = [
+    { rotulo: 'Valor da arrematação', valor },
+    { rotulo: `Comissão do leiloeiro (${c.comissaoPct}%)`, valor: Math.round(valor * c.comissaoPct) / 100 },
+    { rotulo: 'Condução do oficial de justiça', valor: c.oficialJustica },
+    { rotulo: 'Expedição da carta de arrematação', valor: c.cartaArrematacao },
+    { rotulo: 'Transferência do veículo (aprox.)', valor: c.transferencia, aprox: true },
+    { rotulo: 'Consultoria Rubens (1ª consultoria)', valor: c.consultoria },
+  ];
+  return { itens, total: itens.reduce((s, i) => s + i.valor, 0) };
+}
 
 // Protótipo: login simulado no navegador. Em produção isto vira um login de verdade no servidor,
 // e data/lotes.json só é entregue a quem está autenticado.
@@ -96,6 +119,15 @@ const ICONE_WPP = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13
 const ICONE_SETA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>';
 const ICONE_CADEADO = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
+const ICONE_CALC = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>';
+
+function tabelaCustos(c) {
+  return (
+    `<ul>${c.itens.map((i) => `<li><span>${i.rotulo === 'Valor da arrematação' ? i.rotulo : '+ ' + i.rotulo}</span><b>${i.aprox ? '≈ ' : ''}${brl(i.valor)}</b></li>`).join('')}</ul>` +
+    `<p class="composicao__total"><span>Total estimado</span><b>${brl(c.total)}</b></p>`
+  );
+}
+
 function card(l) {
   const el = $('#tpl-card').content.firstElementChild.cloneNode(true);
   const pro = premium();
@@ -127,33 +159,60 @@ function card(l) {
   const acoes = el.querySelector('.card__acoes');
   const links = el.querySelectorAll('.card__link');
 
+  // Preço do carro: visível para todos.
+  if (l.lance) {
+    rotulo.textContent = l.lances ? `Lance atual · ${l.lances} lance${l.lances > 1 ? 's' : ''}` : l.lotes > 1 ? 'A partir de' : 'Lance mínimo';
+    valor.textContent = brl(l.lance);
+  } else {
+    rotulo.textContent = l.lotes > 1 ? `${l.lotes} lotes neste leilão` : 'Valor';
+    valor.textContent = 'Valores no edital';
+    valor.classList.add('sem');
+  }
+  const d = desconto(l);
+  el.querySelector('.card__fipe').textContent = l.valorMercado && d > 0 ? `−${d}% vs. valor de mercado` : l.desconto ? `${l.desconto}% abaixo da avaliação` : '';
+
+  // Custo total da operação.
+  const total = document.createElement('div');
+  total.className = 'card__total';
+  el.querySelector('.card__preco').after(total);
+
   if (pro) {
     links.forEach((a) => Object.assign(a, { href: l.url, target: '_blank', rel: 'noopener nofollow' }));
     if (l.lance) {
-      rotulo.textContent = l.lances ? `Lance atual · ${l.lances} lance${l.lances > 1 ? 's' : ''}` : l.lotes > 1 ? 'A partir de' : 'Lance mínimo';
-      valor.textContent = brl(l.lance);
+      const c = calcularCustos(l.lance);
+      total.innerHTML =
+        `<span class="card__total-rot">Custo total estimado</span>` +
+        `<strong>${brl(c.total)}</strong>` +
+        `<button type="button" class="info" aria-label="Ver composição do custo">i</button>` +
+        `<div class="composicao" role="tooltip">${tabelaCustos(c)}</div>`;
     } else {
-      rotulo.textContent = l.lotes > 1 ? `${l.lotes} lotes neste leilão` : 'Valor';
-      valor.textContent = 'Ver valores no leilão';
-      valor.classList.add('sem');
+      total.innerHTML = `<span class="card__total-rot">Custo total</span><span class="card__total-sem">informe o lance no simulador</span>`;
     }
-    const d = desconto(l);
-    el.querySelector('.card__fipe').textContent = l.valorMercado && d > 0 ? `−${d}% vs. valor de mercado` : l.desconto ? `${l.desconto}% abaixo da avaliação` : '';
-    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${l.lance ? 'Lance: ' + brl(l.lance) + '\n' : ''}${l.url}`;
+    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${l.lance ? 'Lance: ' + brl(l.lance) + ' · custo total estimado: ' + brl(calcularCustos(l.lance).total) + '\n' : ''}${l.url}`;
     acoes.innerHTML =
-      `<a class="btn btn--wpp" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
+      `<a class="btn btn--wpp btn--linha-toda" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
+      `<button type="button" class="btn btn--linha" data-simular>${ICONE_CALC}Simular</button>` +
       `<a class="btn btn--linha" target="_blank" rel="noopener nofollow" href="${esc(l.url)}">Ver leilão ${ICONE_SETA}</a>`;
+    acoes.querySelector('[data-simular]').onclick = () => abrirSimulador(l);
+    // No celular não existe hover: o "i" abre/fecha a composição no toque.
+    const info = total.querySelector('.info');
+    if (info)
+      info.onclick = (e) => {
+        e.stopPropagation();
+        const abrir = !total.classList.contains('aberto');
+        document.querySelectorAll('.card__total.aberto').forEach((t) => t.classList.remove('aberto'));
+        total.classList.toggle('aberto', abrir);
+      };
     el.querySelector('.card__natureza').textContent = [l.natureza, l.comitente].filter(Boolean).join(' · ') || l.status || '';
   } else {
-    // Vitrine gratuita: sem preço, sem link. Clique abre o plano.
+    // Vitrine gratuita: preço visível, mas sem link e sem custo total. Clique abre o plano.
     links.forEach((a) => {
       a.removeAttribute('href');
       a.setAttribute('role', 'button');
       a.tabIndex = a.classList.contains('card__foto') ? -1 : 0;
     });
-    rotulo.textContent = 'Lance atual';
-    valor.innerHTML = `<span class="borrado" aria-hidden="true">R$ 00.000</span><span class="cadeado">${ICONE_CADEADO}Para assinantes</span>`;
-    acoes.innerHTML = `<button type="button" class="btn btn--primario btn--cheio">${ICONE_CADEADO}Ver preço e anúncio</button>`;
+    total.innerHTML = `<span class="card__total-rot">Custo total c/ taxas e assessoria</span><span class="cadeado">${ICONE_CADEADO}Assinantes</span>`;
+    acoes.innerHTML = `<button type="button" class="btn btn--primario btn--cheio">${ICONE_CADEADO}Ver anúncio e custo total</button>`;
     el.querySelector('.card__natureza').textContent = 'Leilão judicial';
     const abrir = () => abrirPlano(l);
     el.addEventListener('click', abrir);
@@ -203,11 +262,7 @@ function lerURL() {
   estado.fontes = new Set((p.get('fonte') || '').split(',').filter(Boolean));
   for (const k of ['marca', 'uf', 'preco', 'ano']) estado[k] = p.get(k) || '';
   estado.ordem = p.get('ordem') || 'encerra';
-  if (!premium()) {
-    estado.fontes.clear();
-    estado.preco = '';
-    if (['menor', 'maior', 'desconto'].includes(estado.ordem)) estado.ordem = 'encerra';
-  }
+  if (!premium()) estado.fontes.clear(); // leiloeiro é informação de assinante
   $('#q').value = estado.q;
   for (const k of ['marca', 'uf', 'preco', 'ano', 'ordem']) $('#f-' + k).value = estado[k];
 }
@@ -228,6 +283,36 @@ function abrirPlano(l) {
   $('#modal-login').close();
   $('#modal-plano').showModal();
 }
+function abrirSimulador(l) {
+  const m = $('#modal-calc');
+  $('#calc-carro').innerHTML = `${l.imagem ? `<img src="${esc(l.imagem)}" alt="" referrerpolicy="no-referrer">` : ''}<div><b>${esc(l.titulo)}</b><span>${esc([l.ano, localDe(l)].filter(Boolean).join(' · '))}</span>${l.lance ? `<span>Lance atual: ${brl(l.lance)}</span>` : ''}</div>`;
+  const input = $('#calc-lance');
+  const atualizar = () => {
+    const v = Math.max(0, parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0);
+    const c = calcularCustos(v);
+    $('#calc-tabela').innerHTML = tabelaCustos(c);
+    const msg = `Olá ${CONFIG.nomeContato}! Fiz uma simulação no Radar de Leilões:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\nLance simulado: ${brl(v)}\nCusto total estimado: ${brl(c.total)}\n${l.url}\nPodemos conversar?`;
+    $('#calc-wpp').href = linkWhats(msg);
+  };
+  $('#calc-wpp').innerHTML = `${ICONE_WPP}Enviar simulação ao ${esc(CONFIG.nomeContato)}`;
+  const fmt = (v) => v.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+  input.value = l.lance ? fmt(l.lance) : '';
+  input.oninput = atualizar;
+  input.onblur = () => input.value && (input.value = fmt(parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0));
+  // Atalhos: +R$ 1.000 / +R$ 5.000 sobre o lance atual (a disputa costuma subir).
+  m.querySelectorAll('[data-soma]').forEach((b) => {
+    b.onclick = () => {
+      const v = parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0;
+      input.value = fmt(v + +b.dataset.soma);
+      atualizar();
+    };
+  });
+  atualizar();
+  m.showModal();
+  input.focus();
+  input.select();
+}
+
 function abrirLogin() {
   $('#modal-plano').close();
   $('#login-erro').hidden = true;
@@ -345,6 +430,11 @@ async function iniciar() {
     gravarSessao(sessao);
     $('#modal-login').close();
     await trocarModo();
+  });
+
+  // Fecha a composição de custo aberta ao tocar fora dela.
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.card__total')) document.querySelectorAll('.card__total.aberto').forEach((t) => t.classList.remove('aberto'));
   });
 
   // Fecha modal clicando fora.

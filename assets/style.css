@@ -162,6 +162,44 @@ button, input, select { font: inherit; color: inherit; }
 .cadeado svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 .card--travado:hover .card__foto img { filter: brightness(0.75); }
 
+/* ---------- Custo total ---------- */
+.card__acoes { flex-wrap: wrap; }
+.card__acoes .btn--linha-toda { flex-basis: 100%; }
+.card__acoes .btn svg { width: 16px; height: 16px; }
+.card__acoes [data-simular] svg { fill: none; stroke: currentColor; stroke-width: 2; }
+
+.card__total { position: relative; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: rgb(255 90 31 / 0.08); border: 1px dashed rgb(255 90 31 / 0.35); }
+.card__total-rot { flex-basis: 100%; font-size: 11.5px; color: var(--texto-3); text-transform: uppercase; letter-spacing: 0.06em; }
+.card__total strong { font-size: 18px; font-weight: 750; letter-spacing: -0.01em; color: var(--laranja-2); }
+.card__total-sem { font-size: 13px; color: var(--texto-2); }
+.card--travado .card__total { background: rgb(255 255 255 / 0.03); border-color: var(--linha); }
+.info { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 1px solid rgb(255 122 69 / 0.6); background: none; color: var(--laranja-2); font: 700 12px/1 Georgia, serif; font-style: italic; cursor: help; }
+.info:focus-visible { outline: 2px solid var(--laranja); outline-offset: 2px; }
+
+/* Composição (hint ao passar o mouse / tocar no "i") */
+.composicao { font-size: 13px; }
+.composicao ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.composicao li, .composicao__total { display: flex; justify-content: space-between; gap: 12px; }
+.composicao li span { color: var(--texto-2); }
+.composicao li b { font-weight: 600; white-space: nowrap; }
+.composicao li:first-child span { color: var(--texto); font-weight: 600; }
+.composicao__total { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--linha); font-size: 15px; }
+.composicao__total b { color: var(--laranja-2); font-size: 17px; }
+.card__total .composicao { position: absolute; left: -1px; right: -1px; bottom: calc(100% + 8px); z-index: 6; padding: 14px; border-radius: 12px; background: #1d2129; border: 1px solid #333842; box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.8); opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.15s, transform 0.15s, visibility 0.15s; pointer-events: none; }
+.card__total .composicao::after { content: ''; position: absolute; left: 22px; top: 100%; border: 7px solid transparent; border-top-color: #333842; }
+.card__total.aberto .composicao, .card__total:focus-within .composicao { opacity: 1; visibility: visible; transform: none; }
+@media (hover: hover) { .card__total:hover .composicao { opacity: 1; visibility: visible; transform: none; } }
+.card { overflow: visible; }
+.card__foto { border-radius: var(--raio) var(--raio) 0 0; overflow: hidden; }
+
+/* Simulador */
+.modal--calc { width: min(480px, 100% - 32px); }
+.calc__campo { display: flex; gap: 6px; }
+.calc__campo input { flex: 1; min-width: 0; font-size: 20px; font-weight: 700; }
+.calc__campo .btn { height: 46px; }
+.composicao--aberta { padding: 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--linha); }
+.calc__nota { margin: 0; font-size: 12px; color: var(--texto-3); }
+
 /* ---------- WhatsApp flutuante ---------- */
 .wpp-flutuante { position: fixed; right: 20px; bottom: 20px; z-index: 20; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: #25d366; box-shadow: 0 10px 30px -6px rgb(37 211 102 / 0.55); transition: transform 0.2s; }
 .wpp-flutuante[hidden] { display: none; }

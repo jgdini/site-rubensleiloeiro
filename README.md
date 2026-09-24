@@ -44,13 +44,19 @@ plataforma Suporte Leilões, como o E-Leilões.
 
 | | Gratuito | Assinante |
 |---|---|---|
-| Arquivo carregado | `data/vitrine.json` (sem preço, link, leiloeiro, órgão) | `data/lotes.json` (completo) |
-| Preço / desconto | borrado com cadeado | visível |
+| Arquivo carregado | `data/vitrine.json` (com preço; sem link, leiloeiro, órgão) | `data/lotes.json` (completo) |
+| Preço do carro / desconto | visível | visível |
+| Custo total da operação | 🔒 | no card (ⓘ mostra a composição) + simulador de lance |
 | Clique no carro | abre o plano ("Quero assinar pelo WhatsApp") | abre o anúncio original |
-| Filtro/ordem por preço | bloqueado 🔒 | liberado |
-| WhatsApp do Rubens | só pra assinar | em cada card + botão flutuante, com mensagem pronta citando o carro |
+| Filtro por leiloeiro | escondido | liberado |
+| WhatsApp do Rubens | só pra assinar | em cada card, no simulador e botão flutuante, com mensagem pronta |
 
-Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (+55 11 94758-1678), `CONFIG.precoPlano` (placeholder R$ 49,90/mês).
+**Custo total** = lance + 5% comissão do leiloeiro + R$ 115 oficial de justiça + R$ 80 carta de arrematação
++ ~R$ 600 transferência + R$ 2.700 consultoria (1ª). Valores em `CONFIG.custos`.
+
+Sucatas inservíveis (só podem ir pra reciclagem) são descartadas na coleta.
+
+Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (+55 11 94758-1678), `CONFIG.precoPlano` (placeholder R$ 49,90/mês), `CONFIG.custos`.
 Login de teste: `assinante@teste.com` / `leilao2026`.
 
 ⚠️ **O login atual é simulado no navegador.** Serve pra demonstrar, mas não protege nada: `data/lotes.json` continua
