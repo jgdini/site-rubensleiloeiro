@@ -28,7 +28,6 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 | Leilão VIP | POST `/agenda?handler=pesquisarEventos` com segmento Veículos | etiqueta "Judicial" do card; o `classify.js` tira motos/caminhões |
 | D1Lance | JSON do Livewire (`wire:initial-data`) em `/navegar-pelo-mapa?tipo_filtro=veiculos` | campo `modalidade = JUDICIAL` |
 | E-Leilões | API `/api/categorias/automoveis?judicial=1` (plataforma Suporte Leilões) | filtro `judicial=1` da própria API |
-
 | Credenciados TJSP (plataforma "Sua Plataforma de Leilão") | `GET /busca/` (token) + `POST /ApiEngine/GetBusca/1/60/0`, em 28 sites da lista do Rubens | campo `LabelModalidade` = Judicial; traz a **comissão do edital** (usada no custo total) |
 
 ### Lista TJSP do Rubens (`Arquivos/LEILAO TJSP.htm.html`)
