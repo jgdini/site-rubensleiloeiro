@@ -72,7 +72,7 @@ plataforma Suporte Leilões, como o E-Leilões.
 Sucatas inservíveis (só podem ir pra reciclagem) são descartadas na coleta.
 
 Configuração no topo de `assets/app.js`: `CONFIG.whatsapp` (+55 11 94758-1678), `CONFIG.precoPlano` (placeholder R$ 49,90/mês), `CONFIG.custos`.
-Login de teste: `assinante@teste.com` / `leilao2026`.
+Login de teste: ver `USUARIOS_TESTE` em `assets/app.js` (não exibido no site).
 
 ⚠️ **O login atual é simulado no navegador.** Serve pra demonstrar, mas não protege nada: `data/lotes.json` continua
 acessível pra quem souber o endereço. Na versão definitiva:
