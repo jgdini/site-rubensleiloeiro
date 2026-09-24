@@ -18,8 +18,7 @@
     radial-gradient(90% 70% at 100% 100%, rgb(225 48 108 / 0.22), transparent 60%),
     linear-gradient(160deg, #1b1f27, #101318);
   display: grid; place-items: center; }
-.rb-retrato__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.rb-retrato__foto span { font: italic 400 clamp(96px, 14vw, 170px) / 1 'Instrument Serif', Georgia, serif; letter-spacing: -0.04em; color: rgb(255 255 255 / 0.92); }
+.rb-retrato__foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 28% 30%; }
 .rb-retrato__foto::after { content: ''; position: absolute; inset: 14px; border-radius: 14px; border: 1px solid rgb(255 255 255 / 0.08); pointer-events: none; }
 .rb-retrato figcaption { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 14px; font-size: 14px; }
 .rb-retrato figcaption a { display: inline-flex; align-items: center; gap: 6px; color: var(--texto-2); font-weight: 600; }
@@ -27,7 +26,8 @@
 .rb-retrato figcaption svg { width: 18px; height: 18px; fill: none; stroke: #e1306c; stroke-width: 2; }
 
 /* Intro */
-.rb-intro { padding: 40px 0 8px; border-top: 1px solid var(--linha); }
+.rb-intro { display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: center; padding: 48px 0 8px; border-top: 1px solid var(--linha); }
+.rb-intro__foto { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 62% 25%; border-radius: 18px; border: 1px solid var(--linha); }
 .rb-intro p { max-width: 900px; margin: 0; font-size: clamp(20px, 2.3vw, 27px); line-height: 1.45; letter-spacing: -0.01em; color: var(--texto-2); }
 .rb-intro b { color: var(--texto); font-weight: 650; }
 
@@ -46,11 +46,20 @@
 .rb-card p { margin: 0; color: var(--texto-2); font-size: 14.5px; }
 
 .rb-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-left: 110px; }
-.rb-linha__item { padding: 26px; border-radius: 16px; border: 1px solid var(--linha); background: var(--card); }
+.rb-linha__item { overflow: hidden; border-radius: 16px; border: 1px solid var(--linha); background: var(--card); }
+.rb-linha__txt { padding: 24px 26px 26px; }
+.rb-linha__foto { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
+.rb-linha__foto--painel { object-position: 50% 32%; }
+.rb-linha__foto--congresso { object-position: 50% 38%; }
 .rb-linha__item h3 { margin: 0 0 10px; font-size: 20px; letter-spacing: -0.015em; line-height: 1.2; }
 .rb-linha__item p { margin: 0; color: var(--texto-2); font-size: 15px; }
 .rb-linha__item--destaque { border-color: rgb(255 90 31 / 0.45); background: linear-gradient(150deg, rgb(255 90 31 / 0.12), var(--card) 60%); }
 .rb-tag { display: inline-block; margin-bottom: 12px; padding: 3px 9px; border-radius: 99px; background: var(--laranja); color: #fff; font: 500 11px 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Faixa de foto */
+.rb-faixa { margin: 0 0 0 110px; }
+.rb-faixa img { display: block; width: 100%; height: auto; aspect-ratio: 21 / 9; object-fit: cover; object-position: 50% 35%; border-radius: 18px; border: 1px solid var(--linha); }
+.rb-faixa figcaption { margin-top: 10px; font-size: 13px; color: var(--texto-3); }
 
 /* Citação */
 .rb-citacao { margin: 48px 0 0 110px; padding: 36px 40px; border-radius: 20px; border: 1px solid var(--linha); background: var(--bg-2); position: relative; }
@@ -68,6 +77,10 @@
   .rb-hero__grid { grid-template-columns: 1fr; gap: 32px; }
   .rb-retrato { max-width: 380px; }
   .rb-cards, .rb-linha { grid-template-columns: 1fr; margin-left: 0; }
+  .rb-faixa { margin-left: 0; }
+  .rb-faixa img { aspect-ratio: 16 / 10; }
+  .rb-intro { grid-template-columns: 1fr; gap: 28px; }
+  .rb-intro__foto { max-width: 380px; }
   .rb-citacao { margin-left: 0; margin-top: 44px; }
   .rb-secao__cab { grid-template-columns: 1fr; gap: 12px; }
   .rb-num { width: 60px; }
