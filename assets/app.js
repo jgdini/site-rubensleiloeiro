@@ -1,4 +1,4 @@
-const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71' };
+const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9' };
 const POR_PAGINA = 36;
 
 const $ = (s) => document.querySelector(s);
@@ -156,7 +156,10 @@ async function iniciar() {
   }
   nomesFonte = Object.fromEntries(dados.fontes.map((f) => [f.id, f.nome]));
 
-  $('#meta').innerHTML = `<span class="pulso"></span>${dados.total.toLocaleString('pt-BR')} carros · ${dados.fontes.length} leiloeiros · atualizado ${relativo(dados.geradoEm)}`;
+  // Leiloeiros distintos: fontes diretas + os que publicam via portal (campo leiloeiroSite).
+  const leiloeiros = new Set(dados.fontes.filter((f) => f.id !== 'leiloesjudiciais').map((f) => f.id));
+  dados.lotes.forEach((l) => l.leiloeiroSite && leiloeiros.add(l.leiloeiroSite));
+  $('#meta').innerHTML = `<span class="pulso"></span>${dados.total.toLocaleString('pt-BR')} carros · ${leiloeiros.size} leiloeiros oficiais · atualizado ${relativo(dados.geradoEm)}`;
 
   const fontesEl = $('#fontes');
   for (const f of dados.fontes) {

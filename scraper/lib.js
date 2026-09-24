@@ -105,6 +105,8 @@ export function limparTitulo(s = '') {
       .replace(/\b(marcas?|modelos?)\s*:?\s*/gi, '')
       .replace(/,?\s*-?\s*\bano\b\s*[\d/ ]+$/i, '')
       .replace(/\bGM\s*-\s*CHEVROLET\b/i, 'Chevrolet')
+      .replace(/^(I|IMP)\s*\/\s*/i, '')
+      .replace(/\b([A-Za-z]{2,})\s*\/\s*(?=[A-Za-z])/g, '$1 ') // "VW/Golf" -> "VW Golf"
       .replace(/\s*,\s*/g, ' ')
       .replace(/\bplacas?\s+[a-z]{3}-?\d[a-z0-9]\d{2}\b.*$/i, '')
       // só pares "2012 2013" / "fab/mod 2009/2010" (não corta modelos como "Peugeot 2008")

@@ -8,9 +8,11 @@ import * as leilaovip from './sources/leilaovip.js';
 import * as megaleiloes from './sources/megaleiloes.js';
 import * as lancejudicial from './sources/lancejudicial.js';
 import * as leiloesjudiciais from './sources/leiloesjudiciais.js';
+import * as d1lance from './sources/d1lance.js';
+import * as eleiloes from './sources/eleiloes.js';
 
 // Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
-const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip];
+const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes];
 const soJudicial = (l) => l.natureza === 'Judicial';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');

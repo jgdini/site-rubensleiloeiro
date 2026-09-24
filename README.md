@@ -25,11 +25,19 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 | Mega Leilões | HTML de `/veiculos/carros?pagina=N` | etiqueta "Judicial" do card |
 | Lance Judicial (Grupo Lance) | HTML de `grupolance.com.br/veiculos/carros?pagina=N` | etiqueta "Judicial" do card |
 | Leilão VIP | POST `/agenda?handler=pesquisarEventos` com segmento Veículos | etiqueta "Judicial" do card; o `classify.js` tira motos/caminhões |
+| D1Lance | JSON do Livewire (`wire:initial-data`) em `/navegar-pelo-mapa?tipo_filtro=veiculos` | campo `modalidade = JUDICIAL` |
+| E-Leilões | API `/api/categorias/automoveis?judicial=1` (plataforma Suporte Leilões) | filtro `judicial=1` da própria API |
+
+O portal Leilões Judiciais publica lotes de ~30 leiloeiros oficiais (Deonizia, JR, Rio Leilões, Rigolon, Fidelis…),
+então o site cobre ~35 leiloeiros no total. O campo `leiloeiroSite` guarda a origem.
 
 `scraper/sources/leilo.js` existe mas está **desligado**, porque o Leilo é 100% extrajudicial.
 
 Avaliados e **deixados de fora** por bloquearem acesso automatizado (403/Cloudflare): Sodré Santoro, Superbid, MGL, Milan.
-Candidatos judiciais para as próximas fontes: D1Lance, E-Leilões, WebLeilões, Fidalgo, Viva Leilões.
+Avaliados em 24/09/2026 e ainda não incluídos (poucos carros ou sem marcação judicial no card):
+WebLeilões (9 carros), Klöckner (0), Leilão Brasil, Hasta Pública, Fidalgo, Viva Leilões, Casa Reis, Santa Maria,
+Destak, CCJ, Lance Total, Leilões PB, Bueno Leilões. Klöckner, Bueno, Leilões PB e Leilão Brasil usam a
+plataforma Suporte Leilões, como o E-Leilões.
 
 ## Rodar localmente
 

@@ -51,6 +51,7 @@ function mapear(l) {
       ? titulo(l.nm_titulo_leilao.replace(/^(LEIL[AÃ]O D[AOE]S?\s+|ALIENA[CÇ][AÃ]O\s+(ANTECIPADA|DEFINITIVA)?\s*D[AOE]S?\s+|UNIFICADO\s+)/i, '').trim()).slice(0, 70)
       : null,
     leiloeiro: l.nm_leiloeiro || null,
+    leiloeiroSite: l.nm_url_leiloeiro ? l.nm_url_leiloeiro.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : null,
     lotes: 1,
     codigo: `#${l.lote_id}`,
     imagem: foto ? `${foto.nm_path_incompleto}640x480/${foto.nm_path}` : null,
