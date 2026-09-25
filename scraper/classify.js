@@ -35,12 +35,17 @@ const MODELOS_CARRO = [
 
 // Nunca entram, mesmo citando modelo de carro (não é um carro inteiro/rodando).
 const BLOQUEIO_FORTE = [
+  // ônibus, marcas de moto, caminhões Mercedes linha L, imóveis
+  /\bONIBUS\b/, /\bMICRO-?ONIBUS\b/, /\bKASINSKI\b/, /\bDAFRA\b/, /\bSHINERAY\b/, /\bTRAXX\b/, /\bHAOJUE\b/,
+  /\bMERCEDES[- ]?BENZ L\s?1\d{3}\b/, /\bMB L\s?1\d{3}\b/, /\bAPTO\b/, /\bAPARTAMENTO\b/,
   // modelos de moto inequívocos (às vezes aparecem em categorias "Carros")
   /\bNXR\b/, /\bBROS\b/, /\bCG\s?1\d{2}\b/, /\bBIZ\b/, /\bXRE\b/, /\bYBR\b/, /\bCBR\b/, /\bNMAX\b/, /\bPCX\b/, /\bXTZ\b/, /\bFACTOR\b/, /\bBURGMAN\b/, /\bPOP\s?1[01]0\b/, /\bCB\s?\d{3}\b/,
 /\bREBOQUES?\b/, /\bSEMI-?REBOQUE\b/, /\bCARGO\s?\d{3,4}/, /\b\d-?EIXOS\b/, /\bCAMINH(AO|ÃO|OES|ÕES)\b/, /\bMOTOCICLETA\b/,/\bCARCA(CA|ÇA)S?\b/, /\bSOMENTE LATARIA\b/, /\bTRAILERS?\b/, /\bSUCATAS?\b/, /\bPE(CAS|ÇAS)\b/, /\bMOTOR(ES)? (AVULSO|DE)\b/];
 
 function norm(s) {
-  return ' ' + s.toUpperCase().replace(/[\/,()]/g, ' ').replace(/\s+/g, ' ') + ' ';
+  // sem acentos: "ÔNIBUS" -> "ONIBUS", "CAMINHÃO" -> "CAMINHAO" (o \b do JS não enxerga letras acentuadas)
+  const semAcento = s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return ' ' + semAcento.toUpperCase().replace(/[\/,()]/g, ' ').replace(/\s+/g, ' ') + ' ';
 }
 
 export function temModeloCarro(texto) {

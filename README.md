@@ -29,6 +29,7 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 | D1Lance | JSON do Livewire (`wire:initial-data`) em `/navegar-pelo-mapa?tipo_filtro=veiculos` | campo `modalidade = JUDICIAL` |
 | E-Leilões | API `/api/categorias/automoveis?judicial=1` (plataforma Suporte Leilões) | filtro `judicial=1` da própria API |
 | Credenciados TJSP (plataforma "Sua Plataforma de Leilão") | `GET /busca/` (token) + `POST /ApiEngine/GetBusca/1/60/0`, em 28 sites da lista do Rubens | campo `LabelModalidade` = Judicial; traz a **comissão do edital** (usada no custo total) |
+| Leiloeiros SP (plataforma B) | `/lotes/search?tipo=veiculo&comitente_id=X` + `/item/{id}/detalhes` em 24 sites | comitente judicial + "LEILÃO JUDICIAL" na página do lote |
 
 ### Lista TJSP do Rubens (`Arquivos/LEILAO TJSP.htm.html`)
 
@@ -36,9 +37,19 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 - **Integrados:** 28 sites da "Sua Plataforma de Leilão" (`scraper/sources/plataforma-spl.js`, lista em `SITES`);
   18 deles tinham carros judiciais abertos no dia (Legis, Sublime, Leilão Oficial Online, Destak, Portal Bayit, Casa Reis…).
   Os ~10 da rede Leilões Judiciais (Rigolon, Gilson, Giordano, Planalto, Fábio…) já entram pelo portal.
-- **Plataforma B** (cloudfront `d1mdxpzu4pgcoh`, 37 sites: Lotti, 3 Torres, Tribuna, Machado…): busca em
-  `/lotes/search?tipo=veiculo&categoria_id=N`, mas a data/cidade só está na página de cada lote. Os maiores
-  (Lance Leilões 1.469, Rico 1.323, Machado 225) são pátio/DETRAN; os judiciais têm 1–9 carros cada. **Próximo passo.**
+- **Plataforma B** (cloudfront `d1mdxpzu4pgcoh`) — **integrada em 25/09/2026** (`scraper/sources/plataforma-b.js`, fonte
+  "Leiloeiros SP"): lê os comitentes judiciais de cada site (`comitente_id` na busca `/lotes/search?tipo=veiculo`),
+  lista os veículos e abre `/item/{id}/detalhes` de cada um (datas/valores das praças, comissão, vara, foto).
+  24 sites; ~52 carros de 15 leiloeiros (Daniel Garcia, Leiloeiro Online, Calil, Leilões Gold, Tribuna, Ápice…).
+  Lance Leilões e Rico só têm DETRAN/prefeituras, então não entram.
+
+### Lista `Arquivos/leiloeiros sp.txt` (25/09/2026)
+
+87 sites únicos: 18 já cobertos, 14 da plataforma B (integrados), Confiança Leilões = espelho do E-Leilões.
+Pendentes: Suporte Leilões em HTML (só WebLeilões tem carros, ~11), "Gestão de Leilões" (Avelar, Granado, Hastas,
+Fidalgo, Central Judicial, Vinco, Lance no Leilão), tema Valland/Hasta Pública, tema Leilão Net/Zalli/WSP, Sato Judicial.
+Bloqueiam robô: Sold/Superbid, Sodré Santoro, Milan, R. Moysés, Alexandridis, Gaia, OMC, Pegoraro.
+Fora do ar/sem DNS: 3R Leilões, Arremate Leilão, Projuleiloes. Portal Zuk = só imóveis.
 - **Outras plataformas ainda não integradas:** Suporte Leilões (14 sites), Bomvalor (7), Plataforma Leiloar (5), leilao.pro, leilotech.
 - **Bloqueiam robô (Cloudflare/403):** Sodré Santoro, Sold, MGL, Milan, Leje e ~20 outros menores.
 

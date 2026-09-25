@@ -35,7 +35,7 @@ function calcularCustos(valor, comissaoLote) {
 const USUARIOS_TESTE = [{ email: 'assinante@teste.com', senha: 'leilao2026', nome: 'Cliente Teste' }];
 // ================================================
 
-const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9', tjsp: '#a29bfe' };
+const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9', tjsp: '#a29bfe', platb: '#7fb3ff' };
 const POR_PAGINA = 36;
 const CHAVE_SESSAO = 'radar-sessao';
 
@@ -150,7 +150,7 @@ function card(l) {
     img.onerror = () => foto.classList.add('ok', 'sem');
   } else foto.classList.add('ok', 'sem');
 
-  el.querySelector('.card__fonte').textContent = pro ? (l.fonte === 'tjsp' && l.leiloeiro) || nomesFonte[l.fonte] : 'Leilão judicial';
+  el.querySelector('.card__fonte').textContent = pro ? (['tjsp', 'platb'].includes(l.fonte) && l.leiloeiro) || nomesFonte[l.fonte] : 'Leilão judicial';
   const t = tempoRestante(l.encerra);
   const tempo = el.querySelector('.card__tempo');
   tempo.textContent = t.txt;
@@ -387,7 +387,7 @@ async function carregarDados() {
   // Coleta é diária: esconde o que já encerrou desde então (tolerância de 1h).
   dados.lotes = dados.lotes.filter((l) => !l.encerra || new Date(l.encerra) > Date.now() - 36e5);
   if (!dados.leiloeiros) {
-    const s = new Set(dados.fontes.filter((f) => !['leiloesjudiciais', 'tjsp'].includes(f.id)).map((f) => f.id));
+    const s = new Set(dados.fontes.filter((f) => !['leiloesjudiciais', 'tjsp', 'platb'].includes(f.id)).map((f) => f.id));
     dados.lotes.forEach((l) => l.leiloeiroSite && s.add(l.leiloeiroSite));
     dados.leiloeiros = s.size;
   }
