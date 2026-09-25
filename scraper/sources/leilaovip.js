@@ -3,7 +3,7 @@
 // (HTML parcial, 24 cards por página). Precisa do cookie de "canal" que o site
 // define no primeiro acesso.
 import { get, clean, decode, brl, dataBR, marcaDe, anoDe, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.leilaovip.com.br';
 export const fonte = { id: 'leilaovip', nome: 'Leilão VIP', site: BASE };
@@ -95,8 +95,9 @@ export async function coletar({ maxPaginas = 15 } = {}) {
       const it = parseCard(c);
       if (!it) continue;
       if (/encerrad|cancelad|suspens|vendido|arrematad/i.test(it.status || '')) continue;
-      if (!ehCarro(it.tituloOriginal)) continue;
-      itens.push(it);
+      const tipo = tipoVeiculo(it.tituloOriginal);
+      if (!tipo) continue;
+      itens.push({ ...it, tipo });
     }
     if (!/pageNumber=\d+[^"]*"[^>]*>\s*(&gt;|›|»|Próx)/i.test(html) && !html.includes(`pageNumber=${p + 1}`)) break;
   }

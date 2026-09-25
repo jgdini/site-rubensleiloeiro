@@ -2,7 +2,7 @@
 // Os lotes vêm como JSON no atributo wire:initial-data do componente "listagem-de-leiloes",
 // com campo modalidade (JUDICIAL/EXTRAJUDICIAL) e praças.
 import { get, decode, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://d1lance.com.br';
 const MIDIA = 'https://midia.d1lance.com.br/public/';
@@ -65,7 +65,7 @@ export async function coletar() {
   if (!attr) throw new Error('componente listagem-de-leiloes não encontrado');
   const dados = JSON.parse(decode(attr)).serverMemo.data;
   return (dados.lotes || [])
-    .filter((l) => l.categoria_nome === 'Carros' && ['ABERTO_PARA_LANCES', 'ON_LINE'].includes(l.status_leilao))
-    .filter((l) => ehCarro(l.subtitulo_do_lote || '', { categoriaCarro: true }))
-    .map(mapear);
+    .filter((l) => ['ABERTO_PARA_LANCES', 'ON_LINE'].includes(l.status_leilao))
+    .map((l) => ({ ...mapear(l), tipo: tipoVeiculo(l.subtitulo_do_lote || '', l.categoria_nome || '') }))
+    .filter((l) => l.tipo);
 }

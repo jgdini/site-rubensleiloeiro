@@ -1,6 +1,6 @@
 // Mega Leilões — categoria /veiculos/carros (HTML renderizado no servidor).
 import { get, clean, brl, dataBR, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.megaleiloes.com.br';
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
@@ -9,7 +9,7 @@ export const fonte ={ id: 'megaleiloes', nome: 'Mega Leilões', site: BASE };
 function parseCard(key, html) {
   const href = html.match(/class="card-title" href="([^"?]+)/)?.[1];
   if (!href) return null;
-  const nome = clean(html.match(/class="card-title"[^>]*>([\s\S]*?)<\/a>/)?.[1] || '').replace(/^(Direitos sobre )?Carro\s+/i, (m, d) => (d ? 'Direitos sobre ' : ''));
+  const nome = clean(html.match(/class="card-title"[^>]*>([\s\S]*?)<\/a>/)?.[1] || '').replace(/^(Direitos sobre )?(Carro|Moto(cicleta)?|Caminh[aã]o|[ÔO]nibus|Barco|Lancha|Aeronave)\s+/i, (m, d) => (d ? 'Direitos sobre ' : ''));
   const local = clean(html.match(/class="card-locality"[^>]*>([\s\S]*?)<\/a>/)?.[1] || '');
   const [cidade, uf] = local.split(/,\s*/);
   const img = html.match(/data-bg="([^"]+)"/)?.[1];
@@ -52,11 +52,13 @@ function parseCard(key, html) {
   };
 }
 
+const CATEGORIAS = ['carros', 'motos', 'caminhoes', 'onibus', 'barcos', 'aeronaves'];
+
 export async function coletar({ maxPaginas = 20 } = {}) {
   const itens = [];
   const vistos = new Set();
-  for (let p = 1; p <= maxPaginas; p++) {
-    const html = await (await get(`${BASE}/veiculos/carros?pagina=${p}`)).text();
+  for (const cat of CATEGORIAS) for (let p = 1; p <= maxPaginas; p++) {
+    const html = await (await get(`${BASE}/veiculos/${cat}?pagina=${p}`)).text();
     const blocos = [...html.matchAll(/<div class="col-sm-6 col-md-4 col-lg-3" data-key="(\d+)">([\s\S]*?)(?=<div class="col-sm-6 col-md-4 col-lg-3" data-key=|<div class="text-center pagination-bottom|$)/g)];
     let novos = 0;
     for (const [, key, bloco] of blocos) {
@@ -66,8 +68,9 @@ export async function coletar({ maxPaginas = 20 } = {}) {
       if (!it) continue;
       novos++;
       if (/encerrad|cancelad|suspens|vendido|arrematad/i.test(it.status || '')) continue;
-      if (!ehCarro(it.tituloOriginal, { categoriaCarro: true })) continue;
-      itens.push(it);
+      const tipo = tipoVeiculo(it.tituloOriginal, cat);
+      if (!tipo) continue;
+      itens.push({ ...it, tipo });
     }
     if (!novos || !html.includes(`pagina=${p + 1}`)) break;
   }

@@ -3,7 +3,7 @@
 //   GET /item/{id}/detalhes                                              -> datas das praças, valores, local, foto
 // Só entram comitentes judiciais (Tribunal/Justiça/Vara…); pátios de DETRAN/prefeituras ficam de fora.
 import { get, clean, decode, brl, dataBR, marcaDe, anoDe, titulo, limparTitulo, sleep } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 export const fonte = { id: 'platb', nome: 'Leiloeiros SP', site: 'https://www.tjsp.jus.br' };
 
@@ -178,8 +178,9 @@ async function coletarSite(dom) {
       const { judicial, lote } = await detalhe(dom, url, base);
       if (!judicial) continue;
       if (/encerrad|arrematad|vendid|suspens|cancelad|retirad|sem licitante/i.test(lote.status || '')) continue;
-      if (!ehCarro(lote.tituloOriginal, { categoriaCarro: false })) continue;
-      itens.push(lote);
+      const tipo = tipoVeiculo(lote.tituloOriginal);
+      if (!tipo) continue;
+      itens.push({ ...lote, tipo });
     } catch {}
   }
   return itens;

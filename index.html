@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Radar de Leilões — carros de leilão judicial num só lugar</title>
-  <meta name="description" content="Carros em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis." />
+  <title>Radar de Leilões — veículos de leilão judicial num só lugar</title>
+  <meta name="description" content="Carros, motos, caminhões, tratores e outros veículos em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis." />
   <meta name="referrer" content="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,7 +22,7 @@
         <span>Radar<b>de Leilões</b></span>
       </a>
       <nav class="menu" aria-label="Principal">
-        <a href="./" aria-current="page">Carros</a>
+        <a href="./" aria-current="page">Veículos</a>
         <a href="rubens.html" class="menu__rubens"><img src="assets/rubens/avatar.jpg" alt="" width="26" height="26" /><span class="menu__longo">Quem é o </span>Rubens</a>
       </nav>
       <div class="topo__dir">
@@ -39,18 +39,18 @@
   <section class="hero">
     <div class="wrap">
       <p class="hero__eyebrow">Leilões judiciais de veículos</p>
-      <h1>Carros de leilão judicial.<br /><span>Uma busca só.</span></h1>
-      <p class="hero__sub">Reunimos os carros levados a leilão pela Justiça, publicados pelos leiloeiros oficiais de todo o país. Encontre, compare e arremate com assessoria.</p>
+      <h1>Veículos de leilão judicial.<br /><span>Uma busca só.</span></h1>
+      <p class="hero__sub">Carros, motos, caminhões, tratores e muito mais: reunimos os veículos levados a leilão pela Justiça, publicados pelos leiloeiros oficiais de todo o país. Encontre, compare e arremate com assessoria.</p>
       <label class="busca">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-        <input id="q" type="search" placeholder="Busque por marca, modelo ou cidade — ex.: Onix, Hilux, Curitiba" autocomplete="off" />
+        <input id="q" type="search" placeholder="Busque por marca, modelo ou cidade — ex.: Hilux, CG 160, Scania, Curitiba" autocomplete="off" />
       </label>
       <div class="fontes" id="fontes" aria-label="Leiloeiros"></div>
 
       <div class="plano" id="plano" hidden>
         <div class="plano__txt">
           <span class="plano__selo">Vitrine gratuita</span>
-          <p><b>O preço do carro não é o preço final.</b> Assinantes veem o custo total da operação (comissão, taxas do fórum, transferência e assessoria), simulam o próprio lance, acessam o leilão e falam direto com o Rubens pra arrematar com segurança.</p>
+          <p><b>O preço do lance não é o preço final.</b> Assinantes veem o custo total da operação (comissão, taxas do fórum, transferência e assessoria), simulam o próprio lance, acessam o leilão e falam direto com o Rubens pra arrematar com segurança.</p>
         </div>
         <div class="plano__acoes">
           <button type="button" class="btn btn--primario" data-acao="assinar">Quero assinar</button>
@@ -62,6 +62,7 @@
 
   <main class="wrap">
     <div class="filtros" id="filtros">
+      <select id="f-tipo" aria-label="Tipo de veículo"><option value="">Todos os veículos</option></select>
       <select id="f-marca" aria-label="Marca"><option value="">Todas as marcas</option></select>
       <select id="f-uf" aria-label="Estado"><option value="">Todo o Brasil</option></select>
       <select id="f-preco" aria-label="Preço máximo">
@@ -91,8 +92,8 @@
 
     <p class="contagem" id="contagem" aria-live="polite"></p>
     <div class="grade" id="grade"></div>
-    <div class="mais"><button id="mais" type="button" hidden>Mostrar mais carros</button></div>
-    <p class="vazio" id="vazio" hidden>Nenhum carro encontrado com esses filtros. Tente ampliar a busca.</p>
+    <div class="mais"><button id="mais" type="button" hidden>Mostrar mais veículos</button></div>
+    <p class="vazio" id="vazio" hidden>Nenhum veículo encontrado com esses filtros. Tente ampliar a busca.</p>
   </main>
 
   <footer class="rodape">
@@ -132,7 +133,7 @@
     <form method="dialog" class="modal__caixa" id="form-login">
       <button class="modal__fechar" value="cancelar" formnovalidate aria-label="Fechar">×</button>
       <h2 id="login-titulo">Entrar</h2>
-      <p class="modal__sub">Área do assinante: custo total de cada carro, simulador de lance, links dos leilões e contato direto com o Rubens.</p>
+      <p class="modal__sub">Área do assinante: custo total de cada veículo, simulador de lance, links dos leilões e contato direto com o Rubens.</p>
       <label>E-mail<input type="email" name="email" autocomplete="username" required /></label>
       <label>Senha<input type="password" name="senha" autocomplete="current-password" required /></label>
       <p class="modal__erro" id="login-erro" hidden>E-mail ou senha incorretos.</p>
@@ -146,10 +147,10 @@
     <div class="modal__caixa">
       <form method="dialog"><button class="modal__fechar" aria-label="Fechar">×</button></form>
       <span class="plano__selo">Assinatura</span>
-      <h2 id="plano-titulo">Saiba quanto o carro custa de verdade</h2>
+      <h2 id="plano-titulo">Saiba quanto o veículo custa de verdade</h2>
       <div class="modal__carro" id="plano-carro" hidden></div>
       <ul class="beneficios">
-        <li>Custo total da operação calculado em cada carro: lance + comissão + taxas + transferência</li>
+        <li>Custo total da operação calculado em cada veículo: lance + comissão + taxas + transferência</li>
         <li>Simulador de lance: veja o total antes de disputar</li>
         <li>Link direto pro edital e pra página do leilão</li>
         <li>Assessoria do Rubens no WhatsApp do lance à transferência</li>

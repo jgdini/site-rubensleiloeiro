@@ -3,7 +3,7 @@
 //   POST /leilao-de-imoveis/mais       -> próximos 30 (count_imovel_zuk = quantos já vieram)
 // O comitente vem no alt da foto ("... - Tribunal de Justiça do Estado de São Paulo | Z37188").
 import { get, clean, decode, brl, dataBR, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.portalzuk.com.br';
 const PAGINA = `${BASE}/leilao-de-veiculos`;
@@ -100,6 +100,6 @@ export async function coletar({ max = 600 } = {}) {
   }
 
   return cards
-    .map(mapear)
-    .filter((l) => ehCarro(l.tituloOriginal, { categoriaCarro: false }));
+    .map((c) => ({ ...mapear(c), tipo: tipoVeiculo(c.desc, c.desc.split(/[,:]/)[0]) }))
+    .filter((l) => l.tipo);
 }

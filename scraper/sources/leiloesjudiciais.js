@@ -3,7 +3,7 @@
 // O portal mistura processos judiciais com leilões administrativos (DETRAN etc.); aqui só entram
 // lotes cujo leilão/descrição indicam origem judicial.
 import { get, anoDe, marcaDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.leiloesjudiciais.com.br';
 const API = 'https://api.leiloesjudiciais.com.br/core/api/get-lotes';
@@ -66,7 +66,7 @@ export async function coletar({ porPagina = 100, maxPaginas = 30 } = {}) {
   for (let pg = 1; pg <= maxPaginas; pg++) {
     const qs = new URLSearchParams({
       pg, qtd_por_pagina: porPagina, tipo: 1, estado: 0, cidade: 0, valor_min: 0, valor_max: 0, palavra_chave: '',
-      leilao_id: 0, lote_id: 0, ordenacao: 'max', ehvitrinesaladisputa: false, faixa_desconto: 0, com_foto: 0, categoria: 4,
+      leilao_id: 0, lote_id: 0, ordenacao: 'max', ehvitrinesaladisputa: false, faixa_desconto: 0, com_foto: 0, categoria: 0,
     });
     const res = await get(`${API}?${qs}`, { method: 'POST', headers: { Origin: BASE, Referer: BASE + '/' } });
     const j = await res.json();
@@ -76,8 +76,9 @@ export async function coletar({ porPagina = 100, maxPaginas = 30 } = {}) {
       // Sucata inservível (vai pra prensa, só empresas de reciclagem compram) — não é carro pro cliente.
       const extras = (l.usuariovistorialotexstatusliberacaoextra || []).map((x) => x.nm).join(' ');
       if (/SUCATA/i.test(`${extras} ${l.nm_titulo_lote} ${semHtml(l.nm_descricao)}`)) continue;
-      if (!ehCarro(l.nm_titulo_lote, { categoriaCarro: true })) continue;
-      itens.push(mapear(l));
+      const tipo = tipoVeiculo(l.nm_titulo_lote || '', l.nm_subcategoria || '');
+      if (!tipo) continue;
+      itens.push({ ...mapear(l), tipo });
     }
     if (!j.items?.length || pg >= (j.totalPages || 1)) break;
   }

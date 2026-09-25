@@ -4,7 +4,7 @@
 //   POST /ApiEngine/GetBusca/1/{N}/0     -> N funciona como "rolagem": devolve os N×8 primeiros lotes
 // Cada lote traz modalidade (Judicial/Extrajudicial), comissão do leiloeiro, avaliação, praças e fotos.
 import { get, sleep, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 export const fonte = { id: 'tjsp', nome: 'Credenciados TJSP', site: 'https://www.tjsp.jus.br/auxiliaresjustica/auxiliarjustica/gestoresjudiciais' };
 
@@ -27,7 +27,7 @@ async function sessao(base) {
   return {
     cookie: (res.headers.getSetCookie?.() || []).map((c) => c.split(';')[0]).join('; '),
     token: html.match(/name="__RequestVerificationToken"[^>]*value="([^"]+)"/)?.[1] || '',
-    catCarros: +(html.match(/ID_Categoria=(\d+)"[^>]*>\s*Carros\s*</i)?.[1] || 66),
+    catCarros: 0, // 0 = todas as categorias; filtramos pela categoria-mãe "Veículos" de cada lote
   };
 }
 
@@ -90,7 +90,7 @@ async function coletarSite(dom) {
     QtdPorPagina: 100, SubStatus: [], ID_Leiloes_Status: [], PaginaIndex: 1, BuscaProcesso: '', NomesPartes: '', CodLeilao: '',
     TiposLeiloes: [], PracaAtual: 0, DataAbertura: '', DataEncerramento: '', Filtro: {},
   };
-  const res = await get(`${base}/ApiEngine/GetBusca/1/60/0`, {
+  const res = await get(`${base}/ApiEngine/GetBusca/1/200/0`, {
     method: 'POST',
     delay: 300,
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'X-Requested-With': 'XMLHttpRequest', __RVT: s.token, Cookie: s.cookie, Referer: `${base}/busca/` },
@@ -98,10 +98,10 @@ async function coletarSite(dom) {
   });
   const j = await res.json();
   return (j.Lotes || [])
-    .filter((l) => (l.ID_Categoria_Lote ?? s.catCarros) === s.catCarros)
+    .filter((l) => /ve[ií]culo/i.test(l.Categoria || ''))
     .filter((l) => /aberto|aguardando|online/i.test(l.GetLoteRealTime?.[0]?.Lote_SubStatus_Label || ''))
-    .map((l) => mapear(dom, base, l))
-    .filter((l) => ehCarro(`${l.tituloOriginal} ${l.titulo}`, { categoriaCarro: true }));
+    .map((l) => ({ ...mapear(dom, base, l), tipo: tipoVeiculo(`${l.Lote || ''} ${l.Leilao || ''}`, l.IconeCategoria || '') }))
+    .filter((l) => l.tipo);
 }
 
 export async function coletar() {

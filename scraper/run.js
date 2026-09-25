@@ -38,7 +38,7 @@ for (const f of FONTES) {
     const itens = (await f.coletar()).filter(soJudicial);
     lotes.push(...itens);
     fontes.push({ ...f.fonte, total: itens.length, ok: true, atualizado: new Date().toISOString() });
-    console.log(`✔ ${f.fonte.nome}: ${itens.length} carros (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+    console.log(`✔ ${f.fonte.nome}: ${itens.length} veículos (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
   } catch (e) {
     // Se uma fonte falhar, mantém os lotes dela da última coleta pra o site não ficar vazio.
     const velhos = anterior?.lotes?.filter((l) => l.fonte === f.fonte.id) || [];
@@ -69,4 +69,4 @@ await writeFile(
   path.join(path.dirname(saida), 'vitrine.json'),
   JSON.stringify({ geradoEm, total: vitrine.length, leiloeiros: leiloeiros.size, lotes: vitrine }, null, 1)
 );
-console.log(`\n${unicos.length} carros gravados em data/lotes.json (+ data/vitrine.json sem links)`);
+console.log(`\n${unicos.length} veículos gravados em data/lotes.json (+ data/vitrine.json sem links)`);

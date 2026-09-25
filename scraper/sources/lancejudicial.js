@@ -1,6 +1,6 @@
 // Lance Judicial / Grupo Lance — categoria /veiculos/carros (HTML renderizado no servidor).
 import { get, clean, brl, dataBR, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.grupolance.com.br';
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
@@ -60,11 +60,13 @@ function parseCard(key, html) {
   };
 }
 
+const CATEGORIAS = ['carros', 'motos', 'caminhoes', 'onibus', 'barcos', 'aeronaves'];
+
 export async function coletar({ maxPaginas = 20 } = {}) {
   const itens = [];
   const vistos = new Set();
-  for (let p = 1; p <= maxPaginas; p++) {
-    const html = await (await get(`${BASE}/veiculos/carros?pagina=${p}`)).text();
+  for (const cat of CATEGORIAS) for (let p = 1; p <= maxPaginas; p++) {
+    const html = await (await get(`${BASE}/veiculos/${cat}?pagina=${p}`)).text();
     const blocos = html.split(/<div class="card-item [^"]*" data-key="/).slice(1);
     let novos = 0;
     for (const b of blocos) {
@@ -75,8 +77,9 @@ export async function coletar({ maxPaginas = 20 } = {}) {
       if (!it) continue;
       novos++;
       if (/encerrad|cancelad|suspens|vendido|arrematad/i.test(it.status || '')) continue;
-      if (!ehCarro(it.tituloOriginal, { categoriaCarro: true })) continue;
-      itens.push(it);
+      const tipo = tipoVeiculo(it.tituloOriginal, cat);
+      if (!tipo) continue;
+      itens.push({ ...it, tipo });
     }
     if (!novos || !html.includes(`pagina=${p + 1}`)) break;
   }

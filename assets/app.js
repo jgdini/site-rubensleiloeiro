@@ -45,7 +45,11 @@ const km = (n) => n.toLocaleString('pt-BR') + ' km';
 const semAcento = (s) => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-const estado = { q: '', fontes: new Set(), marca: '', uf: '', preco: '', ano: '', ordem: 'encerra', mostrando: POR_PAGINA };
+const estado = { q: '', fontes: new Set(), tipo: '', marca: '', uf: '', preco: '', ano: '', ordem: 'encerra', mostrando: POR_PAGINA };
+
+// Tipos de veículo (mesmas chaves de scraper/classify.js).
+const TIPOS = { carro: 'Carros e utilitários', moto: 'Motos', caminhao: 'Caminhões', onibus: 'Ônibus e vans', maquina: 'Tratores e máquinas', reboque: 'Reboques e carretas', nautico: 'Barcos e jet skis', aeronave: 'Aeronaves' };
+const TIPO_CURTO = { moto: 'Moto', caminhao: 'Caminhão', onibus: 'Ônibus', maquina: 'Máquina', reboque: 'Reboque', nautico: 'Náutico', aeronave: 'Aeronave' };
 let dados = { lotes: [], fontes: [] };
 let nomesFonte = {};
 let sessao = null;
@@ -100,6 +104,7 @@ function filtrar() {
   const termos = semAcento(estado.q).split(/\s+/).filter(Boolean);
   const r = dados.lotes.filter((l) => {
     if (estado.fontes.size && !estado.fontes.has(l.fonte)) return false;
+    if (estado.tipo && (l.tipo || 'carro') !== estado.tipo) return false;
     if (estado.marca && l.marca !== estado.marca) return false;
     if (estado.uf && l.uf !== estado.uf) return false;
     if (estado.preco && !(preco(l) && preco(l) <= +estado.preco)) return false;
@@ -158,7 +163,7 @@ function card(l) {
   if (l.encerra) tempo.dataset.iso = l.encerra;
 
   el.querySelector('.card__titulo a').textContent = l.titulo;
-  const specs = [l.ano, l.km != null ? km(l.km) : null, localDe(l)].filter(Boolean);
+  const specs = [TIPO_CURTO[l.tipo], l.ano, l.km != null ? km(l.km) : null, localDe(l)].filter(Boolean);
   el.querySelector('.card__specs').innerHTML = specs.map((s) => `<span>${esc(s)}</span>`).join('') || '<span>Detalhes no anúncio</span>';
 
   const valor = el.querySelector('.card__valor');
@@ -196,7 +201,7 @@ function card(l) {
     } else {
       total.innerHTML = `<span class="card__total-rot">Custo total</span><span class="card__total-sem">informe o lance no simulador</span>`;
     }
-    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste carro de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${p ? (l.segundaPraca ? '2º leilão: ' : 'Valor: ') + brl(p) + ' · custo total estimado: ' + brl(calcularCustos(p, l.comissao).total) + '\n' : ''}${l.url}`;
+    const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste veículo de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${p ? (l.segundaPraca ? '2º leilão: ' : 'Valor: ') + brl(p) + ' · custo total estimado: ' + brl(calcularCustos(p, l.comissao).total) + '\n' : ''}${l.url}`;
     acoes.innerHTML =
       `<a class="btn btn--wpp btn--linha-toda" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
       `<button type="button" class="btn btn--linha" data-simular>${ICONE_CALC}Simular</button>` +
@@ -233,13 +238,13 @@ function card(l) {
 function render() {
   const lista = filtrar();
   $('#grade').replaceChildren(...lista.slice(0, estado.mostrando).map(card));
-  $('#contagem').innerHTML = `<b>${lista.length.toLocaleString('pt-BR')}</b> ${lista.length === 1 ? 'carro encontrado' : 'carros encontrados'}`;
+  $('#contagem').innerHTML = `<b>${lista.length.toLocaleString('pt-BR')}</b> ${lista.length === 1 ? 'veículo encontrado' : 'veículos encontrados'}`;
   $('#mais').hidden = lista.length <= estado.mostrando;
   $('#vazio').hidden = lista.length > 0;
 
-  const ativo = estado.q || estado.fontes.size || estado.marca || estado.uf || estado.preco || estado.ano;
+  const ativo = estado.q || estado.fontes.size || estado.tipo || estado.marca || estado.uf || estado.preco || estado.ano;
   $('#limpar').hidden = !ativo;
-  for (const [id, k] of [['#f-marca', 'marca'], ['#f-uf', 'uf'], ['#f-preco', 'preco'], ['#f-ano', 'ano']]) $(id).classList.toggle('ativo', !!estado[k]);
+  for (const [id, k] of [['#f-tipo', 'tipo'], ['#f-marca', 'marca'], ['#f-uf', 'uf'], ['#f-preco', 'preco'], ['#f-ano', 'ano']]) $(id).classList.toggle('ativo', !!estado[k]);
   document.querySelectorAll('.chip[data-fonte]').forEach((c) => c.setAttribute('aria-pressed', estado.fontes.has(c.dataset.fonte)));
   salvarURL();
 }
@@ -259,7 +264,7 @@ function salvarURL() {
   const p = new URLSearchParams();
   if (estado.q) p.set('q', estado.q);
   if (estado.fontes.size) p.set('fonte', [...estado.fontes].join(','));
-  for (const k of ['marca', 'uf', 'preco', 'ano']) if (estado[k]) p.set(k, estado[k]);
+  for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano']) if (estado[k]) p.set(k, estado[k]);
   if (estado.ordem !== 'encerra') p.set('ordem', estado.ordem);
   const qs = p.toString();
   history.replaceState(null, '', qs ? '?' + qs : location.pathname);
@@ -268,11 +273,11 @@ function lerURL() {
   const p = new URLSearchParams(location.search);
   estado.q = p.get('q') || '';
   estado.fontes = new Set((p.get('fonte') || '').split(',').filter(Boolean));
-  for (const k of ['marca', 'uf', 'preco', 'ano']) estado[k] = p.get(k) || '';
+  for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano']) estado[k] = p.get(k) || '';
   estado.ordem = p.get('ordem') || 'encerra';
   if (!premium()) estado.fontes.clear(); // leiloeiro é informação de assinante
   $('#q').value = estado.q;
-  for (const k of ['marca', 'uf', 'preco', 'ano', 'ordem']) $('#f-' + k).value = estado[k];
+  for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano', 'ordem']) $('#f-' + k).value = estado[k];
 }
 
 // ---------- Modais ----------
@@ -283,7 +288,7 @@ function abrirPlano(l) {
     box.innerHTML = `${l.imagem ? `<img src="${esc(l.imagem)}" alt="" referrerpolicy="no-referrer">` : ''}<div><b>${esc(l.titulo)}</b><span>${esc([l.ano, localDe(l)].filter(Boolean).join(' · '))}</span><span class="borrado">R$ 00.000</span></div>`;
   } else box.hidden = true;
   const msg = l
-    ? `Olá ${CONFIG.nomeContato}! Quero assinar o Radar de Leilões. Vi este carro: ${l.titulo}${l.ano ? ' ' + l.ano : ''} (${localDe(l)}).`
+    ? `Olá ${CONFIG.nomeContato}! Quero assinar o Radar de Leilões. Vi este veículo: ${l.titulo}${l.ano ? ' ' + l.ano : ''} (${localDe(l)}).`
     : `Olá ${CONFIG.nomeContato}! Quero assinar o Radar de Leilões.`;
   $('#btn-assinar-wpp').href = linkWhats(msg);
   $('#preco-plano').innerHTML = `<b>${esc(CONFIG.precoPlano.split('/')[0])}</b>${CONFIG.precoPlano.includes('/') ? ' /' + esc(CONFIG.precoPlano.split('/')[1]) : ''}`;
@@ -396,9 +401,15 @@ async function carregarDados() {
 async function trocarModo() {
   document.body.classList.toggle('modo-pro', premium());
   await carregarDados();
-  $('#meta').innerHTML = `<span class="pulso"></span>${dados.lotes.length.toLocaleString('pt-BR')} carros · ${dados.leiloeiros} leiloeiros · atualizado ${relativo(dados.geradoEm)}`;
+  $('#meta').innerHTML = `<span class="pulso"></span>${dados.lotes.length.toLocaleString('pt-BR')} veículos · ${dados.leiloeiros} leiloeiros · atualizado ${relativo(dados.geradoEm)}`;
   montarConta();
   montarFontes();
+  // Tipos na ordem de TIPOS, com a contagem de cada um.
+  const nTipo = new Map();
+  dados.lotes.forEach((l) => nTipo.set(l.tipo || 'carro', (nTipo.get(l.tipo || 'carro') || 0) + 1));
+  const sTipo = $('#f-tipo');
+  sTipo.querySelectorAll('option:not([value=""])').forEach((o) => o.remove());
+  for (const [k, nome] of Object.entries(TIPOS)) if (nTipo.get(k)) sTipo.add(new Option(`${nome} (${nTipo.get(k)})`, k));
   opcoes('#f-marca', contar('marca').sort((a, b) => a[0].localeCompare(b[0])));
   opcoes('#f-uf', contar('uf').sort((a, b) => a[0].localeCompare(b[0])));
   lerURL();
@@ -454,7 +465,7 @@ async function iniciar() {
     clearTimeout(timer);
     timer = setTimeout(() => ((estado.q = e.target.value.trim()), (estado.mostrando = POR_PAGINA), render()), 150);
   });
-  for (const k of ['marca', 'uf', 'preco', 'ano', 'ordem'])
+  for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano', 'ordem'])
     $('#f-' + k).addEventListener('change', (e) => {
       const opt = e.target.selectedOptions[0];
       if (!premium() && (e.target.hasAttribute('data-premium') || opt?.hasAttribute('data-premium'))) {
@@ -468,9 +479,9 @@ async function iniciar() {
     });
   $('#mais').onclick = () => ((estado.mostrando += POR_PAGINA), render());
   $('#limpar').onclick = () => {
-    Object.assign(estado, { q: '', fontes: new Set(), marca: '', uf: '', preco: '', ano: '', mostrando: POR_PAGINA });
+    Object.assign(estado, { q: '', fontes: new Set(), tipo: '', marca: '', uf: '', preco: '', ano: '', mostrando: POR_PAGINA });
     $('#q').value = '';
-    for (const k of ['marca', 'uf', 'preco', 'ano']) $('#f-' + k).value = '';
+    for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano']) $('#f-' + k).value = '';
     render();
   };
 

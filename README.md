@@ -1,6 +1,6 @@
-# Radar de Leilões — agregador de carros de leilão judicial
+# Radar de Leilões — agregador de veículos de leilão judicial
 
-Espelha os anúncios de **carros em leilões JUDICIAIS** de vários leiloeiros num site único e filtrável.
+Espelha os anúncios de **veículos (carros, motos, caminhões, ônibus, tratores, reboques, barcos, aeronaves) em leilões JUDICIAIS** de vários leiloeiros num site único e filtrável.
 Lotes extrajudiciais (financeiras, bancos, DETRAN, seguradoras) são descartados.
 Ao clicar num anúncio, o visitante vai para a página oficial do lote no leiloeiro.
 
@@ -11,7 +11,7 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 ```
 
 - `scraper/sources/*.js`: um coletor por leiloeiro, e todos devolvem o mesmo formato de lote.
-- `scraper/classify.js`: filtro "só carros" (tira motos, caminhões, ônibus, sucata, carcaça, trailer…).
+- `scraper/classify.js`: `tipoVeiculo()` classifica o tipo (carro, moto, caminhão, ônibus, máquina, reboque, náutico, aeronave) e descarta sucata, peças, imóveis e eletrônicos.
 - `scraper/run.js`: roda tudo, remove encerrados/duplicados e grava `data/lotes.json`.
   Se uma fonte falhar, mantém os lotes dela da coleta anterior.
 - `.github/workflows/atualizar.yml`: roda a coleta **1x por dia (06:00 de Brasília)** no GitHub Actions e commita o JSON.

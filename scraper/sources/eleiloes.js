@@ -1,7 +1,7 @@
 // E-Leilões — plataforma Suporte Leilões. API JSON do próprio site:
 // GET /api/categorias/automoveis?judicial=1&limit=100&page=N
 import { get, marcaDe, anoDe, titulo, limparTitulo } from '../lib.js';
-import { ehCarro } from '../classify.js';
+import { tipoVeiculo } from '../classify.js';
 
 const BASE = 'https://www.e-leiloes.com.br';
 export const fonte = { id: 'eleiloes', nome: 'E-Leilões', site: BASE };
@@ -50,8 +50,9 @@ export async function coletar({ limite = 100, maxPaginas = 10 } = {}) {
     const r = j.results?.result || [];
     for (const l of r) {
       if (!/aberto|breve|aguard/i.test(l.status?.label || '')) continue;
-      if (!ehCarro(`${l.titulo} ${l.subcategoria?.nome || ''}`, { categoriaCarro: true })) continue;
-      itens.push(mapear(l));
+      const tipo = tipoVeiculo(l.titulo || '', l.subcategoria?.nome || '');
+      if (!tipo) continue;
+      itens.push({ ...mapear(l), tipo });
     }
     if (page * limite >= (j.results?.total || 0)) break;
   }
