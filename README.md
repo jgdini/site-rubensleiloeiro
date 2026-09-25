@@ -30,6 +30,7 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 | E-Leilões | API `/api/categorias/automoveis?judicial=1` (plataforma Suporte Leilões) | filtro `judicial=1` da própria API |
 | Credenciados TJSP (plataforma "Sua Plataforma de Leilão") | `GET /busca/` (token) + `POST /ApiEngine/GetBusca/1/60/0`, em 28 sites da lista do Rubens | campo `LabelModalidade` = Judicial; traz a **comissão do edital** (usada no custo total) |
 | Leiloeiros SP (plataforma B) | `/lotes/search?tipo=veiculo&comitente_id=X` + `/item/{id}/detalhes` em 24 sites | comitente judicial + "LEILÃO JUDICIAL" na página do lote |
+| Portal Zuk | `/leilao-de-veiculos` + `POST /leilao-de-imoveis/mais` | comitente (Tribunal de Justiça) no alt da foto |
 
 ### Lista TJSP do Rubens (`Arquivos/LEILAO TJSP.htm.html`)
 
@@ -49,7 +50,9 @@ scraper/ (Node, sem dependências)  ──►  data/lotes.json  ──►  index
 Pendentes: Suporte Leilões em HTML (só WebLeilões tem carros, ~11), "Gestão de Leilões" (Avelar, Granado, Hastas,
 Fidalgo, Central Judicial, Vinco, Lance no Leilão), tema Valland/Hasta Pública, tema Leilão Net/Zalli/WSP, Sato Judicial.
 Bloqueiam robô: Sold/Superbid, Sodré Santoro, Milan, R. Moysés, Alexandridis, Gaia, OMC, Pegoraro.
-Fora do ar/sem DNS: 3R Leilões, Arremate Leilão, Projuleiloes. Portal Zuk = só imóveis.
+Fora do ar/sem DNS: 3R Leilões, Arremate Leilão, Projuleiloes.
+**Portal Zuk** — integrado (`scraper/sources/zuk.js`): tem seção `/leilao-de-veiculos` escondida no menu de imóveis;
+~63 veículos, todos judiciais (TJSP/TJSC/TJPR), ~40 carros após o filtro. "Carregar mais" = `POST /leilao-de-imoveis/mais` (token Laravel).
 - **Outras plataformas ainda não integradas:** Suporte Leilões (14 sites), Bomvalor (7), Plataforma Leiloar (5), leilao.pro, leilotech.
 - **Bloqueiam robô (Cloudflare/403):** Sodré Santoro, Sold, MGL, Milan, Leje e ~20 outros menores.
 

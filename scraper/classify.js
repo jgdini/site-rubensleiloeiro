@@ -37,7 +37,7 @@ const MODELOS_CARRO = [
 const BLOQUEIO_FORTE = [
   // ônibus, marcas de moto, caminhões Mercedes linha L, imóveis
   /\bONIBUS\b/, /\bMICRO-?ONIBUS\b/, /\bKASINSKI\b/, /\bDAFRA\b/, /\bSHINERAY\b/, /\bTRAXX\b/, /\bHAOJUE\b/,
-  /\bMERCEDES[- ]?BENZ L\s?1\d{3}\b/, /\bMB L\s?1\d{3}\b/, /\bAPTO\b/, /\bAPARTAMENTO\b/,
+  /\bMERCEDES[- ]?BENZ L\s?1\d{3}\b/, /\bCONSTEL(LATION|\.)?/, /\bTRACTOR\b/, /\bCAVALO MECANICO\b/, /\b\d{2}-\d{3}\b/, /\bMB L\s?1\d{3}\b/, /\bAPTO\b/, /\bAPARTAMENTO\b/,
   // modelos de moto inequívocos (às vezes aparecem em categorias "Carros")
   /\bNXR\b/, /\bBROS\b/, /\bCG\s?1\d{2}\b/, /\bBIZ\b/, /\bXRE\b/, /\bYBR\b/, /\bCBR\b/, /\bNMAX\b/, /\bPCX\b/, /\bXTZ\b/, /\bFACTOR\b/, /\bBURGMAN\b/, /\bPOP\s?1[01]0\b/, /\bCB\s?\d{3}\b/,
 /\bREBOQUES?\b/, /\bSEMI-?REBOQUE\b/, /\bCARGO\s?\d{3,4}/, /\b\d-?EIXOS\b/, /\bCAMINH(AO|ÃO|OES|ÕES)\b/, /\bMOTOCICLETA\b/,/\bCARCA(CA|ÇA)S?\b/, /\bSOMENTE LATARIA\b/, /\bTRAILERS?\b/, /\bSUCATAS?\b/, /\bPE(CAS|ÇAS)\b/, /\bMOTOR(ES)? (AVULSO|DE)\b/];

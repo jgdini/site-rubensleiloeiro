@@ -35,7 +35,7 @@ function calcularCustos(valor, comissaoLote) {
 const USUARIOS_TESTE = [{ email: 'assinante@teste.com', senha: 'leilao2026', nome: 'Cliente Teste' }];
 // ================================================
 
-const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9', tjsp: '#a29bfe', platb: '#7fb3ff' };
+const CORES = { leiloesjudiciais: '#4f8cff', megaleiloes: '#ff5a1f', lancejudicial: '#ffc53d', leilaovip: '#2ecc71', d1lance: '#e84393', eleiloes: '#00cec9', tjsp: '#a29bfe', platb: '#7fb3ff', zuk: '#f5a623' };
 const POR_PAGINA = 36;
 const CHAVE_SESSAO = 'radar-sessao';
 
