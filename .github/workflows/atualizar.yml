@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: 22
       - run: node scraper/run.js
+      - name: Enviar ao WordPress
+        # Segredos do repositório: VJ_URL (ex.: https://veiculojudicial.com.br) e VJ_TOKEN (Configurações → Veículo Judicial).
+        env:
+          VJ_URL: ${{ secrets.VJ_URL }}
+          VJ_TOKEN: ${{ secrets.VJ_TOKEN }}
+        run: node scraper/publicar-wp.js
       - name: Publicar dados
         run: |
           git config user.name "radar-bot"

@@ -1,0 +1,17 @@
+/*
+Theme Name: Veículo Judicial
+Theme URI: https://veiculojudicial.com.br
+Author: DRLSYS
+Description: Tema do Veículo Judicial — agregador de veículos de leilão judicial com vitrine gratuita, área do assinante, calculadora de custo total e página do Dr. Rubens Filippe de Jesus. Requer o plugin "Veículo Judicial – Núcleo".
+Version: 1.0.0
+Requires at least: 6.2
+Requires PHP: 7.4
+Text Domain: veiculo-judicial
+*/
+
+/* O visual principal está em assets/style.css. Aqui só as páginas de texto (termos, privacidade…). */
+.pagina-texto { padding: 56px 0 24px; }
+.pagina-texto h1 { margin: 0 0 24px; font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.03em; line-height: 1.1; }
+.pagina-texto .conteudo { max-width: 760px; color: var(--texto-2); font-size: 16.5px; line-height: 1.7; }
+.pagina-texto .conteudo h2, .pagina-texto .conteudo h3 { color: var(--texto); margin: 32px 0 10px; letter-spacing: -0.015em; }
+.pagina-texto .conteudo a { color: var(--ouro-2); text-decoration: underline; }
