@@ -122,3 +122,20 @@ Depois é só servir a pasta (ex.: `serve.ps1 -Root "C:\Claude Sites\leilao-carr
 - Os coletores fazem poucas requisições espaçadas (~1 por segundo) e só uma vez por dia.
 - Se algum leiloeiro pedir remoção, basta tirar a fonte de `FONTES`.
 - O ideal, a médio prazo, é formalizar parceria/afiliação com os leiloeiros (muitos pagam por lead).
+
+## WordPress (produção: veiculojudicial.com.br na Hostinger)
+
+```
+node wordpress/build.cjs   # gera wordpress/dist/veiculo-judicial.zip (tema) e veiculo-judicial-core.zip (plugin)
+```
+
+- **Tema `veiculo-judicial`**: `front-page.php` e `page-rubens.php` são **gerados** a partir de `index.html`/`rubens.html`
+  (e `assets/app.js` via `wordpress/gerar-app-wp.cjs`). Edite o protótipo e rode o build; não edite os gerados.
+  Ao ativar, cria a página "Quem é o Rubens" (slug `quem-e-o-rubens`).
+- **Plugin `veiculo-judicial-core`**: papel `vj_assinante` (capacidade `vj_premium`); dados em `wp-content/uploads/vj-dados/`
+  (acesso direto bloqueado); REST `vj/v1/vitrine` (público), `vj/v1/lotes` (só assinante), `vj/v1/importar` (cabeçalho
+  `X-VJ-Token`), `vj/v1/login`. Tela **Configurações → Veículo Judicial** (WhatsApp, preço, link do checkout, custos,
+  chave de importação, ativação manual de assinante). `vj_ativar_assinante()`/`vj_desativar_assinante()` são o ponto
+  de entrada para os webhooks de pagamento (Hotmart/Kiwify — próxima etapa).
+- **Coleta → WordPress**: o workflow roda `scraper/publicar-wp.js` se os segredos `VJ_URL` e `VJ_TOKEN` existirem no GitHub.
+- Testado no WordPress Playground (WP latest, PHP 8.2): tema/plugin ativam, dados carregam, `vj/v1/lotes` sem login → `rest_forbidden`.
