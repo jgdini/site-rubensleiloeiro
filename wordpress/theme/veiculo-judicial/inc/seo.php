@@ -180,6 +180,16 @@ add_action('init', function () {
     }
 });
 
+// Autocorreção: se algum plugin/painel regravar as regras sem as nossas (aconteceu na troca de
+// domínio na Hostinger), as páginas viram 404. Confere a cada carga e regrava se faltar.
+add_action('init', function () {
+    $regras = get_option('rewrite_rules');
+    if (is_array($regras) && $regras && !isset($regras['^leilao-judicial/?$'])) {
+        flush_rewrite_rules(false);
+        do_action('litespeed_purge_all');
+    }
+}, 99);
+
 add_filter('query_vars', function ($v) {
     return array_merge($v, ['vj_rota', 'vj_a', 'vj_b']);
 });
@@ -567,6 +577,7 @@ function vj_seo_faq() {
 add_action('init', function () {
     if (!class_exists('WP_Sitemaps_Provider')) return;
 
+    if (!class_exists('VJ_Sitemap_Provider')) {
     class VJ_Sitemap_Provider extends WP_Sitemaps_Provider {
         const POR_PAGINA = 1000;
         public function __construct() { $this->name = 'vj'; $this->object_type = 'vj'; }
@@ -592,6 +603,7 @@ add_action('init', function () {
             foreach ($c['marca'] as $slug => $mn) if ($mn[1] >= VJ_SEO_MIN) $lista[] = $u(vj_seo_url('marca', $mn[0]));
             return $lista;
         }
+    }
     }
     wp_register_sitemap_provider('vj', new VJ_Sitemap_Provider());
 }, 5);
