@@ -27,6 +27,42 @@ add_action('admin_post_vj_salvar', function () {
     exit;
 });
 
+/** Endereço público de onde puxar a coleta (o GitHub Actions publica data/*.json no repositório). */
+function vj_url_fonte_padrao() {
+    return 'https://raw.githubusercontent.com/jgdini/site-rubensleiloeiro/main/data/';
+}
+
+/** Puxa lotes.json e vitrine.json de uma URL base e grava. Retorna total ou WP_Error. */
+function vj_importar_de_url($base) {
+    $base = trailingslashit($base);
+    $conteudo = [];
+    foreach (['lotes', 'vitrine'] as $nome) {
+        $r = wp_remote_get($base . $nome . '.json?nocache=' . time(), ['timeout' => 60]);
+        if (is_wp_error($r)) return $r;
+        if (wp_remote_retrieve_response_code($r) !== 200) return new WP_Error('vj_http', "HTTP " . wp_remote_retrieve_response_code($r) . " em $nome.json");
+        $corpo = wp_remote_retrieve_body($r);
+        $j = json_decode($corpo, true);
+        if (empty($j['lotes'])) return new WP_Error('vj_formato', "$nome.json sem lotes");
+        $conteudo[$nome] = $corpo;
+    }
+    if (!vj_gravar('lotes', $conteudo['lotes']) || !vj_gravar('vitrine', $conteudo['vitrine'])) {
+        return new WP_Error('vj_gravar', 'Não foi possível gravar os arquivos.');
+    }
+    update_option('vj_ultima_importacao', current_time('mysql'), false);
+    return count(json_decode($conteudo['lotes'], true)['lotes']);
+}
+
+add_action('admin_post_vj_importar_agora', function () {
+    if (!current_user_can('manage_options')) wp_die('Sem permissão.');
+    check_admin_referer('vj_importar_agora');
+    $url = esc_url_raw(wp_unslash($_POST['fonte'] ?? '')) ?: vj_url_fonte_padrao();
+    update_option('vj_fonte_url', $url, false);
+    $r = vj_importar_de_url($url);
+    $q = is_wp_error($r) ? 'importerro=' . rawurlencode($r->get_error_message()) : 'importado=' . (int) $r;
+    wp_safe_redirect(admin_url('options-general.php?page=veiculo-judicial&' . $q));
+    exit;
+});
+
 add_action('admin_post_vj_ativar_manual', function () {
     if (!current_user_can('manage_options')) wp_die('Sem permissão.');
     check_admin_referer('vj_ativar_manual');
@@ -64,7 +100,16 @@ function vj_tela_config() {
           <em>Nenhum dado recebido ainda.</em>
         <?php endif; ?>
       </p>
-      <p>Endereço de importação: <code><?php echo esc_html(rest_url('vj/v1/importar')); ?></code><br>
+      <?php if (isset($_GET['importado'])) echo '<div class="notice notice-success"><p>Importação concluída: ' . esc_html(number_format_i18n((int) $_GET['importado'])) . ' veículos.</p></div>'; ?>
+      <?php if (isset($_GET['importerro'])) echo '<div class="notice notice-error"><p>Falha na importação: ' . esc_html(wp_unslash($_GET['importerro'])) . '</p></div>'; ?>
+      <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin:12px 0 20px">
+        <input type="hidden" name="action" value="vj_importar_agora">
+        <?php wp_nonce_field('vj_importar_agora'); ?>
+        <input type="url" name="fonte" class="large-text" value="<?php echo esc_attr(get_option('vj_fonte_url', vj_url_fonte_padrao())); ?>">
+        <p class="description">Busca agora os arquivos lotes.json e vitrine.json da coleta publicada nesse endereço.</p>
+        <?php submit_button('Importar agora', 'primary', 'submit', false); ?>
+      </form>
+      <p>Envio automático pela coleta diária — endereço: <code><?php echo esc_html(rest_url('vj/v1/importar')); ?></code><br>
          Chave (cabeçalho <code>X-VJ-Token</code>): <code><?php echo esc_html(get_option('vj_token')); ?></code></p>
 
       <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
