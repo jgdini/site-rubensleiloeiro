@@ -48,7 +48,7 @@ function vj_importar_de_url($base) {
     if (!vj_gravar('lotes', $conteudo['lotes']) || !vj_gravar('vitrine', $conteudo['vitrine'])) {
         return new WP_Error('vj_gravar', 'Não foi possível gravar os arquivos.');
     }
-    update_option('vj_ultima_importacao', current_time('mysql'), false);
+    vj_apos_importar();
     return count(json_decode($conteudo['lotes'], true)['lotes']);
 }
 
@@ -100,6 +100,13 @@ function vj_tela_config() {
           <em>Nenhum dado recebido ainda.</em>
         <?php endif; ?>
       </p>
+      <?php
+      $auto = get_option('vj_importacao_auto');
+      $prox = wp_next_scheduled('vj_importacao_diaria');
+      echo '<p class="description">Importação automática (2× por dia): ' .
+          ($auto ? 'última em ' . esc_html(mysql2date('d/m/Y H:i', $auto['quando'])) . ' — ' . esc_html($auto['resultado']) : 'ainda não rodou') .
+          ($prox ? ' · próxima em ' . esc_html(wp_date('d/m/Y H:i', $prox)) : '') . '</p>';
+      ?>
       <?php if (isset($_GET['importado'])) echo '<div class="notice notice-success"><p>Importação concluída: ' . esc_html(number_format_i18n((int) $_GET['importado'])) . ' veículos.</p></div>'; ?>
       <?php if (isset($_GET['importerro'])) echo '<div class="notice notice-error"><p>Falha na importação: ' . esc_html(wp_unslash($_GET['importerro'])) . '</p></div>'; ?>
       <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin:12px 0 20px">

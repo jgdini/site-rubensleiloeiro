@@ -66,7 +66,7 @@ function vj_rest_importar(WP_REST_Request $req) {
     $ok1 = vj_gravar('lotes', wp_json_encode($corpo['lotes'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     $ok2 = vj_gravar('vitrine', wp_json_encode($corpo['vitrine'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     if (!$ok1 || !$ok2) return new WP_Error('vj_gravar', 'Não foi possível gravar os arquivos.', ['status' => 500]);
-    update_option('vj_ultima_importacao', current_time('mysql'), false);
+    vj_apos_importar();
     return ['ok' => true, 'total' => count($corpo['lotes']['lotes'])];
 }
 

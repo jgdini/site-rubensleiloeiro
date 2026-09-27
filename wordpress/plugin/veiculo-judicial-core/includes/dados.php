@@ -55,3 +55,10 @@ function vj_resumo_dados() {
         'leiloeiros' => $j['leiloeiros'] ?? null,
     ];
 }
+
+/** Depois de gravar uma coleta nova: marca a hora e limpa o cache das páginas (LiteSpeed guarda por dias). */
+function vj_apos_importar() {
+    update_option('vj_ultima_importacao', current_time('mysql'), false);
+    do_action('litespeed_purge_all');
+    if (function_exists('wp_cache_flush')) wp_cache_flush();
+}
