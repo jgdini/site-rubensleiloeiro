@@ -21,6 +21,7 @@ $insta = ltrim((string) $vj['instagram'], '@');
       </a>
       <nav class="menu" aria-label="Principal">
         <a href="<?php echo esc_url(home_url('/')); ?>"<?php echo is_front_page() ? ' aria-current="page"' : ''; ?>>Veículos</a>
+        <a class="menu__extra" href="<?php echo esc_url(vj_seo_url('guia')); ?>"<?php echo get_query_var('vj_rota') === 'guia' ? ' aria-current="page"' : ''; ?>>Como funciona</a>
         <a href="<?php echo esc_url(vj_url_rubens()); ?>" class="menu__rubens"<?php echo vj_eh_pagina_rubens() ? ' aria-current="page"' : ''; ?>><img src="<?php echo esc_url(vj_asset('rubens/avatar.jpg')); ?>" alt="" width="26" height="26" /><span class="menu__longo">Quem é o </span>Rubens</a>
       </nav>
       <div class="topo__dir">

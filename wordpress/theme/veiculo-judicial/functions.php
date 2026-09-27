@@ -5,8 +5,10 @@
  */
 if (!defined('ABSPATH')) exit;
 
-define('VJ_TEMA_VERSAO', '1.0.0');
+define('VJ_TEMA_VERSAO', '1.1.0');
 define('VJ_MARCA', 'Veículo Judicial');
+
+require_once __DIR__ . '/inc/seo.php';
 
 function vj_asset($caminho) {
     return get_theme_file_uri('assets/' . ltrim($caminho, '/'));
@@ -51,22 +53,12 @@ add_action('after_setup_theme', function () {
     add_theme_support('html5', ['search-form', 'gallery', 'caption', 'style', 'script']);
 });
 
-/** Título padrão da home quando o WordPress não tem um definido. */
-add_filter('document_title_parts', function ($partes) {
-    if (is_front_page()) {
-        $partes['title'] = VJ_MARCA . ' — veículos de leilão judicial num só lugar';
-        unset($partes['tagline'], $partes['site']);
-    }
-    return $partes;
-});
+// Título, descrição, canonical e dados estruturados: inc/seo.php.
 
 add_action('wp_head', function () {
     // Fotos dos lotes vêm dos servidores dos leiloeiros: sem Referer evita bloqueio de hotlink.
     echo '<meta name="referrer" content="no-referrer" />' . "\n";
     echo '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23c9a44c%27/%3E%3Cpath d=%27M8 20h16l-2-6H10z%27 fill=%27%230b1830%27/%3E%3Ccircle cx=%2711%27 cy=%2721%27 r=%272.5%27 fill=%27%230b1830%27/%3E%3Ccircle cx=%2721%27 cy=%2721%27 r=%272.5%27 fill=%27%230b1830%27/%3E%3C/svg%3E" />' . "\n";
-    if (is_front_page()) {
-        echo '<meta name="description" content="Carros, motos, caminhões, tratores e outros veículos em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis." />' . "\n";
-    }
 }, 1);
 
 add_action('wp_enqueue_scripts', function () {
