@@ -1,7 +1,7 @@
 <?php
 /**
  * Ativação/desativação de assinantes.
- * Os webhooks da Hotmart/Kiwify (próxima etapa) vão chamar só estas duas funções.
+ * O webhook da Kiwify (includes/kiwify.php) chama só estas duas funções.
  */
 if (!defined('ABSPATH')) exit;
 

@@ -63,6 +63,16 @@ add_action('admin_post_vj_importar_agora', function () {
     exit;
 });
 
+add_action('admin_post_vj_kiwify', function () {
+    if (!current_user_can('manage_options')) wp_die('Sem permissão.');
+    check_admin_referer('vj_kiwify');
+    $token = trim((string) wp_unslash($_POST['kiwify_token'] ?? ''));
+    if ($token !== '') update_option('vj_kiwify_token', sanitize_text_field($token), false);
+    update_option('vj_kiwify_produto', sanitize_text_field(wp_unslash($_POST['kiwify_produto'] ?? '')), false);
+    wp_safe_redirect(admin_url('options-general.php?page=veiculo-judicial&kiwify=1'));
+    exit;
+});
+
 add_action('admin_post_vj_ativar_manual', function () {
     if (!current_user_can('manage_options')) wp_die('Sem permissão.');
     check_admin_referer('vj_ativar_manual');
@@ -145,6 +155,30 @@ function vj_tela_config() {
         <p><label><input type="checkbox" name="novo_token" value="1"> Gerar nova chave de importação (atualize também o segredo no GitHub)</label></p>
         <?php submit_button('Salvar'); ?>
       </form>
+
+      <h2>Kiwify (pagamento → acesso)</h2>
+      <?php if (!empty($_GET['kiwify'])) echo '<div class="notice notice-success"><p>Integração Kiwify salva.</p></div>'; ?>
+      <p>Na Kiwify, em <b>Apps → Webhooks → Criar webhook</b>: cole a URL abaixo, escolha o produto e marque os eventos
+         <i>Compra aprovada, Compra reembolsada, Chargeback, Assinatura cancelada</i> e <i>Assinatura renovada</i>. Depois cole aqui o token que a Kiwify mostrar.</p>
+      <p>URL do webhook: <code><?php echo esc_html(vj_kiwify_url()); ?></code></p>
+      <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+        <input type="hidden" name="action" value="vj_kiwify">
+        <?php wp_nonce_field('vj_kiwify'); ?>
+        <table class="form-table" role="presentation">
+          <tr><th scope="row"><label for="kiwify_token">Token do webhook</label></th>
+              <td><input name="kiwify_token" id="kiwify_token" type="password" class="regular-text" autocomplete="off"
+                         placeholder="<?php echo get_option('vj_kiwify_token') ? '•••••• configurado (deixe vazio para manter)' : 'cole o token da Kiwify'; ?>"></td></tr>
+          <tr><th scope="row"><label for="kiwify_produto">ID do produto (opcional)</label></th>
+              <td><input name="kiwify_produto" id="kiwify_produto" type="text" class="regular-text" value="<?php echo esc_attr(get_option('vj_kiwify_produto', '')); ?>">
+                  <p class="description">Se preenchido, vendas de outros produtos da conta são ignoradas.</p></td></tr>
+        </table>
+        <?php submit_button('Salvar Kiwify', 'secondary'); ?>
+      </form>
+      <?php $log = get_option('vj_kiwify_log', []); if ($log) : ?>
+        <table class="widefat striped" style="max-width:900px"><thead><tr><th>Quando</th><th>Evento</th><th>E-mail</th><th>Resultado</th></tr></thead><tbody>
+        <?php foreach (array_slice($log, 0, 10) as $l) printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html(mysql2date('d/m/Y H:i', $l['quando'])), esc_html($l['evento']), esc_html($l['email']), esc_html($l['resultado'])); ?>
+        </tbody></table>
+      <?php endif; ?>
 
       <h2>Ativar assinante manualmente</h2>
       <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
