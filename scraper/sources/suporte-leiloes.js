@@ -16,13 +16,41 @@ export const SITES = [
 
 const NOMES = { 'peterlongo.leilao.br': 'Peterlongo Leilões', 'lancevip.com.br': 'Lance VIP', 'goldenlance.com.br': 'Golden Lance', 'maisleilao.com.br': 'Mais Leilão', 'leilaobrasil.com.br': 'Leilão Brasil' };
 const nomeSite = (d) => NOMES[d] || titulo(d.replace(/\.com\.br$|\.com$|\.leilao\.br$/, '').replace(/leiloes$|leilao$/, ' Leilões')).trim();
-const iso = (d) => (d?.date ? d.date.slice(0, 19).replace(' ', 'T') + '-03:00' : null);
+const iso = (d) => (d?.date ? d.date.slice(0, 19).replace(' ', 'T') + (d.timezone === 'UTC' ? 'Z' : '-03:00') : null);
 
-/** Extrai o JSON `var lote = {…};` (fica numa linha só). */
-function jsonLote(html) {
-  const linha = html.split('\n').find((l) => l.trimStart().startsWith('var lote = {'));
+/** Extrai um `var {nome} = {…};` da página (fica numa linha só). */
+function jsonVar(html, nome) {
+  const linha = html.split('\n').find((l) => l.trimStart().startsWith(`var ${nome} = {`));
   if (!linha) return null;
-  try { return JSON.parse(linha.trim().replace(/^var lote = /, '').replace(/;\s*$/, '')); } catch { return null; }
+  try { return JSON.parse(linha.trim().slice(`var ${nome} = `.length).replace(/;\s*$/, '')); } catch { return null; }
+}
+
+/** Lote no formato novo; o layout antigo (/oferta/…) traz `lote` e `leilao` separados e é convertido. */
+function jsonLote(html) {
+  const l = jsonVar(html, 'lote');
+  if (!l || l.leilao) return l;
+  const le = jsonVar(html, 'leilao') || {};
+  const datas = [le.dataProximoLeilao, le.dataLimitePropostas].filter((d) => d?.date).sort((a, b) => a.date.localeCompare(b.date));
+  const foto = html.match(/https:\/\/static\.suporteleiloes\.com\.br\/[^"' ]+\/bens\/[^"' ]+\.(?:jpe?g|png|webp)/i)?.[0] || null;
+  return {
+    id: +l.id,
+    status: +l.status,
+    numero: +l.numero || null,
+    descricao: l.titulo,
+    valorInicial: +l.valorInicial || null,
+    valorInicial2: +l.valorInicial2 || null,
+    valorAvaliacao: +l.valorAvaliacao || null,
+    valorLanceAtual: +l.totalLances > 0 ? +l.valorAtual : null,
+    taxasCalculadas: l.taxas || [],
+    stats: { lances: +l.totalLances || 0, lote: { bem: { siteTitulo: l.titulo, image: foto ? { full: { url: foto } } : null } } },
+    leilao: {
+      judicial: le.judicial === true || le.judicial === 'true',
+      data1: datas.at(-1) || null,
+      data2: null,
+      descricaoInterna: le.titulo,
+      leiloeiro: { uf: le.leiloeiroUf },
+    },
+  };
 }
 
 function mapear(dom, url, sub, l) {
@@ -30,7 +58,10 @@ function mapear(dom, url, sub, l) {
   const bem = l.stats?.lote?.bem || {};
   let nome = decode(bem.siteTitulo || l.descricao || '');
   // "VW/GOL 1.6 Power 2009-2010 - Aparecida/SP": a cidade vai pro campo próprio.
-  const local = nome.match(/\s+-\s+([A-Za-zÀ-ú' .]{3,40}?)\s*\/\s*([A-Z]{2})\s*$/);
+  const local = nome.match(/\s+(?:-|em)\s+([A-Za-zÀ-ú' .]{3,40}?)\s*[\/-]\s*([A-Z]{2})\s*$/);
+  // 'Gol 1.0, 05/05' -> ano 2005
+  const yy = nome.match(/(?:^|[\s,])\d{2}\/(\d{2})(?=\s|,|$)/)?.[1];
+  const anoCurto = yy ? (2000 + +yy > new Date().getFullYear() + 1 ? 1900 + +yy : 2000 + +yy) : null;
   if (local) nome = nome.slice(0, local.index);
   const v1 = l.valorInicial || null;
   const v2 = l.valorInicial2 || null;
@@ -43,10 +74,10 @@ function mapear(dom, url, sub, l) {
   return {
     id: `suporte-${dom}-${l.id}`,
     fonte: fonte.id,
-    titulo: limparTitulo(nome.replace(/\s*\/\s*/g, ' ').replace(/\s+/g, ' ')),
+    titulo: limparTitulo(nome.replace(/,?\s*\d{2}\/\d{2}\s*$/, '').replace(/\s*\/\s*/g, ' ').replace(/\s+/g, ' ')).replace(/^[-–\s]+/, ''),
     tituloOriginal: [sub, nome].filter(Boolean).join(' — '),
     marca: marcaDe(nome.replace(/\//g, ' ')),
-    ano: anoDe(nome),
+    ano: anoDe(nome) || anoCurto,
     km: null,
     cidade: bem.cidade ? titulo(bem.cidade) : local ? titulo(local[1].trim()) : null,
     uf: bem.uf || local?.[2] || lei.leiloeiro?.uf || null,
@@ -74,7 +105,16 @@ async function coletarSite(dom) {
   const home = await get(`https://www.${dom}/`, { delay: 200 });
   const base = new URL(home.url).origin; // alguns redirecionam para outro domínio/sem www
   const cards = new Map(); // url -> subcategoria (h3)
-  for (let p = 1; p <= 30; p++) {
+  let temBuscador = true;
+  try { await get(`${base}/buscador?categoria=1&judicial=1&page=1`, { delay: 200 }); } catch { temBuscador = false; }
+  // Layout antigo da plataforma: /busca?page=N com links /oferta/{modalidade}/veiculos/{sub}/…
+  for (let p = 1; !temBuscador && p <= 40; p++) {
+    const html = await (await get(`${base}/busca?page=${p}`, { delay: 200 })).text();
+    const links = [...html.matchAll(/href="(\/oferta\/[^/"]+\/veiculos\/([^/"]+)\/[^"]+)"/g)];
+    for (const [, href, sub] of links) if (!cards.has(base + href)) cards.set(base + href, titulo(sub.replace(/-/g, ' ')));
+    if (!html.includes('href="/oferta/') || !html.includes(`page=${p + 1}`)) break;
+  }
+  for (let p = 1; temBuscador && p <= 30; p++) {
     const html = await (await get(`${base}/buscador?categoria=1&judicial=1&page=${p}`, { delay: 200 })).text();
     const blocos = html.split('<article class="lote-main').slice(1);
     let novos = 0;
@@ -93,6 +133,7 @@ async function coletarSite(dom) {
       const l = jsonLote(await (await get(url, { delay: 200 })).text());
       if (!l || !l.leilao?.judicial || l.sucata || l.arremate || l.valorArremate || l.dataFechado || l.deleted) continue;
       const lote = mapear(dom, url, sub, l);
+      if (lote.encerra && new Date(lote.encerra) < Date.now()) continue;
       const tipo = tipoVeiculo(lote.tituloOriginal, sub);
       if (!tipo) continue;
       itens.push({ ...lote, tipo });
