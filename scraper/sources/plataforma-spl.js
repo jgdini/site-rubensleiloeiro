@@ -16,6 +16,8 @@ export const SITES = [
   'leiloesmager.com.br', 'multipliqueleiloes.com.br', 'nacionalleiloes.com.br', 'peixotoleiloes.com.br', 'portalbayit.com.br',
   'projudleiloes.com.br', 'selectleiloes.com.br', 'sublimeleiloes.com.br', 'teza.com.br', 'trustbid.com.br',
   'vendasjudiciais.com.br', 'vivaleiloes.com.br',
+  // listas MG/PR/SC (2026-09-29)
+  'apabrfleiloes.com.br', 'arremaxleiloes.com.br', 'milhaoleiloes.com.br', 'pwleiloes.com.br', 'tradicaoleiloes.com.br', 'tratoforteleiloes.com.br', 'zallileiloes.com.br',
 ];
 
 const nomeSite = (d) => titulo(d.replace(/\.com\.br$|\.com$|\.lel\.br$/, '').replace(/leiloes$|leilao$|leiloeira$|leiloeiro$/, ' Leilões').replace(/-/g, ' ')).trim();

@@ -5,7 +5,7 @@
 import { get, clean, decode, brl, dataBR, marcaDe, anoDe, titulo, limparTitulo, sleep } from '../lib.js';
 import { tipoVeiculo } from '../classify.js';
 
-export const fonte = { id: 'platb', nome: 'Leiloeiros SP', site: 'https://www.tjsp.jus.br' };
+export const fonte = { id: 'platb', nome: 'Leiloeiros SP/PR/SC/MG', site: 'https://www.tjsp.jus.br' };
 
 export const SITES = [
   '3torresleiloes.com.br', 'apiceleiloes.com.br', 'calilleiloes.com.br', 'cencin.com.br', 'conceitoleiloes.com.br',
@@ -14,6 +14,12 @@ export const SITES = [
   // também na lista TJSP
   'lottileiloes.com.br', 'machadoleiloeiro.com.br', 'gspleiloes.com.br', 'leiloeiro.online', 'glleiloes.com.br',
   'hammer.lel.br', 'nogarileiloes.com.br', 'tenleilao.com.br', 'cardosoleiloes.com.br', 'amaralleiloes.com.br',
+  // listas MG/PR/SC (2026-09-29)
+  'agencialeilao.com.br', 'maraurzedoleilao.com.br', 'alvesleiloes.com.br', 'andradeleiloes.com.br', 'arenaleilao.com.br', 'bestleiloes.com.br',
+  'casamartillo.com.br', 'clicleiloes.com.br', 'desantileiloes.com.br', 'diegoleiloes.com.br', 'editalleiloes.com.br', 'infinityleiloes.com.br',
+  'isaiasleiloes.com.br', 'joaoluizleiloes.com.br', 'junkesleiloes.com.br', 'kildareleiloes.com.br', 'lecapeleiloes.com.br', 'leilaoinvestment.com.br',
+  'leiloesceruli.com.br', 'leilopar.com.br', 'mullerleiloes.com.br', 'octavioleiloes.com.br', 'purcenaleiloes.com.br', 'raicherleiloes.com.br',
+  'tkl.com.br', 'universodosleiloes.com.br', 'wspleiloes.com.br',
 ];
 
 const JUDICIAL = /TRIBUNAL|JUSTI[CÇ]A|\bVARA\b|\bTRT\b|\bTJ[A-Z]{0,2}\b|JU[IÍ]ZO|FORO|JUDICI/i;

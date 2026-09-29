@@ -75,9 +75,13 @@ export const MARCAS = [
   'NISSAN', 'PEUGEOT', 'CITROEN', 'CITROËN', 'JEEP', 'MITSUBISHI', 'KIA', 'BMW', 'MERCEDES-BENZ', 'MERCEDES',
   'AUDI', 'VOLVO', 'LAND ROVER', 'CAOA CHERY', 'CHERY', 'JAC', 'SUZUKI', 'SUBARU', 'DODGE', 'RAM', 'CHRYSLER',
   'PORSCHE', 'LEXUS', 'MINI', 'LR', 'BYD', 'GWM', 'TROLLER', 'SSANGYONG', 'LIFAN', 'SMART', 'JAGUAR', 'ALFA ROMEO',
+  // motos
+  'YAMAHA', 'KAWASAKI', 'SUZUKI', 'DUCATI', 'TRIUMPH', 'HARLEY-DAVIDSON', 'HARLEY DAVIDSON', 'SHINERAY', 'DAFRA', 'HAOJUE', 'KASINSKI', 'SUNDOWN', 'TRAXX', 'BAJAJ', 'ROYAL ENFIELD',
+  // caminhões, ônibus e máquinas
+  'SCANIA', 'IVECO', 'DAF', 'INTERNATIONAL', 'AGRALE', 'MARCOPOLO', 'VOLARE', 'JOHN DEERE', 'NEW HOLLAND', 'MASSEY FERGUSON', 'CATERPILLAR', 'VALTRA', 'RANDON', 'FACCHINI', 'GUERRA', 'NOMA', 'LIBRELATO',
 ];
 
-const NORMALIZA_MARCA = { GM: 'Chevrolet', VW: 'Volkswagen', 'CITROËN': 'Citroën', CITROEN: 'Citroën', MERCEDES: 'Mercedes-Benz', LR: 'Land Rover', 'CAOA CHERY': 'Chery' };
+const NORMALIZA_MARCA = { 'HARLEY DAVIDSON': 'Harley-Davidson', DAF: 'DAF', 'JOHN DEERE': 'John Deere', 'NEW HOLLAND': 'New Holland', 'MASSEY FERGUSON': 'Massey Ferguson', 'ROYAL ENFIELD': 'Royal Enfield', GM: 'Chevrolet', VW: 'Volkswagen', 'CITROËN': 'Citroën', CITROEN: 'Citroën', MERCEDES: 'Mercedes-Benz', LR: 'Land Rover', 'CAOA CHERY': 'Chery' };
 
 export function marcaDe(texto = '') {
   const t = ' ' + texto.toUpperCase().replace(/[\/,()-]/g, ' ') + ' ';
