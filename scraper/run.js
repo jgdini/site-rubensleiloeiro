@@ -14,9 +14,10 @@ import * as plataformaSpl from './sources/plataforma-spl.js';
 import * as plataformaB from './sources/plataforma-b.js';
 import * as zuk from './sources/zuk.js';
 import * as suporte from './sources/suporte-leiloes.js';
+import * as leilaopro from './sources/leilaopro.js';
 
 // Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
-const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl, plataformaB, zuk, suporte];
+const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl, plataformaB, zuk, suporte, leilaopro];
 const soJudicial = (l) => l.natureza === 'Judicial';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');
@@ -65,7 +66,7 @@ await writeFile(saida, JSON.stringify({ geradoEm, total: unicos.length, fontes, 
 // Em produção, SÓ este arquivo fica público; lotes.json deve ser servido apenas a usuários logados.
 const PRIVADOS = ['url', 'processo', 'fonte', 'comitente', 'leiloeiro', 'leiloeiroSite', 'codigo', 'tituloOriginal'];
 const vitrine = unicos.map((l) => Object.fromEntries(Object.entries(l).filter(([k]) => !PRIVADOS.includes(k))));
-const leiloeiros = new Set([...fontes.filter((f) => !['leiloesjudiciais', 'tjsp', 'platb', 'suporte'].includes(f.id)).map((f) => f.id), ...unicos.map((l) => l.leiloeiroSite).filter(Boolean)]);
+const leiloeiros = new Set([...fontes.filter((f) => !['leiloesjudiciais', 'tjsp', 'platb', 'suporte', 'leilaopro'].includes(f.id)).map((f) => f.id), ...unicos.map((l) => l.leiloeiroSite).filter(Boolean)]);
 await writeFile(
   path.join(path.dirname(saida), 'vitrine.json'),
   JSON.stringify({ geradoEm, total: vitrine.length, leiloeiros: leiloeiros.size, lotes: vitrine }, null, 1)
