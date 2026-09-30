@@ -33,6 +33,12 @@ function lerSessao() {
 }
 const premium = () => !!(sessao && sessao.assinante);`);
 
+// 2b) Login: link "primeiro acesso / esqueci a senha" (página padrão do WordPress, que manda o link por e-mail).
+trocar(`  $('#form-login').reset();\n  $('#modal-login').showModal();`,
+`  $('#form-login').reset();
+  if (VJ.esqueciUrl) { $('#link-esqueci').href = VJ.esqueciUrl; $('#esqueci').hidden = false; }
+  $('#modal-login').showModal();`);
+
 // 3) Nome da marca nas mensagens.
 t = t.split('Radar de Leilões').join('${CONFIG.marca}');
 

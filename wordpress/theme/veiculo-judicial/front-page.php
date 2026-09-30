@@ -98,6 +98,7 @@ get_header();
       <label>Senha<input type="password" name="senha" autocomplete="current-password" required /></label>
       <p class="modal__erro" id="login-erro" hidden>E-mail ou senha incorretos.</p>
       <button type="submit" class="btn btn--primario btn--cheio" value="entrar">Entrar</button>
+      <p class="modal__rodape" id="esqueci" hidden><a class="link" id="link-esqueci" href="#">Primeiro acesso ou esqueceu a senha? Crie uma nova aqui</a></p>
       <p class="modal__rodape">Ainda não é assinante? <button type="button" class="link" data-acao="assinar">Conheça o plano</button></p>
     </form>
   </dialog>

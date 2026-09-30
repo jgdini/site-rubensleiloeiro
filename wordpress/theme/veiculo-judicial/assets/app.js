@@ -323,6 +323,7 @@ function abrirLogin() {
   $('#modal-plano').close();
   $('#login-erro').hidden = true;
   $('#form-login').reset();
+  if (VJ.esqueciUrl) { $('#link-esqueci').href = VJ.esqueciUrl; $('#esqueci').hidden = false; }
   $('#modal-login').showModal();
   $('#form-login [name=email]').focus();
 }

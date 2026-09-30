@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Veículo Judicial – Núcleo
  * Description: Dados dos leilões (vitrine pública × base completa para assinantes), login dos assinantes, importação diária da coleta e configurações do site Veículo Judicial.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: DRLSYS
  * Text Domain: veiculo-judicial
  * Requires at least: 6.2
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('VJ_VERSAO', '1.1.1');
+define('VJ_VERSAO', '1.1.2');
 define('VJ_ROLE', 'vj_assinante');
 define('VJ_CAP', 'vj_premium');
 
@@ -61,6 +61,10 @@ add_action('admin_init', function () {
         exit;
     }
 });
+// Quem entra pela tela padrão do WordPress (ex.: depois de criar a senha) vai direto para a vitrine.
+add_filter('login_redirect', function ($destino, $pedido, $user) {
+    return ($user instanceof WP_User && !user_can($user, 'edit_posts')) ? home_url('/') : $destino;
+}, 10, 3);
 add_filter('show_admin_bar', function ($mostrar) {
     return current_user_can('edit_posts') ? $mostrar : false;
 });
