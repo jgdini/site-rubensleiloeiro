@@ -143,7 +143,15 @@ button, input, select { font: inherit; color: inherit; }
   .conta__nome { display: none; }
   .topo__dir { gap: 10px; }
   .menu a:first-child { display: none; }
-  .conta .btn--linha { display: none; }
+  .conta { gap: 6px; }
+  .conta .btn--peq { height: 34px; padding: 0 11px; font-size: 13px; }
+}
+/* Celular estreito: o Instagram (também na página do Rubens) cede espaço pro Entrar/Assinar */
+@media (max-width: 430px) {
+  .topo .insta { display: none; }
+  .topo__in { gap: 8px; }
+  .menu { margin-left: 6px; }
+  .menu a.menu__rubens { padding-right: 10px; }
 }
 
 /* ---------- Conta / botões ---------- */

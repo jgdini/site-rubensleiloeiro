@@ -23,6 +23,8 @@ add_action('admin_post_vj_salvar', function () {
     }
     update_option('vj_config', $c);
     if (!empty($_POST['novo_token'])) update_option('vj_token', wp_generate_password(40, false, false));
+    // Preço, link do checkout e WhatsApp vão no HTML das páginas: sem limpar o cache do LiteSpeed, o site segue com os valores antigos.
+    do_action('litespeed_purge_all');
     wp_safe_redirect(admin_url('options-general.php?page=veiculo-judicial&salvo=1'));
     exit;
 });
