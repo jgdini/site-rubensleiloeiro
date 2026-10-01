@@ -70,6 +70,7 @@ function mapear(c) {
     desconto: segunda?.valor && primeira.valor > segunda.valor ? Math.round((1 - segunda.valor / primeira.valor) * 100) : null,
     comissao: null,
     encerra: ativa.data || null,
+    fimPraca1: segunda ? primeira.data || null : null,
     status: 'Aberto para lances',
     natureza: JUDICIAL.test(c.comitente) ? 'Judicial' : 'Extrajudicial',
     comitente: c.comitente || null,

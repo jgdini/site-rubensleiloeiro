@@ -46,6 +46,8 @@ function mapear(l) {
     lances: l.nu_qtdelances || 0,
     valorMercado: null,
     encerra: dt,
+    // Sem data da 1ª praça na API: enquanto o lance inicial ainda é maior que o da 2ª, o lote está na 1ª.
+    praca: num(l.vl_lanceinicialsegundoleilao) ? (num(l.vl_lanceinicial) > num(l.vl_lanceinicialsegundoleilao) ? 1 : 2) : null,
     status: l.nm_statuslote || null,
     natureza: 'Judicial',
     // Só mostra o "comitente" quando o título do leilão é o órgão (Justiça X - Vara Y).

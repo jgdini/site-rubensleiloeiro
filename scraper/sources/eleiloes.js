@@ -33,6 +33,7 @@ function mapear(l) {
     valorMercado: null,
     desconto: avaliacao && lance && lance < avaliacao ? Math.round((1 - lance / avaliacao) * 100) : null,
     encerra,
+    fimPraca1: datas.length > 1 ? datas[0] : null,
     status: l.status?.label || null,
     natureza: ev.judicial ? 'Judicial' : 'Extrajudicial',
     comitente: l.comitente?.nome || null,

@@ -100,6 +100,9 @@ button, input, select { font: inherit; color: inherit; }
 .card__valor { font-size: 22px; font-weight: 750; letter-spacing: -0.02em; }
 .card__valor.sem { font-size: 15px; font-weight: 600; color: var(--texto-2); }
 .card__fipe { font-size: 12.5px; font-weight: 600; color: var(--verde); }
+.card__aviso { margin: auto 0 0; padding: 7px 10px; border-radius: 9px; background: rgb(255 197 61 / 0.1); border: 1px solid rgb(255 197 61 / 0.35); color: var(--texto-2); font-size: 12.5px; line-height: 1.35; }
+.card__aviso b { color: var(--amarelo); font-weight: 700; }
+.card__aviso + .card__preco { margin-top: 0; }
 .card__rodape { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 10px 0 0; padding-top: 12px; border-top: 1px solid var(--linha); font-size: 12.5px; color: var(--texto-3); }
 .card__natureza { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .card__cta { display: inline-flex; align-items: center; gap: 4px; flex: none; color: var(--ouro-2); font-weight: 600; }

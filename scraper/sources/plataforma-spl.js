@@ -68,6 +68,7 @@ function mapear(dom, base, l) {
     desconto: avaliacao && lance && lance < avaliacao ? Math.round((1 - lance / avaliacao) * 100) : null,
     comissao: l.Comissao ?? rt.Comissao ?? null,
     encerra: iso(rt.DataTermino) || iso(rt.DataHoraEncerramentoSegundaPraca) || iso(rt.DataHoraEncerramentoPrimeiraPraca),
+    fimPraca1: rt.QtdPracas > 1 ? iso(rt.DataHoraEncerramentoPrimeiraPraca) : null,
     status: rt.Lote_SubStatus_Label || null,
     natureza: /extra/i.test(l.LabelModalidade) ? 'Extrajudicial' : /judicial/i.test(l.LabelModalidade) ? 'Judicial' : l.LabelModalidade,
     comitente: [l.Comitente && titulo(l.Comitente.replace(/\s+TJSP$/i, '')), l.Vara].filter(Boolean).join(' · ') || null,

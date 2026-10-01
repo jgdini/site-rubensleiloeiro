@@ -95,6 +95,12 @@ function desconto(l) {
   if (l.valorMercado && preco(l)) return Math.round((1 - preco(l) / l.valorMercado) * 100);
   return l.desconto ?? null;
 }
+// Lote com 2ª praça cuja 1ª ainda não terminou (data quando a fonte informa; senão, a praça vista na coleta).
+function emPrimeiraPraca(l) {
+  if (!l.segundaPraca) return false;
+  if (l.fimPraca1) return new Date(l.fimPraca1).getTime() > Date.now();
+  return l.praca === 1;
+}
 function localDe(l) {
   return l.cidade ? `${l.cidade}${l.uf ? '/' + l.uf : ''}` : l.uf || '';
 }
@@ -183,6 +189,13 @@ function card(l) {
   }
   const d = desconto(l);
   el.querySelector('.card__fipe').textContent = d > 0 ? `${d}% abaixo da avaliação` : '';
+  if (emPrimeiraPraca(l)) {
+    const aviso = document.createElement('p');
+    aviso.className = 'card__aviso';
+    const quando = l.fimPraca1 ? new Date(l.fimPraca1).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '';
+    aviso.innerHTML = `<b>Em andamento na 1ª praça</b>${quando ? ` · o valor da 2ª vale após ${quando}` : ' · o valor da 2ª vale se não houver lance'}`;
+    el.querySelector('.card__preco').before(aviso);
+  }
 
   // Custo total da operação.
   const total = document.createElement('div');

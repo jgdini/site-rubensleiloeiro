@@ -89,6 +89,7 @@ function mapear(dom, url, sub, l) {
     desconto: l.valorAvaliacao && v2 && v2 < l.valorAvaliacao ? Math.round((1 - v2 / l.valorAvaliacao) * 100) : null,
     comissao: pct,
     encerra,
+    fimPraca1: v2 && e2 ? e1 : null,
     status: l.status === 1 ? 'Aberto para lances' : null,
     natureza: lei.judicial ? 'Judicial' : 'Extrajudicial',
     comitente: lei.descricaoInterna ? titulo(decode(lei.descricaoInterna)) : null,

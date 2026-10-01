@@ -64,6 +64,7 @@ function parseCard(html) {
     segundaPraca: pracas.length > 1 ? pracas[1].valor ?? null : null,
     valorMercado: null,
     encerra: ativa.data || null,
+    fimPraca1: pracas.length > 1 ? primeira.data || null : null,
     status: status || null,
     natureza,
     comitente,

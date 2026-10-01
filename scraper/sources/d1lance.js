@@ -38,6 +38,7 @@ function mapear(l) {
     valorMercado: null,
     desconto: ativa.desconto && ativa.desconto < 100 ? 100 - ativa.desconto : null,
     encerra: ativa.data || iso(l.data_termino_leilao),
+    fimPraca1: pracas.length > 1 ? pracas[0].data || null : null,
     status: l.status === 'INICIADO' ? 'Aberto para lances' : 'Em breve',
     natureza: l.modalidade === 'JUDICIAL' ? 'Judicial' : 'Extrajudicial',
     comitente: null,

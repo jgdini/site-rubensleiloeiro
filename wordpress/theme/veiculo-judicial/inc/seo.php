@@ -152,6 +152,17 @@ function vj_seo_brl($v) {
 function vj_seo_local($l) {
     return !empty($l['cidade']) ? $l['cidade'] . (!empty($l['uf']) ? '/' . $l['uf'] : '') : ($l['uf'] ?? '');
 }
+/** Lote com 2ª praça cuja 1ª ainda está em andamento (mesma regra do app.js). */
+function vj_seo_em_primeira($l) {
+    if (empty($l['segundaPraca'])) return false;
+    if (!empty($l['fimPraca1'])) return strtotime($l['fimPraca1']) > time();
+    return ($l['praca'] ?? null) === 1;
+}
+function vj_seo_aviso_primeira($l) {
+    if (!vj_seo_em_primeira($l)) return '';
+    $quando = !empty($l['fimPraca1']) ? ' · o valor da 2ª vale após ' . wp_date('d/m', strtotime($l['fimPraca1'])) : ' · o valor da 2ª vale se não houver lance';
+    return '<p class="card__aviso"><b>Em andamento na 1ª praça</b>' . esc_html($quando) . '</p>';
+}
 function vj_seo_desconto($l) {
     if (!empty($l['segundaPraca']) && !empty($l['lanceInicial']) && $l['lanceInicial'] > $l['segundaPraca']) {
         return (int) round((1 - $l['segundaPraca'] / $l['lanceInicial']) * 100);
@@ -672,6 +683,7 @@ function vj_seo_card($l) {
       <div class="card__corpo">
         <h3 class="card__titulo"><a href="<?php echo esc_url($l['url']); ?>"><?php echo esc_html($l['titulo']); ?></a></h3>
         <p class="card__specs"><?php foreach ($specs as $s) echo '<span>' . esc_html($s) . '</span>'; ?></p>
+        <?php echo vj_seo_aviso_primeira($l); ?>
         <div class="card__preco">
           <span class="card__rotulo"><?php echo !empty($l['segundaPraca']) ? '2ª praça' : 'Praça única'; ?></span>
           <?php if ($pr) : ?><strong class="card__valor"><?php echo esc_html(vj_seo_brl($pr)); ?></strong><?php else : ?><strong class="card__valor sem">Ver edital</strong><?php endif; ?>

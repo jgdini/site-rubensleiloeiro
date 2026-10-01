@@ -43,6 +43,7 @@ get_header();
         <?php if (!empty($l['lanceInicial']) && !empty($l['segundaPraca']) && $l['lanceInicial'] > $l['segundaPraca']) : ?><div><dt>1ª praça (avaliação)</dt><dd><?php echo esc_html(vj_seo_brl($l['lanceInicial'])); ?></dd></div><?php endif; ?>
         <div><dt>Natureza</dt><dd>Judicial</dd></div>
       </dl>
+      <?php echo vj_seo_aviso_primeira($l); ?>
       <div class="lote__preco">
         <span class="card__rotulo"><?php echo !empty($l['segundaPraca']) ? 'Lance mínimo na 2ª praça' : 'Lance mínimo (praça única)'; ?></span>
         <strong><?php echo $pr ? esc_html(vj_seo_brl($pr)) : 'Ver edital'; ?></strong>

@@ -41,6 +41,7 @@ function parseCard(key, html) {
     valorMercado: null,
     desconto: desconto ? +desconto : null,
     encerra: ativa.data || null,
+    fimPraca1: instancias.length > 1 ? instancias[0].data || null : null,
     status: status || null,
     natureza,
     comitente: null,

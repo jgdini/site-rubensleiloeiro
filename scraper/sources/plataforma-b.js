@@ -145,6 +145,7 @@ async function detalhe(dom, url, base) {
       desconto: avaliacao && v2 && v2 < avaliacao ? Math.round((1 - v2 / avaliacao) * 100) : null,
       comissao: pct,
       encerra,
+      fimPraca1: v2 && e2 ? e1 : null,
       status,
       natureza: judicial ? 'Judicial' : 'Extrajudicial',
       comitente: comitente ? titulo(comitente) : null,
