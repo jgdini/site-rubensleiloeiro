@@ -23,7 +23,7 @@ require('./gerar-app-wp.cjs');
 
 // 2) Estilos e fotos
 fs.mkdirSync(path.join(tema, 'assets', 'rubens'), { recursive: true });
-for (const f of ['style.css', 'rubens.css']) fs.copyFileSync(path.join(raiz, 'assets', f), path.join(tema, 'assets', f));
+for (const f of ['style.css', 'rubens.css', 'og-capa.jpg']) fs.copyFileSync(path.join(raiz, 'assets', f), path.join(tema, 'assets', f));
 for (const f of fs.readdirSync(path.join(raiz, 'assets', 'rubens'))) {
   fs.copyFileSync(path.join(raiz, 'assets', 'rubens', f), path.join(tema, 'assets', 'rubens', f));
 }

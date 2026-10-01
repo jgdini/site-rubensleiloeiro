@@ -290,7 +290,7 @@ function vj_seo_meta() {
     $p = vj_seo_pagina();
     $tipos = vj_seo_tipos();
     $ufs = vj_seo_ufs();
-    $img = vj_asset('rubens/capa.jpg');
+    $img = vj_seo_og_padrao(); // capa da marca (1200×630); veículo e página do Rubens trocam abaixo
     $m = null;
 
     if ($p) {
@@ -337,6 +337,11 @@ function vj_seo_meta() {
     return $m;
 }
 
+/** Imagem padrão dos links compartilhados (WhatsApp, Facebook, LinkedIn…). Feita a partir de Arquivos/Capa Google.jpeg. */
+function vj_seo_og_padrao() {
+    return vj_asset('og-capa.jpg');
+}
+
 add_filter('pre_get_document_title', function ($t) {
     $m = vj_seo_meta();
     if (!$m) return $t;
@@ -366,6 +371,9 @@ add_action('wp_head', function () {
         'og:url' => $m['url'] ?: home_url('/'),
         'og:image' => $m['img'],
     ];
+    if ($m['img'] === vj_seo_og_padrao()) {
+        $og += ['og:image:width' => '1200', 'og:image:height' => '630', 'og:image:alt' => VJ_MARCA . ' — plataforma online de leilões judiciais de veículos'];
+    }
     foreach ($og as $k => $v) echo '<meta property="' . esc_attr($k) . '" content="' . esc_attr($v) . '" />' . "\n";
     echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
     foreach (vj_seo_schemas() as $s) {
