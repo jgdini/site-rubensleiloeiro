@@ -104,6 +104,32 @@ get_header();
     </form>
   </dialog>
 
+  <!-- Primeiro acesso / esqueci a senha (só no WordPress) -->
+  <dialog class="modal" id="modal-esqueci" aria-labelledby="esqueci-titulo">
+    <form method="dialog" class="modal__caixa" id="form-esqueci">
+      <button class="modal__fechar" value="cancelar" formnovalidate aria-label="Fechar">×</button>
+      <h2 id="esqueci-titulo">Criar ou trocar a senha</h2>
+      <p class="modal__sub">Informe o e-mail usado na compra. Enviamos um link para você criar a senha aqui no site.</p>
+      <label>E-mail<input type="email" name="email" autocomplete="username" required /></label>
+      <p class="modal__erro" id="esqueci-erro" hidden></p>
+      <p class="modal__ok" id="esqueci-ok" hidden></p>
+      <button type="submit" class="btn btn--primario btn--cheio" value="enviar">Enviar link</button>
+      <p class="modal__rodape"><button type="button" class="link" data-acao="entrar">Voltar para o login</button></p>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="modal-senha" aria-labelledby="senha-titulo">
+    <form method="dialog" class="modal__caixa" id="form-senha">
+      <button class="modal__fechar" value="cancelar" formnovalidate aria-label="Fechar">×</button>
+      <h2 id="senha-titulo">Crie sua senha</h2>
+      <p class="modal__sub">Use pelo menos 8 caracteres. Depois é só entrar com seu e-mail e esta senha.</p>
+      <label>Nova senha<input type="password" name="senha" autocomplete="new-password" minlength="8" required /></label>
+      <label>Repita a senha<input type="password" name="senha2" autocomplete="new-password" minlength="8" required /></label>
+      <p class="modal__erro" id="senha-erro" hidden></p>
+      <button type="submit" class="btn btn--primario btn--cheio" value="salvar">Salvar e entrar</button>
+    </form>
+  </dialog>
+
   <!-- Paywall -->
   <dialog class="modal" id="modal-plano" aria-labelledby="plano-titulo">
     <div class="modal__caixa">

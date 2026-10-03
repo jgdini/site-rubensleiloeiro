@@ -34,11 +34,100 @@ function lerSessao() {
 }
 const premium = () => !!(sessao && sessao.assinante);`);
 
-// 2b) Login: link "primeiro acesso / esqueci a senha" (página padrão do WordPress, que manda o link por e-mail).
+// 2b) Login: link "primeiro acesso / esqueci a senha" abre a janela do próprio site (nada de tela do WordPress).
 trocar(`  $('#form-login').reset();\n  $('#modal-login').showModal();`,
 `  $('#form-login').reset();
-  if (VJ.esqueciUrl) { $('#link-esqueci').href = VJ.esqueciUrl; $('#esqueci').hidden = false; }
+  $('#esqueci').hidden = false;
   $('#modal-login').showModal();`);
+
+// 2c) Sessão ao vivo + criar/trocar senha no site. As páginas ficam em cache (LiteSpeed/CDN) com o estado
+// de visitante; quem está logado é perguntado ao servidor a cada carga (/vj/v1/sessao, sem cache).
+trocar('async function iniciar() {\n  sessao = lerSessao();',
+`async function atualizarSessao() {
+  try {
+    const r = await fetch(VJ.sessaoUrl, { credentials: 'same-origin', cache: 'no-store' });
+    const s = await r.json();
+    Object.assign(VJ, { logado: !!s.logado, usuario: s.nome || '', assinante: !!s.assinante });
+    if (s.nonce) VJ.nonce = s.nonce;
+    if (s.sair) VJ.logoutUrl = s.sair;
+  } catch {}
+}
+
+async function postarConta(url, corpo) {
+  const r = await fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.message || 'Não foi possível concluir agora. Tente de novo.');
+  return j;
+}
+
+function abrirEsqueci() {
+  $('#modal-login').close();
+  $('#form-esqueci').reset();
+  $('#esqueci-erro').hidden = true;
+  $('#esqueci-ok').hidden = true;
+  $('#form-esqueci [type=submit]').hidden = false;
+  $('#modal-esqueci').showModal();
+  $('#form-esqueci [name=email]').focus();
+}
+
+function iniciarConta() {
+  $('#link-esqueci').addEventListener('click', (e) => { e.preventDefault(); abrirEsqueci(); });
+
+  $('#form-esqueci').addEventListener('submit', async (e) => {
+    if (e.submitter?.value === 'cancelar') return;
+    e.preventDefault();
+    const botao = e.target.querySelector('[type=submit]');
+    botao.disabled = true;
+    $('#esqueci-erro').hidden = true;
+    try {
+      const j = await postarConta(VJ.senhaPedirUrl, { email: String(new FormData(e.target).get('email')).trim() });
+      $('#esqueci-ok').textContent = j.mensagem;
+      $('#esqueci-ok').hidden = false;
+      botao.hidden = true;
+    } catch (err) {
+      $('#esqueci-erro').textContent = err.message;
+      $('#esqueci-erro').hidden = false;
+    }
+    botao.disabled = false;
+  });
+
+  // Link do e-mail: /?vj-senha={chave}&u={login} abre "Crie sua senha"; /?vj-esqueci=1 abre o pedido de link.
+  const p = new URLSearchParams(location.search);
+  const limparURL = () => {
+    const u = new URL(location.href);
+    ['vj-senha', 'u', 'vj-esqueci'].forEach((k) => u.searchParams.delete(k));
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+  };
+  if (p.get('vj-esqueci')) { limparURL(); abrirEsqueci(); }
+  if (p.get('vj-senha') && p.get('u')) {
+    const chave = p.get('vj-senha'), login = p.get('u');
+    limparURL();
+    $('#senha-erro').hidden = true;
+    $('#modal-senha').showModal();
+    $('#form-senha').addEventListener('submit', async (e) => {
+      if (e.submitter?.value === 'cancelar') return;
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const erro = (m) => { $('#senha-erro').textContent = m; $('#senha-erro').hidden = false; };
+      if (String(f.get('senha')).length < 8) return erro('A senha precisa ter pelo menos 8 caracteres.');
+      if (f.get('senha') !== f.get('senha2')) return erro('As duas senhas não são iguais.');
+      const botao = e.target.querySelector('[type=submit]');
+      botao.disabled = true;
+      try {
+        await postarConta(VJ.senhaDefinirUrl, { u: login, chave, senha: String(f.get('senha')) });
+        location.reload(); // já volta logado
+      } catch (err) {
+        erro(err.message);
+        botao.disabled = false;
+      }
+    });
+  }
+}
+
+async function iniciar() {
+  await atualizarSessao();
+  sessao = lerSessao();
+  iniciarConta();`);
 
 // 3) Nome da marca nas mensagens.
 t = t.split('Radar de Leilões').join('${CONFIG.marca}');

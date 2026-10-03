@@ -5,7 +5,7 @@
  */
 if (!defined('ABSPATH')) exit;
 
-define('VJ_TEMA_VERSAO', '1.1.6');
+define('VJ_TEMA_VERSAO', '1.2.0');
 define('VJ_MARCA', 'Veículo Judicial');
 
 require_once __DIR__ . '/inc/seo.php';
@@ -99,8 +99,10 @@ function vj_dados_js() {
         'vitrineUrl'  => rest_url('vj/v1/vitrine'),
         'lotesUrl'    => rest_url('vj/v1/lotes'),
         'loginUrl'    => rest_url('vj/v1/login'),
-        'logoutUrl'   => wp_logout_url(home_url('/')),
-        'esqueciUrl'  => wp_lostpassword_url(home_url('/')),
+        'logoutUrl'   => function_exists('vj_url_sair') ? vj_url_sair() : wp_logout_url(home_url('/')), // a sessão ao vivo troca este valor
+        'sessaoUrl'       => rest_url('vj/v1/sessao'),
+        'senhaPedirUrl'   => rest_url('vj/v1/senha/pedir'),
+        'senhaDefinirUrl' => rest_url('vj/v1/senha/definir'),
         'nonce'       => wp_create_nonce('wp_rest'),
         'logado'      => is_user_logged_in(),
         'usuario'     => $u->exists() ? $u->display_name : '',
