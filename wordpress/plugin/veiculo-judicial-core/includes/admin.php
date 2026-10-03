@@ -75,6 +75,39 @@ add_action('admin_post_vj_kiwify', function () {
     exit;
 });
 
+/* ---------- Tela Usuários: "Reenviar acesso" na linha e em massa ---------- */
+add_filter('user_row_actions', function ($acoes, $user) {
+    if (current_user_can('manage_options') && in_array(VJ_ROLE, (array) $user->roles, true)) {
+        $url = wp_nonce_url(admin_url('admin-post.php?action=vj_reenviar_link&alvo=' . $user->ID), 'vj_reenviar');
+        $acoes['vj_reenviar'] = '<a href="' . esc_url($url) . '">Reenviar acesso</a>';
+    }
+    return $acoes;
+}, 10, 2);
+add_action('admin_post_vj_reenviar_link', function () {
+    if (!current_user_can('manage_options')) wp_die('Sem permissão.');
+    check_admin_referer('vj_reenviar');
+    $user = get_user_by('id', (int) ($_GET['alvo'] ?? 0));
+    if (!$user) wp_die('Assinante não encontrado.');
+    $r = vj_enviar_acesso($user, !get_user_meta($user->ID, 'vj_senha_criada', true)) ? 'um' : 'fila';
+    wp_safe_redirect(add_query_arg('vj_reenvio', $r, wp_get_referer() ?: admin_url('users.php')));
+    exit;
+});
+add_filter('bulk_actions-users', function ($acoes) {
+    $acoes['vj_reenviar'] = 'Reenviar acesso (Veículo Judicial)';
+    return $acoes;
+});
+add_filter('handle_bulk_actions-users', function ($volta, $acao, $ids) {
+    if ($acao !== 'vj_reenviar' || !current_user_can('manage_options')) return $volta;
+    foreach ($ids as $id) vj_fila_adicionar($id, !get_user_meta($id, 'vj_senha_criada', true));
+    vj_fila_processar();
+    return add_query_arg('vj_reenvio', 'todos', $volta);
+}, 10, 3);
+add_action('admin_notices', function () {
+    if (empty($_GET['vj_reenvio']) || get_current_screen()->id !== 'users') return;
+    $msg = ['um' => 'Link de acesso enviado.', 'fila' => 'O e-mail está no limite de envios; o link entrou na fila e sai sozinho em alguns minutos.', 'todos' => 'Envio iniciado: os e-mails saem aos poucos (alguns a cada 10 minutos).'][$_GET['vj_reenvio']] ?? '';
+    if ($msg) echo '<div class="notice notice-success is-dismissible"><p>' . esc_html($msg) . '</p></div>';
+});
+
 add_action('admin_post_vj_reenviar', function () {
     if (!current_user_can('manage_options')) wp_die('Sem permissão.');
     check_admin_referer('vj_reenviar');
