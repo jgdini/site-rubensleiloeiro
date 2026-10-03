@@ -5,7 +5,7 @@
  */
 if (!defined('ABSPATH')) exit;
 
-define('VJ_TEMA_VERSAO', '1.1.5');
+define('VJ_TEMA_VERSAO', '1.1.6');
 define('VJ_MARCA', 'Veículo Judicial');
 
 require_once __DIR__ . '/inc/seo.php';
@@ -65,6 +65,8 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('vj-fontes', 'https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Instrument+Serif:ital@0;1&display=swap', [], null);
     wp_enqueue_style('vj-estilo', vj_asset('style.css'), ['vj-fontes'], VJ_TEMA_VERSAO);
     wp_enqueue_style('vj-tema', get_stylesheet_uri(), ['vj-estilo'], VJ_TEMA_VERSAO);
+    // Aviso "não somos leiloeiros / não nos responsabilizamos pelos anúncios" na primeira visita, em todas as páginas.
+    wp_enqueue_script('vj-aviso', vj_asset('aviso.js'), [], VJ_TEMA_VERSAO, ['in_footer' => true, 'strategy' => 'defer']);
 
     if (vj_eh_pagina_rubens()) {
         wp_enqueue_style('vj-rubens', vj_asset('rubens.css'), ['vj-estilo'], VJ_TEMA_VERSAO);

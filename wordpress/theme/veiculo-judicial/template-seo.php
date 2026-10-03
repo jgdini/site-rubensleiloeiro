@@ -58,7 +58,7 @@ get_header();
         <a class="btn btn--primario" href="<?php echo esc_url($busca); ?>">Ver link do leilão e custo total</a>
         <a class="btn btn--wpp" target="_blank" rel="noopener" href="<?php echo esc_url(vj_link_whats($wpp_txt)); ?>">Falar com o <?php echo esc_html($vj['nome_contato']); ?></a>
       </div>
-      <p class="lote__nota">O link do anúncio original, o leiloeiro, o processo e o custo total (comissão, oficial de justiça, carta de arrematação, transferência e assessoria) ficam disponíveis para assinantes. Valores e datas podem mudar — confira sempre o edital.</p>
+      <p class="lote__nota">O link do anúncio original, o leiloeiro, o processo e o custo total (comissão, oficial de justiça, carta de arrematação e transferência) ficam disponíveis para assinantes. Valores e datas podem mudar — confira sempre o edital.</p>
     </div>
   </article>
   <?php if ($parecidos) : ?>
@@ -84,7 +84,7 @@ get_header();
     <ol class="passos">
       <li><b>Encontre o veículo.</b> Use a <a href="<?php echo esc_url(home_url('/')); ?>">busca do <?php echo esc_html(VJ_MARCA); ?></a> ou navegue por <a href="<?php echo esc_url(vj_seo_url('hub')); ?>">categoria, estado e marca</a>. Mostramos sempre o valor da 2ª praça.</li>
       <li><b>Leia o edital.</b> Ele diz a data, o lance mínimo, a comissão do leiloeiro, a forma de pagamento, a situação de débitos e se há visitação.</li>
-      <li><b>Calcule o custo total.</b> O lance é só uma parte: some comissão, taxas, transferência e assessoria (veja abaixo).</li>
+      <li><b>Calcule o custo total.</b> O lance é só uma parte: some comissão, taxas e transferência (veja abaixo).</li>
       <li><b>Habilite-se no site do leiloeiro.</b> Cadastro e envio de documentos, com antecedência ao leilão.</li>
       <li><b>Dê o lance.</b> Pela internet, até o encerramento. Muitos leilões prorrogam o tempo quando entra lance no final.</li>
       <li><b>Pague e aguarde a carta de arrematação.</b> Com ela é feita a entrega do veículo e a transferência no Detran.</li>
@@ -101,7 +101,6 @@ get_header();
         <li><span>Condução do oficial de justiça</span><b><?php echo esc_html($k['oficial']); ?></b></li>
         <li><span>Expedição da carta de arrematação</span><b><?php echo esc_html($k['carta']); ?></b></li>
         <li><span>Transferência do veículo (aprox.)</span><b><?php echo esc_html($k['transf']); ?></b></li>
-        <li><span>Primeira consultoria jurídica</span><b><?php echo esc_html($k['consultoria']); ?></b></li>
       </ul>
       <p class="composicao__total"><span>Custo total estimado</span><b><?php echo esc_html(vj_seo_brl($ex['total'])); ?></b></p>
     </div>

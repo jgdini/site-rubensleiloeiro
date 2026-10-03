@@ -4,7 +4,8 @@
 const fs = require('fs');
 const path = require('path');
 const raiz = path.resolve(__dirname, '..');
-let t = fs.readFileSync(path.join(raiz, 'assets/app.js'), 'utf8');
+// O git no Windows pode devolver o arquivo com CRLF; as trocas abaixo esperam \n.
+let t = fs.readFileSync(path.join(raiz, 'assets/app.js'), 'utf8').replace(/\r\n/g, '\n');
 
 function trocar(de, para) {
   if (typeof de === 'string' ? !t.includes(de) : !de.test(t)) throw new Error('não achei: ' + String(de).slice(0, 80));
@@ -90,6 +91,6 @@ trocar(/    const f = new FormData\(e\.target\);\n    const email = [\s\S]*?\n  
     }
   });`);
 
-if (/USUARIOS_TESTE|gravarSessao\(|localStorage/.test(t)) throw new Error('sobrou referência ao login simulado');
+if (/USUARIOS_TESTE|gravarSessao\(|localStorage\.\w+\(CHAVE_SESSAO/.test(t)) throw new Error('sobrou referência ao login simulado');
 fs.writeFileSync(path.join(raiz, 'wordpress/theme/veiculo-judicial/assets/app.js'), '// Gerado por wordpress/gerar-app-wp.cjs a partir de assets/app.js — não edite à mão.\n' + t);
 console.log('ok: tema/assets/app.js gerado');

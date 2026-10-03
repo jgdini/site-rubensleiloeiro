@@ -1,7 +1,7 @@
 <?php if (!defined('ABSPATH')) exit; ?>
   <footer class="rodape">
     <div class="wrap">
-      <p><b><?php echo esc_html(VJ_MARCA); ?></b> reúne anúncios publicados por leiloeiros oficiais em leilões judiciais, com curadoria e assessoria jurídica do Dr. Rubens Filippe de Jesus. Lances, pagamentos, editais e condições são de responsabilidade exclusiva do leiloeiro. Valores e datas podem mudar — sempre confira no anúncio original antes de dar um lance.</p>
+      <p><b><?php echo esc_html(VJ_MARCA); ?></b> é uma ferramenta de busca: reúne anúncios de leilões judiciais publicados por leiloeiros oficiais em seus próprios sites. Não somos leiloeiros, não vendemos os veículos e não participamos dos leilões. Fotos, descrições, valores, datas, editais e condições são de responsabilidade exclusiva de cada leiloeiro, e o <?php echo esc_html(VJ_MARCA); ?> não se responsabiliza por divergências, pelo resultado dos leilões nem por negociações com terceiros. Confira sempre o anúncio original e o edital antes de dar um lance.</p>
       <p class="rodape__fontes" id="rodape-fontes"></p>
       <nav class="rodape__explorar" aria-label="Explorar">
         <a href="<?php echo esc_url(vj_seo_url('hub')); ?>">Leilão judicial de veículos</a>

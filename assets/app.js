@@ -15,6 +15,17 @@ const CONFIG = {
   },
 };
 
+// A consultoria do Rubens é um serviço à parte e opcional: só entra na conta se o assinante marcar
+// "Saber valor da consultoria" (evita venda casada). A escolha fica guardada no navegador.
+const CHAVE_CONSULTORIA = 'vj-consultoria';
+let comConsultoria = false;
+try { comConsultoria = localStorage.getItem(CHAVE_CONSULTORIA) === '1'; } catch {}
+function definirConsultoria(sim) {
+  comConsultoria = !!sim;
+  try { localStorage.setItem(CHAVE_CONSULTORIA, comConsultoria ? '1' : '0'); } catch {}
+  document.querySelectorAll('[data-consultoria]').forEach((c) => (c.checked = comConsultoria));
+}
+
 // Composição do custo total para um valor de arremate.
 function calcularCustos(valor, comissaoLote) {
   const c = CONFIG.custos;
@@ -25,8 +36,8 @@ function calcularCustos(valor, comissaoLote) {
     { rotulo: 'Condução do oficial de justiça', valor: c.oficialJustica },
     { rotulo: 'Expedição da carta de arrematação', valor: c.cartaArrematacao },
     { rotulo: 'Transferência do veículo (aprox.)', valor: c.transferencia, aprox: true },
-    { rotulo: 'Consultoria Rubens (1ª consultoria)', valor: c.consultoria },
   ];
+  if (comConsultoria) itens.push({ rotulo: 'Consultoria Dr. Rubens (opcional)', valor: c.consultoria });
   return { itens, total: itens.reduce((s, i) => s + i.valor, 0) };
 }
 
@@ -237,7 +248,7 @@ function card(l) {
       a.setAttribute('role', 'button');
       a.tabIndex = a.classList.contains('card__foto') ? -1 : 0;
     });
-    total.innerHTML = `<span class="card__total-rot">Custo total c/ taxas e assessoria</span><span class="cadeado">${ICONE_CADEADO}Assinantes</span>`;
+    total.innerHTML = `<span class="card__total-rot">Custo total c/ taxas</span><span class="cadeado">${ICONE_CADEADO}Assinantes</span>`;
     acoes.innerHTML = `<button type="button" class="btn btn--primario btn--cheio">${ICONE_CADEADO}Ver anúncio e custo total</button>`;
     el.querySelector('.card__natureza').textContent = 'Leilão judicial';
     const abrir = () => abrirPlano(l);
@@ -251,7 +262,10 @@ function card(l) {
 function render() {
   const lista = filtrar();
   $('#grade').replaceChildren(...lista.slice(0, estado.mostrando).map(card));
-  $('#contagem').innerHTML = `<b>${lista.length.toLocaleString('pt-BR')}</b> ${lista.length === 1 ? 'veículo encontrado' : 'veículos encontrados'}`;
+  $('#contagem').innerHTML = `<b>${lista.length.toLocaleString('pt-BR')}</b> ${lista.length === 1 ? 'veículo encontrado' : 'veículos encontrados'}` +
+    (premium() ? `<label class="opcao"><input type="checkbox" data-consultoria${comConsultoria ? ' checked' : ''}> Saber valor da consultoria do Dr. Rubens <small>(opcional)</small></label>` : '');
+  const op = $('#contagem [data-consultoria]');
+  if (op) op.onchange = () => { definirConsultoria(op.checked); render(); };
   $('#mais').hidden = lista.length <= estado.mostrando;
   $('#vazio').hidden = lista.length > 0;
 
@@ -324,6 +338,9 @@ function abrirSimulador(l) {
   const fmt = (v) => v.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
   input.value = preco(l) ? fmt(preco(l)) : '';
   input.oninput = atualizar;
+  const opcao = $('#calc-consultoria');
+  opcao.checked = comConsultoria;
+  opcao.onchange = () => { definirConsultoria(opcao.checked); atualizar(); render(); };
   input.onblur = () => input.value && (input.value = fmt(parseFloat(input.value.replace(/\./g, '').replace(',', '.')) || 0));
   // Atalhos: +R$ 1.000 / +R$ 5.000 sobre o lance atual (a disputa costuma subir).
   m.querySelectorAll('[data-soma]').forEach((b) => {

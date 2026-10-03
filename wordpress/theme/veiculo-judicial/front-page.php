@@ -17,7 +17,7 @@ get_header();
       <div class="plano" id="plano" hidden>
         <div class="plano__txt">
           <span class="plano__selo">Vitrine gratuita</span>
-          <p><b>O preço do lance não é o preço final.</b> Assinantes veem o custo total da operação (comissão, taxas do fórum, transferência e assessoria), simulam o próprio lance, acessam o leilão e falam direto com o Rubens pra arrematar com segurança.</p>
+          <p><b>O preço do lance não é o preço final.</b> Assinantes veem o custo total da operação (comissão, taxas do fórum e transferência), simulam o próprio lance, acessam o leilão e falam direto com o Rubens pra arrematar com segurança.</p>
         </div>
         <div class="plano__acoes">
           <button type="button" class="btn btn--primario" data-acao="assinar">Quero assinar</button>
@@ -82,6 +82,7 @@ get_header();
           <button type="button" class="btn btn--linha btn--peq" data-soma="5000">+5 mil</button>
         </div>
       </label>
+      <label class="opcao"><input type="checkbox" id="calc-consultoria" data-consultoria /> Saber valor da consultoria do Dr. Rubens <small>(opcional)</small></label>
       <div class="composicao composicao--aberta" id="calc-tabela"></div>
       <p class="calc__nota">Valores estimados. A comissão do leiloeiro e as taxas podem variar conforme o edital; a transferência depende do estado e da situação do veículo.</p>
       <a class="btn btn--wpp btn--cheio" id="calc-wpp" target="_blank" rel="noopener">Enviar simulação ao Rubens</a>
@@ -114,7 +115,7 @@ get_header();
         <li>Custo total da operação calculado em cada veículo: lance + comissão + taxas + transferência</li>
         <li>Simulador de lance: veja o total antes de disputar</li>
         <li>Link direto pro edital e pra página do leilão</li>
-        <li>Assessoria do Rubens no WhatsApp do lance à transferência</li>
+        <li>Contato direto com o Rubens pelo WhatsApp (consultoria jurídica opcional, contratada à parte)</li>
       </ul>
       <p class="preco-plano" id="preco-plano"></p>
       <a class="btn btn--wpp btn--cheio" id="btn-assinar-wpp" target="_blank" rel="noopener">Quero assinar pelo WhatsApp</a>

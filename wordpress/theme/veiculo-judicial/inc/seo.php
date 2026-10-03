@@ -327,7 +327,7 @@ function vj_seo_meta() {
                 $l = $p['lote'];
                 $nome = trim($l['titulo'] . ' ' . ($l['ano'] ?? ''));
                 $pr = vj_seo_preco($l);
-                $desc = $nome . ' em leilão judicial' . (vj_seo_local($l) ? ' em ' . vj_seo_local($l) : '') . ($pr ? ', ' . (!empty($l['segundaPraca']) ? '2ª praça' : 'lance') . ' ' . vj_seo_brl($pr) : '') . ($l['ts'] ? '. Encerra em ' . wp_date('d/m/Y', $l['ts']) : '') . '. Veja o custo total da arrematação com a assessoria do Dr. Rubens.';
+                $desc = $nome . ' em leilão judicial' . (vj_seo_local($l) ? ' em ' . vj_seo_local($l) : '') . ($pr ? ', ' . (!empty($l['segundaPraca']) ? '2ª praça' : 'lance') . ' ' . vj_seo_brl($pr) : '') . ($l['ts'] ? '. Encerra em ' . wp_date('d/m/Y', $l['ts']) : '') . '. Veja o custo total estimado da arrematação.';
                 $m = [$nome . ' — leilão judicial' . (vj_seo_local($l) ? ' em ' . vj_seo_local($l) : ''), $desc, $l['url']];
                 if (!empty($l['imagem'])) $img = $l['imagem'];
                 break;
@@ -339,7 +339,7 @@ function vj_seo_meta() {
                 break;
         }
     } elseif (is_front_page()) {
-        $m = [VJ_MARCA . ' — veículos de leilão judicial num só lugar', 'Carros, motos, caminhões, tratores e outros veículos em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis. Custo total da arrematação e assessoria do Dr. Rubens.', home_url('/')];
+        $m = [VJ_MARCA . ' — veículos de leilão judicial num só lugar', 'Carros, motos, caminhões, tratores e outros veículos em leilões judiciais dos principais leiloeiros oficiais do Brasil, reunidos e filtráveis, com o custo total estimado de cada arrematação.', home_url('/')];
     } elseif (function_exists('vj_eh_pagina_rubens') && vj_eh_pagina_rubens()) {
         $m = ['Dr. Rubens Filippe de Jesus — advogado especialista em leilões', 'Conheça o Dr. Rubens Filippe de Jesus, advogado membro da Comissão Especial de Leilões da OAB-SP, que assessora a compra de veículos em leilões judiciais.', vj_url_rubens()];
         $img = vj_asset('rubens/retrato.jpg');
@@ -553,7 +553,7 @@ function vj_seo_custos() {
 function vj_seo_exemplo($lance = 30000) {
     $c = vj_seo_custos()['bruto'];
     $com = $lance * ((float) $c['comissao_pct']) / 100;
-    $total = $lance + $com + $c['oficial_justica'] + $c['carta_arrematacao'] + $c['transferencia'] + $c['consultoria'];
+    $total = $lance + $com + $c['oficial_justica'] + $c['carta_arrematacao'] + $c['transferencia']; // consultoria é opcional e não entra
     return ['lance' => $lance, 'comissao' => $com, 'total' => $total];
 }
 
@@ -569,7 +569,7 @@ function vj_seo_faq() {
         ['O que são a 1ª e a 2ª praça?',
          'Na 1ª praça (1º leilão) o lance mínimo é o valor de avaliação do veículo. Se ninguém der lance, acontece a 2ª praça (2º leilão), em que o juiz aceita lances menores, respeitando um mínimo — pelo Código de Processo Civil (art. 891), se o juiz não fixar outro valor, não se aceita lance inferior a 50% da avaliação. Por isso o ' . esc_html(VJ_MARCA) . ' mostra sempre o valor da 2ª praça.'],
         ['Quanto custa arrematar um veículo além do lance?',
-         'Além do lance, entram: a comissão do leiloeiro (normalmente ' . $k['comissao'] . '% sobre o valor arrematado, ou a que o edital indicar), cerca de ' . $k['oficial'] . ' de condução do oficial de justiça, ' . $k['carta'] . ' para a expedição da carta de arrematação e aproximadamente ' . $k['transf'] . ' de transferência no Detran. Com a assessoria jurídica (' . $k['consultoria'] . ' na primeira consultoria), um lance de ' . vj_seo_brl($ex['lance']) . ' resulta em um custo total de cerca de ' . vj_seo_brl($ex['total']) . '.'],
+         'Além do lance, entram: a comissão do leiloeiro (normalmente ' . $k['comissao'] . '% sobre o valor arrematado, ou a que o edital indicar), cerca de ' . $k['oficial'] . ' de condução do oficial de justiça, ' . $k['carta'] . ' para a expedição da carta de arrematação e aproximadamente ' . $k['transf'] . ' de transferência no Detran. Assim, um lance de ' . vj_seo_brl($ex['lance']) . ' resulta em um custo total de cerca de ' . vj_seo_brl($ex['total']) . '. A consultoria jurídica é um serviço opcional, contratado à parte.'],
         ['Quem paga a comissão do leiloeiro?',
          'O arrematante. A comissão é paga à parte, além do lance, e normalmente é de ' . $k['comissao'] . '% sobre o valor da arrematação. O percentual exato está no edital.'],
         ['Posso parcelar o lance?',
@@ -647,9 +647,9 @@ function vj_seo_llms_txt() {
     $ex = vj_seo_exemplo();
     $tipos = vj_seo_tipos();
     $o = '# ' . VJ_MARCA . "\n\n";
-    $o .= '> Agregador de veículos em leilão JUDICIAL no Brasil (carros, motos, caminhões, ônibus, máquinas, reboques, barcos e aeronaves), atualizado todos os dias às 6h (Brasília), com curadoria e assessoria jurídica do Dr. Rubens Filippe de Jesus, advogado membro da Comissão Especial de Leilões da OAB-SP.' . "\n\n";
+    $o .= '> Agregador de veículos em leilão JUDICIAL no Brasil (carros, motos, caminhões, ônibus, máquinas, reboques, barcos e aeronaves), atualizado todos os dias às 6h (Brasília), com curadoria do Dr. Rubens Filippe de Jesus, advogado membro da Comissão Especial de Leilões da OAB-SP.' . "\n\n";
     $o .= 'Hoje: ' . count($d['lotes']) . ' veículos ativos' . (!empty($d['leiloeiros']) ? ' de ' . (int) $d['leiloeiros'] . ' leiloeiros oficiais' : '') . ($d['gerado'] ? ' (coleta de ' . wp_date('d/m/Y', strtotime($d['gerado'])) . ')' : '') . ". O valor exibido é o da 2ª praça (2º leilão); quando não há 2ª praça, é o lance da praça única.\n\n";
-    $o .= "Custo total estimado de uma arrematação = lance + comissão do leiloeiro ({$k['comissao']}% ou a do edital) + {$k['oficial']} (condução do oficial de justiça) + {$k['carta']} (carta de arrematação) + ~{$k['transf']} (transferência) + {$k['consultoria']} (primeira consultoria jurídica). Exemplo: lance de " . vj_seo_brl($ex['lance']) . ' → custo total ≈ ' . vj_seo_brl($ex['total']) . ".\n\n";
+    $o .= "Custo total estimado de uma arrematação = lance + comissão do leiloeiro ({$k['comissao']}% ou a do edital) + {$k['oficial']} (condução do oficial de justiça) + {$k['carta']} (carta de arrematação) + ~{$k['transf']} (transferência). A consultoria jurídica é opcional e contratada à parte. Exemplo: lance de " . vj_seo_brl($ex['lance']) . ' → custo total ≈ ' . vj_seo_brl($ex['total']) . ".\n\n";
     $o .= "## Páginas principais\n\n";
     $o .= '- [Como comprar veículo em leilão judicial](' . vj_seo_url('guia') . "): guia, custos e perguntas frequentes\n";
     $o .= '- [Todos os veículos por categoria, estado e marca](' . vj_seo_url('hub') . ")\n";
