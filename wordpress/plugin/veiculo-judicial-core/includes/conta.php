@@ -95,7 +95,7 @@ function vj_rest_senha_pedir(WP_REST_Request $req) {
     if (get_transient($trava)) return $resposta;
     set_transient($trava, 1, 2 * MINUTE_IN_SECONDS);
     $user = get_user_by('email', $email);
-    if ($user) vj_enviar_link_senha($user, !get_user_meta($user->ID, 'vj_senha_criada', true));
+    if ($user) vj_enviar_acesso($user, !get_user_meta($user->ID, 'vj_senha_criada', true));
     return $resposta; // mesma resposta exista ou não a conta
 }
 

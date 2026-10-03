@@ -75,6 +75,25 @@ add_action('admin_post_vj_kiwify', function () {
     exit;
 });
 
+add_action('admin_post_vj_reenviar', function () {
+    if (!current_user_can('manage_options')) wp_die('Sem permissão.');
+    check_admin_referer('vj_reenviar');
+    $alvo = sanitize_text_field(wp_unslash($_POST['alvo'] ?? ''));
+    if ($alvo === 'todos') {
+        foreach (get_users(['role' => VJ_ROLE, 'fields' => 'ID', 'number' => 500]) as $id) {
+            vj_fila_adicionar($id, !get_user_meta($id, 'vj_senha_criada', true));
+        }
+        vj_fila_processar(); // primeira leva já sai agora
+        $r = 'todos';
+    } else {
+        $user = get_user_by('id', (int) $alvo);
+        if (!$user) wp_die('Assinante não encontrado.');
+        $r = vj_enviar_acesso($user, !get_user_meta($user->ID, 'vj_senha_criada', true)) ? 'um' : 'fila';
+    }
+    wp_safe_redirect(admin_url('options-general.php?page=veiculo-judicial&reenvio=' . $r));
+    exit;
+});
+
 add_action('admin_post_vj_ativar_manual', function () {
     if (!current_user_can('manage_options')) wp_die('Sem permissão.');
     check_admin_referer('vj_ativar_manual');
@@ -181,6 +200,51 @@ function vj_tela_config() {
         <?php foreach (array_slice($log, 0, 10) as $l) printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html(mysql2date('d/m/Y H:i', $l['quando'])), esc_html($l['evento']), esc_html($l['email']), esc_html($l['resultado'])); ?>
         </tbody></table>
       <?php endif; ?>
+
+      <h2>Acesso dos assinantes</h2>
+      <?php
+      if (isset($_GET['reenvio'])) {
+          $msg = ['um' => 'Link enviado.', 'fila' => 'Link na fila: o servidor de e-mail está no limite de envios; o site tenta de novo sozinho a cada 10 minutos.', 'todos' => 'Envio para todos iniciado. Os e-mails saem aos poucos (alguns a cada 10 minutos) para não estourar o limite da Hostinger.'][$_GET['reenvio']] ?? '';
+          if ($msg) echo '<div class="notice notice-success"><p>' . esc_html($msg) . '</p></div>';
+      }
+      $fila = vj_fila();
+      $erro = get_option('vj_ultimo_erro_email');
+      $assinantes = get_users(['role' => VJ_ROLE, 'orderby' => 'registered', 'order' => 'DESC', 'number' => 500]);
+      ?>
+      <p>Cada assinante recebe um e-mail com o link para criar a senha no próprio site (vale 24 horas). Se o e-mail da Hostinger estiver no limite, o envio entra na fila e sai sozinho depois.
+         <?php echo $fila ? '<br><b>Na fila agora: ' . count($fila) . '</b>.' : ''; ?>
+         <?php if ($erro) echo '<br><span style="color:#b32d2e">Último erro de e-mail (' . esc_html(mysql2date('d/m H:i', $erro['quando'])) . '): ' . esc_html(mb_strimwidth($erro['msg'], 0, 160, '…')) . '</span>'; ?></p>
+      <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-bottom:10px" onsubmit="return confirm('Enviar o e-mail de acesso para todos os assinantes? Quem já tem senha pode ignorar o e-mail.');">
+        <input type="hidden" name="action" value="vj_reenviar">
+        <input type="hidden" name="alvo" value="todos">
+        <?php wp_nonce_field('vj_reenviar'); ?>
+        <?php submit_button('Reenviar acesso a todos (' . count($assinantes) . ')', 'secondary', 'submit', false); ?>
+      </form>
+      <table class="widefat striped" style="max-width:980px">
+        <thead><tr><th>Assinante</th><th>Cadastro</th><th>Origem</th><th>Último link enviado</th><th>Senha criada no site</th><th></th></tr></thead>
+        <tbody>
+        <?php foreach ($assinantes as $a) :
+            $env = get_user_meta($a->ID, 'vj_acesso_enviado', true);
+            $sen = get_user_meta($a->ID, 'vj_senha_criada', true); ?>
+          <tr>
+            <td><?php echo esc_html($a->display_name); ?><br><small><?php echo esc_html($a->user_email); ?></small></td>
+            <td><?php echo esc_html(mysql2date('d/m/Y', $a->user_registered)); ?></td>
+            <td><?php echo esc_html(get_user_meta($a->ID, 'vj_origem', true) ?: '—'); ?></td>
+            <td><?php echo isset($fila[$a->ID]) ? '<b>na fila</b>' : ($env ? esc_html(mysql2date('d/m H:i', $env)) : '—'); ?></td>
+            <td><?php echo $sen ? esc_html(mysql2date('d/m H:i', $sen)) : '—'; ?></td>
+            <td>
+              <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin:0">
+                <input type="hidden" name="action" value="vj_reenviar">
+                <input type="hidden" name="alvo" value="<?php echo (int) $a->ID; ?>">
+                <?php wp_nonce_field('vj_reenviar'); ?>
+                <button class="button button-small">Reenviar</button>
+              </form>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+      <p class="description">"Senha criada no site" só aparece para quem criou a senha pelo novo link; quem criou antes pela tela antiga do WordPress aparece com "—", mas continua entrando normalmente.</p>
 
       <h2>Ativar assinante manualmente</h2>
       <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">

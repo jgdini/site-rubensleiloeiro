@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Veículo Judicial – Núcleo
  * Description: Dados dos leilões (vitrine pública × base completa para assinantes), login dos assinantes, importação diária da coleta e configurações do site Veículo Judicial.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: DRLSYS
  * Text Domain: veiculo-judicial
  * Requires at least: 6.2
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('VJ_VERSAO', '1.2.0');
+define('VJ_VERSAO', '1.3.0');
 define('VJ_ROLE', 'vj_assinante');
 define('VJ_CAP', 'vj_premium');
 
@@ -22,6 +22,7 @@ require_once __DIR__ . '/includes/admin.php';
 require_once __DIR__ . '/includes/agenda.php';
 require_once __DIR__ . '/includes/kiwify.php';
 require_once __DIR__ . '/includes/conta.php';
+require_once __DIR__ . '/includes/fila-email.php';
 
 /* ---------- Ativação ---------- */
 register_activation_hook(__FILE__, function () {

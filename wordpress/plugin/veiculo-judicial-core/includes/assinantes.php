@@ -40,7 +40,7 @@ function vj_ativar_assinante($email, $nome = '', $origem = 'manual') {
     update_user_meta($user->ID, 'vj_ativado_em', current_time('mysql'));
 
     // Conta nova (ou que nunca criou senha): e-mail de boas-vindas com o link do site para criar a senha.
-    if ($novo || !get_user_meta($user->ID, 'vj_senha_criada', true)) vj_enviar_link_senha($user, true);
+    if ($novo || !get_user_meta($user->ID, 'vj_senha_criada', true)) vj_enviar_acesso($user, true);
     return $user->ID;
 }
 
