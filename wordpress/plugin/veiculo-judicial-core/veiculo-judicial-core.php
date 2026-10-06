@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Veículo Judicial – Núcleo
  * Description: Dados dos leilões (vitrine pública × base completa para assinantes), login dos assinantes, importação diária da coleta e configurações do site Veículo Judicial.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Author: DRLSYS
  * Text Domain: veiculo-judicial
  * Requires at least: 6.2
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('VJ_VERSAO', '1.3.1');
+define('VJ_VERSAO', '1.4.0');
 define('VJ_ROLE', 'vj_assinante');
 define('VJ_CAP', 'vj_premium');
 

@@ -229,9 +229,11 @@ function vj_tela_config() {
         <?php submit_button('Salvar Kiwify', 'secondary'); ?>
       </form>
       <?php $log = get_option('vj_kiwify_log', []); if ($log) : ?>
-        <table class="widefat striped" style="max-width:900px"><thead><tr><th>Quando</th><th>Evento</th><th>E-mail</th><th>Resultado</th></tr></thead><tbody>
-        <?php foreach (array_slice($log, 0, 10) as $l) printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html(mysql2date('d/m/Y H:i', $l['quando'])), esc_html($l['evento']), esc_html($l['email']), esc_html($l['resultado'])); ?>
-        </tbody></table>
+        <div style="max-width:900px;max-height:340px;overflow:auto;border:1px solid #c3c4c7">
+        <table class="widefat striped" style="border:0"><thead><tr><th>Quando</th><th>Evento</th><th>E-mail</th><th>Resultado</th></tr></thead><tbody>
+        <?php foreach (array_slice($log, 0, 200) as $l) printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html(mysql2date('d/m/Y H:i', $l['quando'])), esc_html($l['evento']), esc_html($l['email']), esc_html($l['resultado'])); ?>
+        </tbody></table></div>
+        <p class="description"><?php echo count($log); ?> eventos registrados (os mais recentes primeiro).</p>
       <?php endif; ?>
 
       <h2>Acesso dos assinantes</h2>
@@ -254,7 +256,7 @@ function vj_tela_config() {
         <?php submit_button('Reenviar acesso a todos (' . count($assinantes) . ')', 'secondary', 'submit', false); ?>
       </form>
       <table class="widefat striped" style="max-width:980px">
-        <thead><tr><th>Assinante</th><th>Cadastro</th><th>Origem</th><th>Último link enviado</th><th>Senha criada no site</th><th></th></tr></thead>
+        <thead><tr><th>Assinante</th><th>Cadastro</th><th>Origem</th><th>Situação</th><th>Último link enviado</th><th>Senha criada no site</th><th></th></tr></thead>
         <tbody>
         <?php foreach ($assinantes as $a) :
             $env = get_user_meta($a->ID, 'vj_acesso_enviado', true);
@@ -263,6 +265,10 @@ function vj_tela_config() {
             <td><?php echo esc_html($a->display_name); ?><br><small><?php echo esc_html($a->user_email); ?></small></td>
             <td><?php echo esc_html(mysql2date('d/m/Y', $a->user_registered)); ?></td>
             <td><?php echo esc_html(get_user_meta($a->ID, 'vj_origem', true) ?: '—'); ?></td>
+            <td><?php
+              $ate = get_user_meta($a->ID, 'vj_acesso_ate', true);
+              echo $ate ? '<span style="color:#b26200">Cancelada — acesso até ' . esc_html(mysql2date('d/m/Y', $ate)) . '</span>' : 'Ativa';
+            ?></td>
             <td><?php echo isset($fila[$a->ID]) ? '<b>na fila</b>' : ($env ? esc_html(mysql2date('d/m H:i', $env)) : '—'); ?></td>
             <td><?php echo $sen ? esc_html(mysql2date('d/m H:i', $sen)) : '—'; ?></td>
             <td>
