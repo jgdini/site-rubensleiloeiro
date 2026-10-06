@@ -50,6 +50,7 @@ trocar('async function iniciar() {\n  sessao = lerSessao();',
     Object.assign(VJ, { logado: !!s.logado, usuario: s.nome || '', assinante: !!s.assinante });
     if (s.nonce) VJ.nonce = s.nonce;
     if (s.sair) VJ.logoutUrl = s.sair;
+    VJ.painelUrl = s.painel || '';
   } catch {}
 }
 
@@ -145,7 +146,7 @@ trocar(`  const arquivo = premium() ? 'data/lotes.json' : 'data/vitrine.json';
 trocar(`    conta.innerHTML = \`<span class="conta__selo">Assinante</span><span class="conta__nome">\${esc(sessao.nome.split(' ')[0])}</span><button type="button" class="link" id="sair">Sair</button>\`;
     $('#sair').onclick = async () => { sessao = null; gravarSessao(null); await trocarModo(); };
   } else {`,
-`    conta.innerHTML = \`<span class="conta__selo">Assinante</span><span class="conta__nome">\${esc(sessao.nome.split(' ')[0])}</span><a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;
+`    conta.innerHTML = \`<span class="conta__selo">Assinante</span><span class="conta__nome">\${esc(sessao.nome.split(' ')[0])}</span>\${VJ.painelUrl ? \`<a class="link" href="\${esc(VJ.painelUrl)}">Leiloeiros</a>\` : ''}<a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;
   } else if (sessao) {
     conta.innerHTML = \`<span class="conta__nome" title="Sua assinatura não está ativa">\${esc(sessao.nome.split(' ')[0])} · sem assinatura</span><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button><a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;
   } else {`);

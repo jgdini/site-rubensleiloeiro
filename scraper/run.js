@@ -15,6 +15,7 @@ import * as plataformaB from './sources/plataforma-b.js';
 import * as zuk from './sources/zuk.js';
 import * as suporte from './sources/suporte-leiloes.js';
 import * as leilaopro from './sources/leilaopro.js';
+import { aplicarFontesDoSite, resumoSites, dominio } from './fontes-site.js';
 
 // Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
 const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl, plataformaB, zuk, suporte, leilaopro];
@@ -23,6 +24,8 @@ const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');
 
 const filtro = process.argv.slice(2);
+// Leiloeiros incluídos/pausados pelo gestor no site (WordPress → Leiloeiros).
+const { pausados } = await aplicarFontesDoSite();
 const anterior = await readFile(saida, 'utf8').then(JSON.parse).catch(() => null);
 
 const lotes = [];
@@ -51,16 +54,16 @@ for (const f of FONTES) {
   }
 }
 
-// Remove já encerrados e duplicatas.
+// Remove já encerrados, duplicatas e leiloeiros pausados pelo gestor (inclusive os que vêm pelos portais).
 const agora = Date.now();
 const unicos = [...new Map(lotes.map((l) => [l.id, l])).values()].filter(
-  (l) => !l.encerra || new Date(l.encerra).getTime() > agora - 2 * 3600e3
+  (l) => (!l.encerra || new Date(l.encerra).getTime() > agora - 2 * 3600e3) && !pausados.has(dominio(l.leiloeiroSite || ''))
 );
 unicos.sort((a, b) => (a.encerra ? new Date(a.encerra) : Infinity) - (b.encerra ? new Date(b.encerra) : Infinity));
 
 const geradoEm = new Date().toISOString();
 await mkdir(path.dirname(saida), { recursive: true });
-await writeFile(saida, JSON.stringify({ geradoEm, total: unicos.length, fontes, lotes: unicos }, null, 1));
+await writeFile(saida, JSON.stringify({ geradoEm, total: unicos.length, fontes, sites: resumoSites(unicos), lotes: unicos }, null, 1));
 
 // Vitrine gratuita: mostra o preço, mas sem link e sem leiloeiro/órgão (o assinante paga pra chegar ao leilão).
 // Em produção, SÓ este arquivo fica público; lotes.json deve ser servido apenas a usuários logados.

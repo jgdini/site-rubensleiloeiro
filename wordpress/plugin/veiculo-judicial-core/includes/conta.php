@@ -42,6 +42,7 @@ function vj_rest_sessao() {
         'assinante' => user_can($u, VJ_CAP),
         'nonce'     => wp_create_nonce('wp_rest'),
         'sair'      => vj_url_sair(),
+        'painel'    => current_user_can('vj_gerir_fontes') ? admin_url('admin.php?page=vj-leiloeiros') : '',
     ];
 }
 

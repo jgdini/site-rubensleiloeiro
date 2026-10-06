@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Veículo Judicial – Núcleo
  * Description: Dados dos leilões (vitrine pública × base completa para assinantes), login dos assinantes, importação diária da coleta e configurações do site Veículo Judicial.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: DRLSYS
  * Text Domain: veiculo-judicial
  * Requires at least: 6.2
@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('VJ_VERSAO', '1.4.0');
+define('VJ_VERSAO', '1.5.0');
 define('VJ_ROLE', 'vj_assinante');
 define('VJ_CAP', 'vj_premium');
 
@@ -23,6 +23,7 @@ require_once __DIR__ . '/includes/agenda.php';
 require_once __DIR__ . '/includes/kiwify.php';
 require_once __DIR__ . '/includes/conta.php';
 require_once __DIR__ . '/includes/fila-email.php';
+require_once __DIR__ . '/includes/fontes.php';
 
 /* ---------- Ativação ---------- */
 register_activation_hook(__FILE__, function () {
@@ -58,6 +59,13 @@ function vj_config() {
 /* ---------- Assinante não entra no wp-admin nem vê a barra do WP ---------- */
 add_action('admin_init', function () {
     if (wp_doing_ajax() || current_user_can('edit_posts')) return;
+    // Gestor de leiloeiros entra só na área dele.
+    if (current_user_can('vj_gerir_fontes')) {
+        global $pagenow;
+        $pode = in_array($pagenow, ['admin-post.php', 'profile.php'], true) || ($pagenow === 'admin.php' && ($_GET['page'] ?? '') === 'vj-leiloeiros');
+        if (!$pode) { wp_safe_redirect(admin_url('admin.php?page=vj-leiloeiros')); exit; }
+        return;
+    }
     if (is_user_logged_in()) {
         wp_safe_redirect(home_url('/'));
         exit;
@@ -65,8 +73,9 @@ add_action('admin_init', function () {
 });
 // Quem entra pela tela padrão do WordPress (ex.: depois de criar a senha) vai direto para a vitrine.
 add_filter('login_redirect', function ($destino, $pedido, $user) {
+    if ($user instanceof WP_User && !user_can($user, 'edit_posts') && user_can($user, 'vj_gerir_fontes')) return admin_url('admin.php?page=vj-leiloeiros');
     return ($user instanceof WP_User && !user_can($user, 'edit_posts')) ? home_url('/') : $destino;
 }, 10, 3);
 add_filter('show_admin_bar', function ($mostrar) {
-    return current_user_can('edit_posts') ? $mostrar : false;
+    return (current_user_can('edit_posts') || current_user_can('vj_gerir_fontes')) ? $mostrar : false;
 });
