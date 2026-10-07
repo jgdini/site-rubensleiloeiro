@@ -20,6 +20,9 @@ export async function get(url, opts = {}) {
 }
 
 // Decodifica entidades HTML (&#xCD; &amp; etc.)
+// Entidades nomeadas comuns em sites brasileiros (acentos, º/ª).
+const ENTIDADES = Object.fromEntries('aacute:á,eacute:é,iacute:í,oacute:ó,uacute:ú,Aacute:Á,Eacute:É,Iacute:Í,Oacute:Ó,Uacute:Ú,atilde:ã,otilde:õ,Atilde:Ã,Otilde:Õ,acirc:â,ecirc:ê,ocirc:ô,Acirc:Â,Ecirc:Ê,Ocirc:Ô,agrave:à,Agrave:À,ccedil:ç,Ccedil:Ç,ordf:ª,ordm:º,deg:°,uuml:ü'.split(',').map((p) => p.split(':')));
+
 export function decode(s = '') {
   return s
     .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
@@ -29,7 +32,8 @@ export function decode(s = '') {
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ');
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&([a-z]+);/gi, (m, n) => ENTIDADES[n] ?? m);
 }
 
 export const clean = (s = '') => decode(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();

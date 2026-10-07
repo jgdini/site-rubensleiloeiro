@@ -55,8 +55,8 @@ function vj_sites_coleta() {
 /* ---------------- Validação ---------------- */
 
 const VJ_PLATAFORMAS = [
-    'spl'       => ['nome' => 'Sua Plataforma de Leilão (SPL)', 're' => '/suaplataformadeleilao|ApiEngine\/GetBusca|__RequestVerificationToken/i'],
-    'platb'     => ['nome' => 'Plataforma B', 're' => '/d1mdxpzu4pgcoh\.cloudfront\.net/i'],
+    'spl'       => ['nome' => 'Degrau (Sua Plataforma de Leilão)', 're' => '/suaplataformadeleilao|ApiEngine\/GetBusca|__RequestVerificationToken/i'],
+    'platb'     => ['nome' => 'Soleon', 're' => '/d1mdxpzu4pgcoh\.cloudfront\.net/i'],
     'suporte'   => ['nome' => 'Suporte Leilões', 're' => '/static\.suporteleiloes\.com\.br/i'],
     'leilaopro' => ['nome' => 'Leilão Pro', 're' => '/icon-leilaopro|leilao\.pro\b/i'],
 ];
@@ -226,7 +226,7 @@ function vj_tela_fontes() {
     $nomePlat = array_map(function ($p) { return $p['nome']; }, VJ_PLATAFORMAS) + [
         'leiloesjudiciais' => 'Portal Leilões Judiciais', 'megaleiloes' => 'Mega Leilões', 'lancejudicial' => 'Lance Judicial',
         'leilaovip' => 'Leilão VIP', 'd1lance' => 'D1Lance', 'eleiloes' => 'E-Leilões', 'zuk' => 'Portal Zuk',
-        'tjsp' => 'Sua Plataforma de Leilão (SPL)', 'suporte' => 'Suporte Leilões',
+        'tjsp' => 'Degrau (Sua Plataforma de Leilão)', 'platb' => 'Soleon', 'suporte' => 'Suporte Leilões',
     ];
     ?>
     <div class="wrap">
