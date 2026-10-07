@@ -1,7 +1,7 @@
 // Web App Node.js (Hostinger) que roda a coleta diária e publica no WordPress — substitui o GitHub Actions.
 //
 //   GET /                      situação da última coleta (sem dados sensíveis)
-//   GET /coletar?chave=XXXX    dispara a coleta agora (chave = VJ_TOKEN); usado pela tarefa agendada do hPanel
+//   POST /coletar              dispara a coleta agora; cabeçalho X-VJ-Token = VJ_TOKEN (o WordPress chama isso às 6h e no botão "Coletar agora")
 //
 // Variáveis de ambiente (configuradas no hPanel → Web App):
 //   VJ_URL    = https://veiculojudicial.com.br
@@ -71,7 +71,9 @@ http
       res.end(JSON.stringify(obj, null, 1));
     };
     if (url.pathname === '/coletar') {
-      if (!process.env.VJ_TOKEN || url.searchParams.get('chave') !== process.env.VJ_TOKEN) return json(403, { ok: false, erro: 'chave inválida' });
+      // A chave vem no cabeçalho X-VJ-Token (não na URL, que fica em logs).
+      const chave = req.headers['x-vj-token'] || '';
+      if (!process.env.VJ_TOKEN || chave !== process.env.VJ_TOKEN) return json(403, { ok: false, erro: 'chave inválida' });
       if (rodando) return json(202, { ok: true, msg: 'coleta já em andamento' });
       coletar(url.searchParams.get('origem') || 'manual');
       return json(202, { ok: true, msg: 'coleta iniciada; acompanhe em /' });

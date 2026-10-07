@@ -27,7 +27,8 @@ add_action(VJ_EVENTO_IMPORTACAO, function () {
     if (is_wp_error($r) || wp_remote_retrieve_response_code($r) !== 200) return;
     $nova = json_decode(wp_remote_retrieve_body($r), true);
     $atual = vj_resumo_dados();
-    if (empty($nova['geradoEm']) || ($atual && $atual['gerado_em'] === $nova['geradoEm'])) return;
+    // Só importa se for mais nova: a Web App da Hostinger também publica, e o GitHub pode ter dados mais antigos.
+    if (empty($nova['geradoEm']) || ($atual && $atual['gerado_em'] && strtotime($nova['geradoEm']) <= strtotime($atual['gerado_em']))) return;
 
     $res = vj_importar_de_url($base);
     update_option('vj_importacao_auto', [

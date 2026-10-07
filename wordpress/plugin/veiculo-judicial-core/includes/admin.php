@@ -154,6 +154,7 @@ function vj_tela_config() {
       <?php if (!empty($_GET['erro'])) echo '<div class="notice notice-error"><p>Não foi possível ativar: verifique o e-mail.</p></div>'; ?>
 
       <h2>Coleta diária</h2>
+      <?php vj_coleta_bloco_admin(); ?>
       <p>
         <?php if ($r): ?>
           <strong><?php echo esc_html(number_format_i18n($r['total'])); ?> veículos</strong>
