@@ -298,3 +298,45 @@ function vj_tela_fontes() {
     </div>
     <?php
 }
+
+/* ---------------- Diagnóstico: o servidor do site consegue ler Soleon e Degrau? ---------------- */
+add_action('admin_post_vj_diagnostico_coleta', function () {
+    if (!current_user_can('manage_options')) wp_die('Sem permissão.');
+    check_admin_referer('vj_diagnostico');
+    $ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128 Safari/537.36';
+    $linhas = [];
+    // Soleon: busca de veículos
+    foreach (['apiceleiloes.com.br', 'cencin.com.br', 'danielgarcialeiloes.com.br'] as $d) {
+        $t = microtime(true);
+        $r = wp_remote_get("https://www.$d/lotes/search?tipo=veiculo", ['timeout' => 25, 'user-agent' => $ua]);
+        $cod = is_wp_error($r) ? $r->get_error_message() : wp_remote_retrieve_response_code($r);
+        $n = is_wp_error($r) ? 0 : preg_match_all('#/item/\d+/detalhes#', wp_remote_retrieve_body($r));
+        $linhas[] = sprintf('Soleon  %-28s HTTP %s  itens na página: %d  (%.1fs)', $d, $cod, $n, microtime(true) - $t);
+    }
+    // Degrau (SPL): sessão + API de busca
+    foreach (['agleiloes.com.br', 'arremaxleiloes.com.br', '123leiloes.com.br'] as $d) {
+        $t = microtime(true);
+        $r = wp_remote_get("https://www.$d/busca/", ['timeout' => 25, 'user-agent' => $ua]);
+        if (is_wp_error($r)) { $linhas[] = "Degrau  $d  erro: " . $r->get_error_message(); continue; }
+        $html = wp_remote_retrieve_body($r);
+        preg_match('/name="__RequestVerificationToken"[^>]*value="([^"]+)"/', $html, $m);
+        $cookies = wp_remote_retrieve_cookies($r);
+        $corpo = ['RangeValores' => 0, 'Scopo' => 0, 'IgnoreScopo' => 0, 'OrientacaoBusca' => 0, 'Mapa' => '', 'Busca' => '', 'ID_Categoria' => 0, 'ID_Estado' => 0, 'ID_Cidade' => 0,
+            'Bairro' => '', 'ID_Regiao' => 0, 'ValorMinSelecionado' => 0, 'ValorMaxSelecionado' => 0, 'CFGs' => '', 'Pagina' => 1, 'sInL' => '', 'Ordem' => 0, 'OrdSt' => 0,
+            'QtdPorPagina' => 100, 'SubStatus' => [], 'ID_Leiloes_Status' => [], 'PaginaIndex' => 1, 'BuscaProcesso' => '', 'NomesPartes' => '', 'CodLeilao' => '',
+            'TiposLeiloes' => [], 'PracaAtual' => 0, 'DataAbertura' => '', 'DataEncerramento' => '', 'Filtro' => new stdClass()];
+        $api = wp_remote_post("https://www.$d/ApiEngine/GetBusca/1/3/0", ['timeout' => 25, 'user-agent' => $ua, 'cookies' => $cookies,
+            'headers' => ['__RVT' => $m[1] ?? '', 'X-Requested-With' => 'XMLHttpRequest', 'Content-Type' => 'application/json; charset=utf-8', 'Referer' => "https://www.$d/busca/"], 'body' => wp_json_encode($corpo)]);
+        $cod = is_wp_error($api) ? $api->get_error_message() : wp_remote_retrieve_response_code($api);
+        $j = is_wp_error($api) ? null : json_decode(wp_remote_retrieve_body($api), true);
+        $n = is_array($j['Lotes'] ?? null) ? count($j['Lotes']) : 0;
+        $linhas[] = sprintf('Degrau  %-28s página HTTP %s  token %s  API HTTP %s  lotes: %d  (%.1fs)', $d, wp_remote_retrieve_response_code($r), empty($m[1]) ? 'NÃO' : 'sim', $cod, $n, microtime(true) - $t);
+    }
+    wp_die('<h2>Diagnóstico da coleta a partir do servidor do site</h2><pre>' . esc_html(implode("\n", $linhas)) . '</pre><p><a href="' . esc_url(admin_url('admin.php?page=vj-leiloeiros')) . '">Voltar</a></p>', 'Diagnóstico', ['response' => 200]);
+});
+add_action('admin_notices', function () {
+    if (!current_user_can('manage_options') || ($_GET['page'] ?? '') !== 'vj-leiloeiros') return;
+    echo '<div class="notice notice-info"><form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="margin:8px 0">'
+        . '<input type="hidden" name="action" value="vj_diagnostico_coleta">' . wp_nonce_field('vj_diagnostico', '_wpnonce', true, false)
+        . 'Teste técnico: <button class="button button-small">Testar leitura Soleon/Degrau a partir do servidor</button></form></div>';
+});
