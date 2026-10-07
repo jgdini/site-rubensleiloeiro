@@ -1,16 +1,12 @@
-name: Atualizar anúncios
+name: Atualizar anúncios (manual)
 
+# A coleta diária agora roda na Hostinger (Web App Node.js, servidor/app.js), disparada pelo WordPress às 6h.
+# No GitHub os sites da Soleon e da Degrau bloqueiam o acesso; este workflow fica só para rodar à mão, se precisar.
 on:
-  schedule:
-    - cron: '0 9 * * *' # todo dia às 06:00 (horário de Brasília = 09:00 UTC)
   workflow_dispatch:
 
 permissions:
   contents: write
-
-concurrency:
-  group: atualizar-anuncios
-  cancel-in-progress: false
 
 jobs:
   coletar:
@@ -22,12 +18,6 @@ jobs:
         with:
           node-version: 22
       - run: node scraper/run.js
-      - name: Enviar ao WordPress
-        # Segredos do repositório: VJ_URL (ex.: https://veiculojudicial.com.br) e VJ_TOKEN (Configurações → Veículo Judicial).
-        env:
-          VJ_URL: ${{ secrets.VJ_URL }}
-          VJ_TOKEN: ${{ secrets.VJ_TOKEN }}
-        run: node scraper/publicar-wp.js
       - name: Publicar dados
         run: |
           git config user.name "radar-bot"

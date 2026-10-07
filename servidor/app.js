@@ -42,11 +42,13 @@ async function coletar(origem) {
     const inicio = new Date().toISOString();
     status = { ...status, rodando: true, inicio, origem };
     const c = await rodar('run.js');
-    const linhas = c.saida.split('\n').filter((l) => /✔|✖|↳|gravados/.test(l)).map((l) => l.slice(0, 200));
+    // Na Hostinger cada linha do console vem embrulhada em JSON ({timestamp, level, message}); fica só a mensagem.
+    const msg = (l) => { try { return JSON.parse(l).message ?? l; } catch { return l; } };
+    const linhas = c.saida.split('\n').map(msg).filter((l) => /✔|✖|↳|gravados/.test(l)).map((l) => l.trim().slice(0, 200));
     let publicado = 'não publicado (coleta falhou)';
     if (c.codigo === 0) {
       const p = await rodar('publicar-wp.js');
-      publicado = p.saida.trim().split('\n').pop().slice(0, 300);
+      publicado = msg(p.saida.trim().split('\n').pop()).slice(0, 300);
     }
     status = { rodando: false, origem, inicio, fim: new Date().toISOString(), ok: c.codigo === 0, dia: diaBR(), resumo: linhas, publicado };
     await mkdir(path.dirname(arqStatus), { recursive: true });
