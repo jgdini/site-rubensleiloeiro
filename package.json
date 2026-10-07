@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Agregador de anúncios de carros em leilão (Leilo, Mega Leilões, Leilão VIP).",
+  "description": "Coleta de veículos de leilão judicial (Veículo Judicial) e site.",
   "scripts": {
-    "coletar": "node scraper/run.js"
+    "coletar": "node scraper/run.js",
+    "start": "node servidor/app.js"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "main": "servidor/app.js"
 }
