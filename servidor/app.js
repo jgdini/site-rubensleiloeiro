@@ -9,7 +9,8 @@
 //   HORA_COLETA (opcional) = hora em Brasília para a coleta automática, padrão 6
 import http from 'node:http';
 import { spawn } from 'node:child_process';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -18,7 +19,9 @@ const arqStatus = path.join(raiz, 'data', 'status-coleta.json');
 const HORA = Number(process.env.HORA_COLETA ?? 6);
 
 let rodando = null; // Promise da coleta em andamento
-let status = await readFile(arqStatus, 'utf8').then(JSON.parse).catch(() => ({}));
+// Sem 'await' no topo do arquivo: a Hostinger (LiteSpeed) carrega o app com require(), que não aceita isso.
+let status = {};
+try { status = JSON.parse(readFileSync(arqStatus, 'utf8')); } catch {}
 
 const agoraBR = () => new Date(Date.now() - 3 * 3600e3); // Brasília (UTC-3, sem horário de verão)
 const diaBR = () => agoraBR().toISOString().slice(0, 10);
