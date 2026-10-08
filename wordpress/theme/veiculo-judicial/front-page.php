@@ -13,6 +13,7 @@ get_header();
         <input id="q" type="search" placeholder="Busque por marca, modelo ou cidade — ex.: Hilux, CG 160, Scania, Curitiba" autocomplete="off" />
       </label>
       <div class="fontes" id="fontes" aria-label="Leiloeiros"></div>
+      <a class="hero__como" href="como-comprar-veiculo-em-leilao-judicial/">Como funciona o leilão judicial →</a>
 
       <div class="plano" id="plano" hidden>
         <div class="plano__txt">
@@ -28,7 +29,12 @@ get_header();
   </section>
 
   <main class="wrap">
+    <!-- Celular: botão que abre os filtros em tela cheia -->
+    <div class="filtros-mobile">
+      <button type="button" id="abrir-filtros" class="btn btn--linha"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filtros <span id="n-filtros"></span></button>
+    </div>
     <div class="filtros" id="filtros">
+      <div class="filtros__topo"><b>Filtros</b><button type="button" id="fechar-filtros" aria-label="Fechar filtros">×</button></div>
       <select id="f-tipo" aria-label="Tipo de veículo"><option value="">Todos os veículos</option></select>
       <select id="f-marca" aria-label="Marca"><option value="">Todas as marcas</option></select>
       <select id="f-uf" aria-label="Estado"><option value="">Todo o Brasil</option></select>
@@ -55,6 +61,7 @@ get_header();
         <option value="novo">Mais novos</option>
       </select>
       <button id="limpar" class="limpar" type="button" hidden>Limpar filtros</button>
+      <button id="ver-resultados" class="btn btn--primario btn--cheio" type="button">Ver resultados</button>
     </div>
 
     <p class="contagem" id="contagem" aria-live="polite"></p>

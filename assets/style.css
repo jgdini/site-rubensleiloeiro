@@ -313,3 +313,24 @@ button, input, select { font: inherit; color: inherit; }
   .grade { grid-template-columns: minmax(0, 1fr); }
   .card__acoes .btn { white-space: normal; line-height: 1.2; text-align: center; padding: 0 8px; }
 }
+
+/* ---------- Filtros no celular: botão + tela cheia ---------- */
+.filtros-mobile, .filtros__topo, #ver-resultados { display: none; }
+.hero__como { display: inline-block; margin-top: 14px; color: var(--ouro-2); font-weight: 600; font-size: 14px; }
+.hero__como:hover { text-decoration: underline; }
+@media (max-width: 640px) {
+  .filtros-mobile { display: flex; position: sticky; top: 60px; z-index: 5; padding: 10px 0; background: linear-gradient(var(--bg) 80%, transparent); }
+  .filtros-mobile .btn { gap: 8px; }
+  .filtros-mobile svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+  .filtros { display: none; }
+  body.filtros-abertos { overflow: hidden; }
+  body.filtros-abertos .filtros {
+    display: flex; flex-direction: column; flex-wrap: nowrap; gap: 12px;
+    position: fixed; inset: 0; z-index: 60; margin: 0; padding: 16px 16px 24px;
+    background: var(--bg); overflow-y: auto;
+  }
+  body.filtros-abertos .filtros select { width: 100%; height: 48px; font-size: 16px; flex: none; }
+  .filtros__topo { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--linha); font-size: 18px; }
+  .filtros__topo button { width: 40px; height: 40px; border: 0; background: none; color: var(--texto); font-size: 28px; line-height: 1; cursor: pointer; }
+  body.filtros-abertos #ver-resultados { display: flex; margin-top: auto; height: 50px; font-size: 16px; }
+}

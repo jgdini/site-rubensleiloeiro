@@ -271,6 +271,9 @@ function render() {
 
   const ativo = estado.q || estado.fontes.size || estado.tipo || estado.marca || estado.uf || estado.preco || estado.ano;
   $('#limpar').hidden = !ativo;
+  const nAtivos = ['tipo', 'marca', 'uf', 'preco', 'ano'].filter((k) => estado[k]).length;
+  $('#n-filtros').textContent = nAtivos ? `(${nAtivos})` : '';
+  $('#ver-resultados').textContent = `Ver ${lista.length.toLocaleString('pt-BR')} ${lista.length === 1 ? 'veículo' : 'veículos'}`;
   for (const [id, k] of [['#f-tipo', 'tipo'], ['#f-marca', 'marca'], ['#f-uf', 'uf'], ['#f-preco', 'preco'], ['#f-ano', 'ano']]) $(id).classList.toggle('ativo', !!estado[k]);
   document.querySelectorAll('.chip[data-fonte]').forEach((c) => c.setAttribute('aria-pressed', estado.fontes.has(c.dataset.fonte)));
   salvarURL();
@@ -508,6 +511,12 @@ async function iniciar() {
       render();
     });
   $('#mais').onclick = () => ((estado.mostrando += POR_PAGINA), render());
+  // Celular: filtros em tela cheia (estilo Webmotors).
+  const fecharFiltros = () => document.body.classList.remove('filtros-abertos');
+  $('#abrir-filtros').onclick = () => document.body.classList.add('filtros-abertos');
+  $('#fechar-filtros').onclick = fecharFiltros;
+  $('#ver-resultados').onclick = () => { fecharFiltros(); $('#contagem').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && fecharFiltros());
   $('#limpar').onclick = () => {
     Object.assign(estado, { q: '', fontes: new Set(), tipo: '', marca: '', uf: '', preco: '', ano: '', mostrando: POR_PAGINA });
     $('#q').value = '';
