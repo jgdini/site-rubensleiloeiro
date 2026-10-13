@@ -487,7 +487,7 @@ async function carregarDados() {
 async function trocarModo() {
   document.body.classList.toggle('modo-pro', premium());
   await carregarDados();
-  if (premium()) carregarFavoritos(); else favoritos = new Set();
+  if (premium()) await carregarFavoritos(); else favoritos = new Set();
   $('#meta').innerHTML = `<span class="pulso"></span>${dados.lotes.length.toLocaleString('pt-BR')} veículos · ${dados.leiloeiros} leiloeiros · atualizado ${relativo(dados.geradoEm)}`;
   montarConta();
   montarFontes();
