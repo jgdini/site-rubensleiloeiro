@@ -74,11 +74,11 @@ function carregarFavoritos() {
   } catch { favoritos = new Set(); }
 }
 async function toggleFav(id) {
-  if (favoritos.has(id)) favoritos.delete(id);
-  else favoritos.add(id);
+  const adicionando = !favoritos.has(id);
+  if (adicionando) favoritos.add(id); else favoritos.delete(id);
   try { localStorage.setItem('vj-fav', JSON.stringify([...favoritos])); } catch {}
   atualizarBotoesFav();
-  renderFavoritos();
+  renderFavoritos(adicionando); // rola para a seção ao adicionar
   montarConta();
 }
 function atualizarBotoesFav() {
@@ -88,7 +88,7 @@ function atualizarBotoesFav() {
     b.setAttribute('aria-label', ativo ? 'Remover dos favoritos' : 'Salvar nos favoritos');
   });
 }
-function renderFavoritos() {
+function renderFavoritos(rolarParaSecao) {
   const sec = $('#sec-fav');
   if (!sec) return;
   if (!premium() || favoritos.size === 0) { sec.hidden = true; return; }
@@ -98,7 +98,9 @@ function renderFavoritos() {
   grade.replaceChildren();
   if (favLotes.length === 0) { vazio.hidden = false; }
   else { vazio.hidden = true; favLotes.forEach((l) => grade.append(card(l))); }
+  const eraOculta = sec.hidden;
   sec.hidden = false;
+  if (rolarParaSecao || eraOculta) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ---------- Sessão ----------

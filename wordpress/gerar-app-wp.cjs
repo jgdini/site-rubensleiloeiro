@@ -187,11 +187,11 @@ function carregarFavoritos() {
   } catch { favoritos = new Set(); }
 }
 async function toggleFav(id) {
-  if (favoritos.has(id)) favoritos.delete(id);
-  else favoritos.add(id);
+  const adicionando = !favoritos.has(id);
+  if (adicionando) favoritos.add(id); else favoritos.delete(id);
   try { localStorage.setItem('vj-fav', JSON.stringify([...favoritos])); } catch {}
   atualizarBotoesFav();
-  renderFavoritos();
+  renderFavoritos(adicionando); // rola para a seção ao adicionar
   montarConta();
 }`,
 `// ---------- Favoritos (WordPress: REST API) ----------
@@ -203,13 +203,13 @@ async function carregarFavoritos() {
   } catch { favoritos = new Set(); }
 }
 async function toggleFav(id) {
-  const antes = favoritos.has(id);
-  if (antes) favoritos.delete(id); else favoritos.add(id);
+  const adicionando = !favoritos.has(id);
+  if (adicionando) favoritos.add(id); else favoritos.delete(id);
   atualizarBotoesFav();
-  renderFavoritos();
+  renderFavoritos(adicionando);
   montarConta();
   try {
-    if (antes) {
+    if (!adicionando) {
       await fetch(VJ.favoritosUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce } });
     } else {
       await fetch(VJ.favoritosUrl, { method: 'POST', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce, 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });

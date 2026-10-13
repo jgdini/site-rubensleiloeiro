@@ -67,13 +67,13 @@ async function carregarFavoritos() {
   } catch { favoritos = new Set(); }
 }
 async function toggleFav(id) {
-  const antes = favoritos.has(id);
-  if (antes) favoritos.delete(id); else favoritos.add(id);
+  const adicionando = !favoritos.has(id);
+  if (adicionando) favoritos.add(id); else favoritos.delete(id);
   atualizarBotoesFav();
-  renderFavoritos();
+  renderFavoritos(adicionando);
   montarConta();
   try {
-    if (antes) {
+    if (!adicionando) {
       await fetch(VJ.favoritosUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce } });
     } else {
       await fetch(VJ.favoritosUrl, { method: 'POST', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce, 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
@@ -87,7 +87,7 @@ function atualizarBotoesFav() {
     b.setAttribute('aria-label', ativo ? 'Remover dos favoritos' : 'Salvar nos favoritos');
   });
 }
-function renderFavoritos() {
+function renderFavoritos(rolarParaSecao) {
   const sec = $('#sec-fav');
   if (!sec) return;
   if (!premium() || favoritos.size === 0) { sec.hidden = true; return; }
@@ -97,7 +97,9 @@ function renderFavoritos() {
   grade.replaceChildren();
   if (favLotes.length === 0) { vazio.hidden = false; }
   else { vazio.hidden = true; favLotes.forEach((l) => grade.append(card(l))); }
+  const eraOculta = sec.hidden;
   sec.hidden = false;
+  if (rolarParaSecao || eraOculta) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ---------- Sessão (WordPress) ----------
