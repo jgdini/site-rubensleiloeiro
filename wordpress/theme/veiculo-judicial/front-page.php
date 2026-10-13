@@ -68,6 +68,18 @@ get_header();
     <div class="grade" id="grade"></div>
     <div class="mais"><button id="mais" type="button" hidden>Mostrar mais veículos</button></div>
     <p class="vazio" id="vazio" hidden>Nenhum veículo encontrado com esses filtros. Tente ampliar a busca.</p>
+
+    <section class="sec-fav" id="sec-fav" hidden>
+      <div class="sec-fav__topo">
+        <h2 class="sec-fav__titulo">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          Meus favoritos
+        </h2>
+        <button type="button" class="link sec-fav__fechar" id="fechar-fav">Fechar ×</button>
+      </div>
+      <div class="grade" id="grade-fav"></div>
+      <p class="vazio" id="fav-vazio" hidden>Nenhum favorito salvo ainda. Clique no ♡ em qualquer veículo para guardar aqui.</p>
+    </section>
   </main>
 
   <!-- WhatsApp flutuante (assinantes) -->
@@ -162,6 +174,9 @@ get_header();
         <img loading="lazy" decoding="async" referrerpolicy="no-referrer" alt="" />
         <span class="card__fonte"></span>
         <span class="card__tempo"></span>
+        <button type="button" class="card__fav" aria-label="Salvar nos favoritos" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
       </a>
       <div class="card__corpo">
         <h3 class="card__titulo"><a class="card__link"></a></h3>

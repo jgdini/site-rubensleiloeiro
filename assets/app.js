@@ -64,6 +64,42 @@ const TIPO_CURTO = { moto: 'Moto', caminhao: 'Caminhão', onibus: 'Ônibus', maq
 let dados = { lotes: [], fontes: [] };
 let nomesFonte = {};
 let sessao = null;
+let favoritos = new Set(); // IDs dos lotes salvos pelo usuário
+
+// ---------- Favoritos (protótipo: localStorage) ----------
+function carregarFavoritos() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('vj-fav') || '[]');
+    favoritos = new Set(Array.isArray(saved) ? saved : []);
+  } catch { favoritos = new Set(); }
+}
+async function toggleFav(id) {
+  if (favoritos.has(id)) favoritos.delete(id);
+  else favoritos.add(id);
+  try { localStorage.setItem('vj-fav', JSON.stringify([...favoritos])); } catch {}
+  atualizarBotoesFav();
+  renderFavoritos();
+  montarConta();
+}
+function atualizarBotoesFav() {
+  document.querySelectorAll('.card__fav[data-id]').forEach((b) => {
+    const ativo = favoritos.has(b.dataset.id);
+    b.classList.toggle('ativo', ativo);
+    b.setAttribute('aria-label', ativo ? 'Remover dos favoritos' : 'Salvar nos favoritos');
+  });
+}
+function renderFavoritos() {
+  const sec = $('#sec-fav');
+  if (!sec) return;
+  if (!premium() || favoritos.size === 0) { sec.hidden = true; return; }
+  const grade = $('#grade-fav');
+  const vazio = $('#fav-vazio');
+  const favLotes = dados.lotes.filter((l) => favoritos.has(l.id));
+  grade.replaceChildren();
+  if (favLotes.length === 0) { vazio.hidden = false; }
+  else { vazio.hidden = true; favLotes.forEach((l) => grade.append(card(l))); }
+  sec.hidden = false;
+}
 
 // ---------- Sessão ----------
 function lerSessao() {
@@ -241,6 +277,16 @@ function card(l) {
         total.classList.toggle('aberto', abrir);
       };
     el.querySelector('.card__natureza').textContent = [l.natureza, l.comitente].filter(Boolean).join(' · ') || l.status || '';
+    // Botão favorito (só para assinantes).
+    if (l.id) {
+      const btnFav = el.querySelector('.card__fav');
+      btnFav.hidden = false;
+      btnFav.dataset.id = l.id;
+      const favAtivo = favoritos.has(l.id);
+      btnFav.classList.toggle('ativo', favAtivo);
+      btnFav.setAttribute('aria-label', favAtivo ? 'Remover dos favoritos' : 'Salvar nos favoritos');
+      btnFav.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleFav(l.id); };
+    }
   } else {
     // Vitrine gratuita: preço visível, mas sem link e sem custo total. Clique abre o plano.
     links.forEach((a) => {
@@ -277,6 +323,7 @@ function render() {
   for (const [id, k] of [['#f-tipo', 'tipo'], ['#f-marca', 'marca'], ['#f-uf', 'uf'], ['#f-preco', 'preco'], ['#f-ano', 'ano']]) $(id).classList.toggle('ativo', !!estado[k]);
   document.querySelectorAll('.chip[data-fonte]').forEach((c) => c.setAttribute('aria-pressed', estado.fontes.has(c.dataset.fonte)));
   salvarURL();
+  renderFavoritos();
 }
 
 function opcoes(sel, valores) {
@@ -371,7 +418,11 @@ function abrirLogin() {
 function montarConta() {
   const conta = $('#conta');
   if (premium()) {
-    conta.innerHTML = `<span class="conta__selo">Assinante</span><span class="conta__nome">${esc(sessao.nome.split(' ')[0])}</span><button type="button" class="link" id="sair">Sair</button>`;
+    const nFav = favoritos.size;
+    const ICONE_CORACAO = `<svg viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px;fill:currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+    const btnFavHtml = nFav ? `<button type="button" class="btn btn--linha btn--peq btn--fav-cnt" id="btn-fav-painel">${ICONE_CORACAO} ${nFav}</button>` : '';
+    conta.innerHTML = `${btnFavHtml}<span class="conta__selo">Assinante</span><span class="conta__nome">${esc(sessao.nome.split(' ')[0])}</span><button type="button" class="link" id="sair">Sair</button>`;
+    if (nFav) $('#btn-fav-painel').onclick = () => { const s = $('#sec-fav'); s.hidden = !s.hidden; if (!s.hidden) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     $('#sair').onclick = async () => { sessao = null; gravarSessao(null); await trocarModo(); };
   } else {
     conta.innerHTML = `<button type="button" class="btn btn--linha btn--peq" data-acao="entrar">Entrar</button><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button>`;
@@ -434,6 +485,7 @@ async function carregarDados() {
 async function trocarModo() {
   document.body.classList.toggle('modo-pro', premium());
   await carregarDados();
+  if (premium()) carregarFavoritos(); else favoritos = new Set();
   $('#meta').innerHTML = `<span class="pulso"></span>${dados.lotes.length.toLocaleString('pt-BR')} veículos · ${dados.leiloeiros} leiloeiros · atualizado ${relativo(dados.geradoEm)}`;
   montarConta();
   montarFontes();
@@ -511,6 +563,7 @@ async function iniciar() {
       render();
     });
   $('#mais').onclick = () => ((estado.mostrando += POR_PAGINA), render());
+  $('#fechar-fav').onclick = () => { $('#sec-fav').hidden = true; };
   // Celular: filtros em tela cheia (estilo Webmotors).
   const fecharFiltros = () => document.body.classList.remove('filtros-abertos');
   $('#abrir-filtros').onclick = () => document.body.classList.add('filtros-abertos');

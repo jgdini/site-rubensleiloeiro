@@ -29,12 +29,25 @@ function vj_coleta_status() {
     return is_array($j) ? $j : null;
 }
 
-// Todo dia às 06:00 de Brasília (09:00 UTC).
+// Toda semana: domingo 00:00 BRT (domingo 03:00 UTC).
+// Intervalo semanal customizado (WP não tem 'weekly' nativo).
+add_filter('cron_schedules', function ($s) {
+    if (!isset($s['weekly_vj'])) $s['weekly_vj'] = ['interval' => 604800, 'display' => 'Uma vez por semana (Veículo Judicial)'];
+    return $s;
+});
+
 add_action('init', function () {
-    if (!wp_next_scheduled(VJ_COLETA_EVENTO)) {
-        $alvo = strtotime('today 09:00 UTC');
-        if ($alvo <= time()) $alvo = strtotime('tomorrow 09:00 UTC');
-        wp_schedule_event($alvo, 'daily', VJ_COLETA_EVENTO);
+    $agendado = wp_next_scheduled(VJ_COLETA_EVENTO);
+    // Recriar se ainda estiver com recorrência antiga (daily).
+    if ($agendado && wp_get_schedule(VJ_COLETA_EVENTO) !== 'weekly_vj') {
+        wp_clear_scheduled_hook(VJ_COLETA_EVENTO);
+        $agendado = false;
+    }
+    if (!$agendado) {
+        // Próximo domingo às 03:00 UTC (= domingo 00:00 BRT, UTC-3).
+        $alvo = strtotime('next sunday 03:00 UTC');
+        if ($alvo <= time()) $alvo += 7 * DAY_IN_SECONDS;
+        wp_schedule_event($alvo, 'weekly_vj', VJ_COLETA_EVENTO);
     }
 });
 add_action(VJ_COLETA_EVENTO, function () { vj_coleta_disparar('agendada'); });

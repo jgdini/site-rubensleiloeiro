@@ -334,3 +334,28 @@ button, input, select { font: inherit; color: inherit; }
   .filtros__topo button { width: 40px; height: 40px; border: 0; background: none; color: var(--texto); font-size: 28px; line-height: 1; cursor: pointer; }
   body.filtros-abertos #ver-resultados { display: flex; margin-top: auto; height: 50px; font-size: 16px; }
 }
+
+/* ---------- Favoritos ---------- */
+.card__fav {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%;
+  background: rgb(0 0 0 / 0.45); backdrop-filter: blur(4px);
+  color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.card__fav svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.card__fav:hover { background: rgb(0 0 0 / 0.65); transform: scale(1.1); }
+.card__fav.ativo { background: var(--ouro); color: var(--bg-escuro); }
+.card__fav.ativo svg { fill: currentColor; stroke: none; }
+
+/* Botão "♥ N" na conta do assinante */
+.btn--fav-cnt { gap: 5px; color: var(--ouro-2); border-color: var(--ouro); }
+.btn--fav-cnt svg { flex: none; }
+
+/* Seção de favoritos */
+.sec-fav { margin: 48px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--linha); }
+.sec-fav__topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.sec-fav__titulo { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 20px; }
+.sec-fav__titulo svg { width: 18px; height: 18px; fill: var(--ouro); }
+.sec-fav__fechar { font-size: 14px; color: var(--texto-3); }
+.sec-fav__fechar:hover { color: var(--texto); }

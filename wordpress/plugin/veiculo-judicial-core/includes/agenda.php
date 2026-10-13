@@ -8,13 +8,18 @@ if (!defined('ABSPATH')) exit;
 
 define('VJ_EVENTO_IMPORTACAO', 'vj_importacao_diaria');
 
-// Agenda na primeira carga (atualizar o plugin por upload não dispara o hook de ativação).
+// Importação de backup: toda semana, domingo 04:00 UTC (01:00 BRT), 1 h após a coleta.
 add_action('init', function () {
-    if (!wp_next_scheduled(VJ_EVENTO_IMPORTACAO)) {
-        // Próximas 10:00 UTC (07:00 em Brasília), depois a cada 12h.
-        $alvo = strtotime('today 10:00 UTC');
-        if ($alvo <= time()) $alvo = strtotime('tomorrow 10:00 UTC');
-        wp_schedule_event($alvo, 'twicedaily', VJ_EVENTO_IMPORTACAO);
+    $agendado = wp_next_scheduled(VJ_EVENTO_IMPORTACAO);
+    // Recriar se ainda estiver com recorrência antiga (twicedaily ou daily).
+    if ($agendado && !in_array(wp_get_schedule(VJ_EVENTO_IMPORTACAO), ['weekly_vj'], true)) {
+        wp_clear_scheduled_hook(VJ_EVENTO_IMPORTACAO);
+        $agendado = false;
+    }
+    if (!$agendado) {
+        $alvo = strtotime('next sunday 04:00 UTC');
+        if ($alvo <= time()) $alvo += 7 * DAY_IN_SECONDS;
+        wp_schedule_event($alvo, 'weekly_vj', VJ_EVENTO_IMPORTACAO);
     }
 });
 

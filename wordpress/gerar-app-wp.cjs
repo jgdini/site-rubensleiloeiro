@@ -143,13 +143,10 @@ trocar(`  const arquivo = premium() ? 'data/lotes.json' : 'data/vitrine.json';
   dados.lotes ||= [];`);
 
 // 5) Conta: sair pelo WordPress; logado sem assinatura ativa vê aviso + assinar.
-trocar(`    conta.innerHTML = \`<span class="conta__selo">Assinante</span><span class="conta__nome">\${esc(sessao.nome.split(' ')[0])}</span><button type="button" class="link" id="sair">Sair</button>\`;
-    $('#sair').onclick = async () => { sessao = null; gravarSessao(null); await trocarModo(); };
-  } else {`,
-`    conta.innerHTML = \`<span class="conta__selo">Assinante</span><span class="conta__nome">\${esc(sessao.nome.split(' ')[0])}</span>\${VJ.painelUrl ? \`<a class="link" href="\${esc(VJ.painelUrl)}">Leiloeiros</a>\` : ''}<a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;
-  } else if (sessao) {
-    conta.innerHTML = \`<span class="conta__nome" title="Sua assinatura não está ativa">\${esc(sessao.nome.split(' ')[0])} · sem assinatura</span><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button><a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;
-  } else {`);
+// O bloco agora inclui o botão de favoritos (adicionado em app.js); preserva o HTML e troca apenas o sair.
+trocar(
+  `    if (nFav) $('#btn-fav-painel').onclick = () => { const s = $('#sec-fav'); s.hidden = !s.hidden; if (!s.hidden) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };\n    $('#sair').onclick = async () => { sessao = null; gravarSessao(null); await trocarModo(); };\n  } else {`,
+  `    if (nFav) $('#btn-fav-painel').onclick = () => { const s = $('#sec-fav'); s.hidden = !s.hidden; if (!s.hidden) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };\n    conta.innerHTML += \`\${VJ.painelUrl ? \`<a class="link" href="\${esc(VJ.painelUrl)}">Leiloeiros</a>\` : ''}<a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;\n    conta.querySelector('#sair')?.remove();\n  } else if (sessao) {\n    conta.innerHTML = \`<span class="conta__nome" title="Sua assinatura não está ativa">\${esc(sessao.nome.split(' ')[0])} · sem assinatura</span><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button><a class="link" href="\${esc(VJ.logoutUrl)}">Sair</a>\`;\n  } else {`);
 
 // 6) Botão de assinar: checkout (Hotmart/Kiwify) quando configurado; senão WhatsApp.
 trocar(`  $('#btn-assinar-wpp').href = linkWhats(msg);`,
@@ -180,6 +177,45 @@ trocar(/    const f = new FormData\(e\.target\);\n    const email = [\s\S]*?\n  
       botao.disabled = false;
     }
   });`);
+
+// 8) Favoritos: localStorage → REST API.
+trocar(`// ---------- Favoritos (protótipo: localStorage) ----------
+function carregarFavoritos() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('vj-fav') || '[]');
+    favoritos = new Set(Array.isArray(saved) ? saved : []);
+  } catch { favoritos = new Set(); }
+}
+async function toggleFav(id) {
+  if (favoritos.has(id)) favoritos.delete(id);
+  else favoritos.add(id);
+  try { localStorage.setItem('vj-fav', JSON.stringify([...favoritos])); } catch {}
+  atualizarBotoesFav();
+  renderFavoritos();
+  montarConta();
+}`,
+`// ---------- Favoritos (WordPress: REST API) ----------
+async function carregarFavoritos() {
+  try {
+    const r = await fetch(VJ.favoritosUrl, { credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce } });
+    const j = await r.json();
+    favoritos = new Set(Array.isArray(j.ids) ? j.ids : []);
+  } catch { favoritos = new Set(); }
+}
+async function toggleFav(id) {
+  const antes = favoritos.has(id);
+  if (antes) favoritos.delete(id); else favoritos.add(id);
+  atualizarBotoesFav();
+  renderFavoritos();
+  montarConta();
+  try {
+    if (antes) {
+      await fetch(VJ.favoritosUrl + '/' + encodeURIComponent(id), { method: 'DELETE', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce } });
+    } else {
+      await fetch(VJ.favoritosUrl, { method: 'POST', credentials: 'same-origin', headers: { 'X-WP-Nonce': VJ.nonce, 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
+    }
+  } catch {}
+}`);
 
 if (/USUARIOS_TESTE|gravarSessao\(|localStorage\.\w+\(CHAVE_SESSAO/.test(t)) throw new Error('sobrou referência ao login simulado');
 fs.writeFileSync(path.join(raiz, 'wordpress/theme/veiculo-judicial/assets/app.js'), '// Gerado por wordpress/gerar-app-wp.cjs a partir de assets/app.js — não edite à mão.\n' + t);

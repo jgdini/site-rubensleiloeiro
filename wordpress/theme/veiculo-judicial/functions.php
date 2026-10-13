@@ -101,6 +101,7 @@ function vj_dados_js() {
         'loginUrl'    => rest_url('vj/v1/login'),
         'logoutUrl'   => function_exists('vj_url_sair') ? vj_url_sair() : wp_logout_url(home_url('/')), // a sessão ao vivo troca este valor
         'sessaoUrl'       => rest_url('vj/v1/sessao'),
+        'favoritosUrl'    => rest_url('vj/v1/favoritos'),
         'senhaPedirUrl'   => rest_url('vj/v1/senha/pedir'),
         'senhaDefinirUrl' => rest_url('vj/v1/senha/definir'),
         'nonce'       => wp_create_nonce('wp_rest'),
