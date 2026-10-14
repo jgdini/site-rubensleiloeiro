@@ -623,9 +623,10 @@ async function iniciar() {
     return;
   }
 
-  // Popup motion "Como Funciona" para assinantes logados.
+  // Popup motion "Como Funciona" para usuários logados (protótipo: sessao; WP: window.VJ.logado).
   const modalMotion = $('#modal-motion');
-  if (modalMotion && sessao) {
+  const estaLogado = !!sessao || !!(window.VJ && window.VJ.logado);
+  if (modalMotion && estaLogado) {
     const CHAVE_MOTION = 'vj-motion-nao-exibir';
     if (!localStorage.getItem(CHAVE_MOTION)) {
       modalMotion.showModal();
