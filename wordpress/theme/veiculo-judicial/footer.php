@@ -19,8 +19,10 @@
       }
       if ($links) echo '<p class="rodape__fontes">' . implode(' · ', $links) . '</p>';
       ?>
+      <p class="rodape__copy">&copy; <?php echo date('Y'); ?> Rubens Felippe &mdash; Desenvolvido por <a class="rodape__dev" href="https://halocompany.com.br" target="_blank" rel="noopener">Halo Company</a></p>
     </div>
   </footer>
+<?php if (is_user_logged_in()) get_template_part('inc/popup-intro'); ?>
 <?php wp_footer(); ?>
 </body>
 </html>

@@ -94,13 +94,24 @@ function renderFavoritos(rolarParaSecao) {
   if (!premium() || favoritos.size === 0) { sec.hidden = true; return; }
   const grade = $('#grade-fav');
   const vazio = $('#fav-vazio');
-  const favLotes = dados.lotes.filter((l) => favoritos.has(l.id));
+  const lotes = dados?.lotes || [];
+  const favLotes = lotes.filter((l) => favoritos.has(l.id));
+  const expirados = [...favoritos].filter((id) => !lotes.some((l) => l.id === id));
   grade.replaceChildren();
+  sec.querySelector('.fav-aviso-expirados')?.remove();
+  if (expirados.length > 0) {
+    const aviso = document.createElement('p');
+    aviso.className = 'fav-aviso-expirados';
+    const s = expirados.length === 1 ? 'Um veículo favorito saiu' : `${expirados.length} veículos favoritos saíram`;
+    aviso.innerHTML = `⚠ ${s} porque o leilão encerrou. <button type="button" class="link">Remover</button>`;
+    aviso.querySelector('button').onclick = async () => { for (const id of expirados) await toggleFav(id); };
+    sec.insertBefore(aviso, grade);
+  }
   if (favLotes.length === 0) { vazio.hidden = false; }
   else { vazio.hidden = true; favLotes.forEach((l) => grade.append(card(l))); }
   const eraOculta = sec.hidden;
   sec.hidden = false;
-  if (rolarParaSecao || eraOculta) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (rolarParaSecao || eraOculta) requestAnimationFrame(() => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }));
 }
 
 // ---------- Sessão ----------
@@ -289,8 +300,15 @@ function card(l) {
       btnFav.setAttribute('aria-label', favAtivo ? 'Remover dos favoritos' : 'Salvar nos favoritos');
       btnFav.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleFav(l.id); };
     }
+  } else if (!sessao) {
+    // Sem login: só a foto — sem título, preço, data ou leiloeiro
+    el.classList.add('card--anonimo');
+    el.querySelector('.card__fonte').hidden = true;
+    el.querySelector('.card__tempo').hidden = true;
+    el.querySelector('.card__corpo').hidden = true;
+    el.addEventListener('click', () => abrirPlano(l));
   } else {
-    // Vitrine gratuita: preço visível, mas sem link e sem custo total. Clique abre o plano.
+    // Logado sem assinatura ativa: vitrine com preço mas sem link/custo
     links.forEach((a) => {
       a.removeAttribute('href');
       a.setAttribute('role', 'button');
@@ -354,7 +372,7 @@ function lerURL() {
   estado.fontes = new Set((p.get('fonte') || '').split(',').filter(Boolean));
   for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano']) estado[k] = p.get(k) || '';
   estado.ordem = p.get('ordem') || 'encerra';
-  if (!premium()) estado.fontes.clear(); // leiloeiro é informação de assinante
+  estado.fontes.clear(); // filtro por fonte desabilitado
   $('#q').value = estado.q;
   for (const k of ['tipo', 'marca', 'uf', 'preco', 'ano', 'ordem']) $('#f-' + k).value = estado[k];
 }
@@ -420,11 +438,11 @@ function abrirLogin() {
 function montarConta() {
   const conta = $('#conta');
   if (premium()) {
-    const nFav = favoritos.size;
+    const nFav = dados?.lotes ? dados.lotes.filter((l) => favoritos.has(l.id)).length : favoritos.size;
     const ICONE_CORACAO = `<svg viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px;fill:currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
     const btnFavHtml = nFav ? `<button type="button" class="btn btn--linha btn--peq btn--fav-cnt" id="btn-fav-painel">${ICONE_CORACAO} ${nFav}</button>` : '';
     conta.innerHTML = `${btnFavHtml}<span class="conta__selo">Assinante</span><span class="conta__nome">${esc(sessao.nome.split(' ')[0])}</span><button type="button" class="link" id="sair">Sair</button>`;
-    if (nFav) $('#btn-fav-painel').onclick = () => { const s = $('#sec-fav'); s.hidden = !s.hidden; if (!s.hidden) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    if (nFav) $('#btn-fav-painel').onclick = () => { const s = $('#sec-fav'); if (s.hidden) s.hidden = false; requestAnimationFrame(() => s.scrollIntoView({ behavior: 'smooth', block: 'start' })); };
     $('#sair').onclick = async () => { sessao = null; gravarSessao(null); await trocarModo(); };
   } else {
     conta.innerHTML = `<button type="button" class="btn btn--linha btn--peq" data-acao="entrar">Entrar</button><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button>`;
@@ -447,26 +465,12 @@ function montarConta() {
 function montarFontes() {
   const fontesEl = $('#fontes');
   fontesEl.replaceChildren();
-  if (!premium()) {
+  $('#rodape-fontes').textContent = '';
+  if (!sessao) {
+    // Sem login: mostra só a contagem (sem nomes de leiloeiros)
     fontesEl.innerHTML = `<span class="chip chip--info"><span class="ponto" style="--c:var(--verde)"></span>${dados.leiloeiros || ''} leiloeiros oficiais monitorados todo dia</span>`;
-    $('#rodape-fontes').textContent = '';
-    return;
   }
-  for (const f of dados.fontes) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'chip';
-    b.dataset.fonte = f.id;
-    b.style.setProperty('--c', CORES[f.id]);
-    b.innerHTML = `<span class="ponto"></span>${esc(f.nome)}<small>${f.total}</small>`;
-    b.onclick = () => {
-      estado.fontes.has(f.id) ? estado.fontes.delete(f.id) : estado.fontes.add(f.id);
-      estado.mostrando = POR_PAGINA;
-      render();
-    };
-    fontesEl.append(b);
-  }
-  $('#rodape-fontes').innerHTML = 'Fontes: ' + dados.fontes.map((f) => `<a href="${esc(f.site)}" target="_blank" rel="noopener nofollow">${esc(f.nome)}</a>`).join(' · ');
+  // Logado (qualquer nível): sem chips de fontes
 }
 
 async function carregarDados() {
@@ -566,6 +570,10 @@ async function iniciar() {
     });
   $('#mais').onclick = () => ((estado.mostrando += POR_PAGINA), render());
   $('#fechar-fav').onclick = () => { $('#sec-fav').hidden = true; };
+  // Botão "Voltar ao início"
+  const btnTopo = $('#voltar-topo');
+  window.addEventListener('scroll', () => { btnTopo.hidden = window.scrollY < 500; }, { passive: true });
+  btnTopo.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   // Celular: filtros em tela cheia (estilo Webmotors).
   const fecharFiltros = () => document.body.classList.remove('filtros-abertos');
   $('#abrir-filtros').onclick = () => document.body.classList.add('filtros-abertos');

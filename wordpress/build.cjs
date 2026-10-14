@@ -32,7 +32,7 @@ for (const f of fs.readdirSync(path.join(raiz, 'assets', 'rubens'))) {
 const idx = ler('index.html');
 const home =
   fatia(idx, '<section class="hero">', '</main>') + '\n\n  ' +
-  fatia(idx, '<!-- WhatsApp flutuante', '</template>');
+  fatia(idx, '<!-- Voltar ao início -->', '</template>');
 fs.writeFileSync(
   path.join(tema, 'front-page.php'),
   `<?php\n/* Home: vitrine de veículos. Gerado por wordpress/build.cjs a partir de index.html — não edite à mão. */\nif (!defined('ABSPATH')) exit;\nget_header();\n?>\n  ${home}\n<?php get_footer();\n`

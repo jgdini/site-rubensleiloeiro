@@ -1,0 +1,594 @@
+<title>Como Funciona — Veículo Judicial</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap">
+
+<style>
+/* Single dark theme — peça motion, cores da marca */
+:root {
+  --bg: #0C0B09;
+  --sf: #181510;
+  --sf2: #201D16;
+  --ln: rgba(255,255,255,0.07);
+  --fg: #F0EAE0;
+  --fg2: #9A8E7C;
+  --fg3: rgba(255,255,255,0.22);
+  --gold: #C8991A;
+  --gtext: #FFCA3A;
+  --gsoft: rgba(200,153,26,0.14);
+  --red: #E5534B;
+  --rsoft: rgba(229,83,75,0.13);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #060504;
+  color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-block: 24px;
+  padding-inline: 16px;
+  gap: 14px;
+}
+
+/* ── Reel 9:16 ── */
+.reel {
+  width: min(340px, 100%);
+  aspect-ratio: 9 / 16;
+  background: var(--bg);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 28px 72px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* ── Barra de progresso ── */
+.prog {
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  gap: 3px;
+  z-index: 20;
+  pointer-events: none;
+}
+.prog__seg {
+  flex: 1;
+  height: 2.5px;
+  background: rgba(255,255,255,0.17);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.prog__fill {
+  height: 100%;
+  width: 0;
+  background: var(--gtext);
+  border-radius: 2px;
+}
+
+/* ── Logo header ── */
+.logo {
+  position: absolute;
+  top: 25px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+.logo__name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14.5px;
+  letter-spacing: 0.12em;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.logo__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.logo__n { font-size: 10.5px; color: var(--fg3); font-variant-numeric: tabular-nums; }
+
+/* ── Frames ── */
+.frame {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 66px 20px 26px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(22px);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+  will-change: opacity, transform;
+}
+.frame.is-active  { opacity: 1; pointer-events: auto; transform: none; }
+.frame.is-exit    { opacity: 0; transform: translateX(-22px); pointer-events: none; }
+
+/* Stagger dentro do frame */
+.f-eye, .f-head, .f-sub, .f-vis {
+  opacity: 0; transform: translateY(9px);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.f-eye  { transition-delay: 0.06s; }
+.f-head { transition-delay: 0.14s; }
+.f-sub  { transition-delay: 0.24s; }
+.f-vis  { transition-delay: 0.32s; }
+.frame.is-active .f-eye,
+.frame.is-active .f-head,
+.frame.is-active .f-sub,
+.frame.is-active .f-vis { opacity: 1; transform: none; }
+
+.f-eye {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+}
+.f-head {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 13vw, 54px);
+  line-height: 0.94; letter-spacing: 0.01em;
+  text-wrap: balance; margin-bottom: 12px;
+}
+.f-head em { font-style: normal; color: var(--gtext); }
+.f-head .x { text-decoration: line-through; color: var(--red); opacity: 0.85; }
+.f-sub { font-size: 13.5px; line-height: 1.56; color: var(--fg2); margin-bottom: 18px; }
+.f-sub strong { color: var(--fg); font-weight: 600; }
+.f-vis { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+
+/* ── Frame 1: Comentários ── */
+.bubble {
+  background: var(--sf); border-radius: 10px 10px 10px 2px;
+  padding: 10px 12px; border: 1px solid var(--ln);
+  font-size: 12.5px; color: var(--fg2);
+  opacity: 0; transform: translateX(14px);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.bubble .bname {
+  font-size: 9.5px; font-weight: 700; color: var(--fg3);
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;
+}
+.frame.is-active .bubble:nth-child(1) { opacity:1; transform:none; transition-delay:0.42s; }
+.frame.is-active .bubble:nth-child(2) { opacity:1; transform:none; transition-delay:0.66s; }
+.frame.is-active .bubble:nth-child(3) { opacity:1; transform:none; transition-delay:0.9s; }
+
+/* ── Frame 2: Não vendemos ── */
+.not-stamp {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--rsoft); border: 1.5px solid var(--red);
+  color: var(--red); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 5px;
+  margin-bottom: 10px; width: fit-content;
+}
+.proof-line {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--fg2); line-height: 1.45;
+  opacity: 0; transform: translateY(7px);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.proof-line .pi {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gsoft); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; margin-top: 1px;
+  font-size: 10px; color: var(--gtext);
+}
+.frame.is-active .proof-line:nth-child(1) { opacity:1; transform:none; transition-delay:0.38s; }
+.frame.is-active .proof-line:nth-child(2) { opacity:1; transform:none; transition-delay:0.54s; }
+.frame.is-active .proof-line:nth-child(3) { opacity:1; transform:none; transition-delay:0.7s; }
+
+/* ── Frame 3: Agregador ── */
+.src-item {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--sf); border-radius: 8px;
+  padding: 9px 12px; border: 1px solid var(--ln);
+  font-size: 12px;
+  opacity: 0; transform: translateX(10px);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.src-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.src-name { flex: 1; color: var(--fg2); }
+.src-cnt { color: var(--gtext); font-weight: 600; font-variant-numeric: tabular-nums; }
+.src-item.total { border-color: rgba(200,153,26,0.22); }
+.src-item.total .src-name { color: var(--fg); font-weight: 600; }
+.frame.is-active .src-item:nth-child(1) { opacity:1; transform:none; transition-delay:0.36s; }
+.frame.is-active .src-item:nth-child(2) { opacity:1; transform:none; transition-delay:0.52s; }
+.frame.is-active .src-item:nth-child(3) { opacity:1; transform:none; transition-delay:0.68s; }
+.frame.is-active .src-item:nth-child(4) { opacity:1; transform:none; transition-delay:0.84s; }
+
+/* ── Step badge ── */
+.step-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--gsoft); color: var(--gtext);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 4px 10px;
+  border-radius: 4px; margin-bottom: 8px; width: fit-content;
+}
+
+/* ── UI Mockup ── */
+.mock {
+  background: var(--sf); border-radius: 10px;
+  border: 1px solid var(--ln); overflow: hidden; width: 100%;
+}
+.mock-chrome {
+  background: var(--sf2); padding: 7px 10px;
+  display: flex; align-items: center; gap: 5px;
+}
+.mock-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.11); }
+.mock-url {
+  flex: 1; font-size: 9px; color: var(--fg3);
+  background: rgba(255,255,255,0.05); border-radius: 3px;
+  padding: 2px 8px; margin-left: 4px;
+}
+.mock-body { padding: 12px 13px; }
+
+/* Search */
+.s-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--sf2); border: 1px solid rgba(200,153,26,0.18);
+  border-radius: 7px; padding: 9px 11px; margin-bottom: 9px;
+}
+.s-icon { font-size: 12px; }
+.s-txt { font-size: 12px; color: var(--fg2); flex: 1; }
+.s-cur { width: 1.5px; height: 13px; background: var(--gold); animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity:0; } }
+
+.chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip {
+  font-size: 10.5px; padding: 3.5px 9px; border-radius: 20px;
+  background: var(--sf2); color: var(--fg3);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.chip.on { background: var(--gsoft); color: var(--gtext); border-color: rgba(200,153,26,0.25); }
+
+.res-row {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--sf2); border-radius: 7px;
+  padding: 9px 10px; margin-top: 9px;
+}
+.res-thumb {
+  width: 34px; height: 34px; border-radius: 5px;
+  background: rgba(255,255,255,0.05); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.res-title { font-size: 12px; font-weight: 600; color: var(--fg); }
+.res-sub { font-size: 10.5px; color: var(--fg2); margin-top: 1px; }
+.res-price { font-size: 12px; font-weight: 700; color: var(--gtext); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Cost table */
+.c-rows { display: flex; flex-direction: column; }
+.c-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid var(--ln);
+  font-size: 11.5px;
+}
+.c-row:last-child { border-bottom: none; }
+.c-label { color: var(--fg2); }
+.c-val { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+.c-row.total { padding-top: 9px; }
+.c-row.total .c-label { color: var(--gtext); font-weight: 600; font-size: 12px; }
+.c-row.total .c-val   { color: var(--gtext); font-weight: 700; font-size: 13.5px; }
+
+/* Rubens card */
+.rub-card {
+  background: var(--sf); border-radius: 11px;
+  padding: 14px; border: 1px solid rgba(200,153,26,0.2); width: 100%;
+}
+.rub-top { display: flex; align-items: center; gap: 11px; margin-bottom: 10px; }
+.rub-av {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--gsoft); border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; flex-shrink: 0;
+}
+.rub-name { font-weight: 700; font-size: 13.5px; color: var(--fg); }
+.rub-role { font-size: 10.5px; color: var(--fg2); margin-top: 1px; }
+.rub-badge {
+  display: inline-block; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold); background: var(--gsoft);
+  padding: 3px 8px; border-radius: 3px; margin-bottom: 8px;
+}
+.rub-desc { font-size: 12.5px; color: var(--fg2); line-height: 1.52; }
+.rub-note {
+  font-size: 11px; color: var(--fg3); margin-top: 9px;
+  padding-top: 9px; border-top: 1px solid var(--ln); font-style: italic;
+}
+
+/* CTA frame */
+.cta-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold); color: #090804;
+  font-weight: 700; font-size: 11.5px; padding: 7px 14px;
+  border-radius: 5px; letter-spacing: 0.03em;
+}
+.cta-url {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 0.1em; color: var(--gold);
+  margin-top: 12px;
+}
+.cta-desc { font-size: 12.5px; color: var(--fg2); line-height: 1.55; margin-top: 8px; }
+
+/* ── Mini-cards "antes/depois" (frames 4-5) ── */
+.mc-wrap {
+  width: 100%; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--ln); background: var(--sf);
+}
+.mc-foto {
+  aspect-ratio: 16/10; background: var(--sf2);
+  position: relative; display: flex; align-items: center;
+  justify-content: center; font-size: 36px; overflow: hidden;
+}
+
+/* Estado bloqueado */
+.mc-locked .mc-foto::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 25%, rgba(0,0,0,0.25));
+  pointer-events: none;
+}
+.mc-lock-tag {
+  position: absolute; bottom: 9px; left: 9px; z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(0,0,0,0.72); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px; padding: 5px 9px;
+  font-size: 10.5px; color: rgba(255,255,255,0.55);
+}
+.mc-lock-tag svg {
+  width: 11px; height: 11px; flex-shrink: 0;
+  fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.mc-hidden-corpo {
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 7px;
+}
+.mc-bar { height: 9px; background: rgba(255,255,255,0.06); border-radius: 4px; }
+.mc-bar.w80 { width: 80%; }
+.mc-bar.w55 { width: 55%; }
+.mc-bar.w65 { width: 65%; }
+
+/* Estado desbloqueado */
+.mc-unlocked { border-color: rgba(200,153,26,0.2); }
+.mc-pro-tag {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  background: var(--gsoft); color: var(--gtext);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 3px 7px; border-radius: 3px;
+}
+.mc-corpo { padding: 10px 12px; }
+.mc-title { font-size: 12.5px; font-weight: 600; color: var(--fg); margin-bottom: 1px; }
+.mc-sub2  { font-size: 10px; color: var(--fg2); margin-bottom: 9px; }
+.mc-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 5px 0; border-bottom: 1px solid var(--ln); font-size: 11px;
+}
+.mc-row:last-of-type { border-bottom: none; }
+.mc-row span { color: var(--fg2); }
+.mc-row strong { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.mc-row.gold strong { color: var(--gtext); font-size: 12.5px; }
+.mc-acts { display: flex; gap: 6px; margin-top: 8px; }
+.mc-btn1 { flex: 1.4; text-align: center; padding: 7px 4px; border-radius: 6px; font-size: 10.5px; font-weight: 700; background: var(--gold); color: #090804; }
+.mc-btn2 { flex: 1; text-align: center; padding: 7px 4px; border-radius: 6px; font-size: 10.5px; font-weight: 600; color: var(--fg2); border: 1px solid var(--ln); }
+
+/* Tap hint */
+.tap-hint {
+  position: absolute; bottom: 14px; right: 18px;
+  font-size: 10px; color: var(--fg3); letter-spacing: 0.05em;
+  z-index: 10; pointer-events: none;
+  display: flex; align-items: center; gap: 3px;
+}
+
+/* Instrução abaixo */
+.hint {
+  font-size: 11.5px; color: rgba(255,255,255,0.25);
+  letter-spacing: 0.04em; text-align: center;
+}
+</style>
+
+<div class="reel" id="reel">
+
+  <div class="prog" id="prog"></div>
+
+  <div class="logo">
+    <div class="logo__name"><div class="logo__dot"></div>Veículo Judicial</div>
+    <div class="logo__n" id="counter">1 / 7</div>
+  </div>
+
+  <!-- F1: A confusão -->
+  <div class="frame is-active" id="f0">
+    <div class="f-eye">A confusão que todo mundo faz</div>
+    <div class="f-head">Todo dia <em>alguém</em> confunde.</div>
+    <div class="f-sub">As mensagens chegam no WhatsApp, no Instagram, nos comentários.</div>
+    <div class="f-vis">
+      <div class="bubble"><div class="bname">@seguidor_1</div>"Rubens, quanto custa esse Hilux? Consigo parcelar?"</div>
+      <div class="bubble"><div class="bname">@seguidor_2</div>"Você é o dono do carro? Quero comprar esse Civic."</div>
+      <div class="bubble"><div class="bname">@seguidor_3</div>"Isso é golpe ou você mesmo vende esses carros?"</div>
+    </div>
+  </div>
+
+  <!-- F2: Não vendemos -->
+  <div class="frame" id="f1">
+    <div class="f-eye">Esclarece de vez</div>
+    <div class="f-head">Não vendemos <em>nada.</em></div>
+    <div class="f-sub">Nunca vendemos. Nunca vamos vender. A dúvida é justa — agora entenda por quê.</div>
+    <div class="f-vis">
+      <div class="proof-line"><div class="pi">✕</div>Não temos estoque de veículos.</div>
+      <div class="proof-line"><div class="pi">✕</div>Não recebemos seu pagamento.</div>
+      <div class="proof-line"><div class="pi">✕</div>Não negociamos preço. O edital do leilão define tudo.</div>
+    </div>
+  </div>
+
+  <!-- F3: Agregador -->
+  <div class="frame" id="f2">
+    <div class="f-eye">O que fazemos</div>
+    <div class="f-head">Somos um <em>agregador</em> de leilões.</div>
+    <div class="f-sub">Reunimos veículos levados a leilão pela Justiça, de leiloeiros oficiais de todo o Brasil, num só lugar.</div>
+    <div class="f-vis">
+      <div class="src-item"><div class="src-dot"></div><div class="src-name">Leilões Judiciais</div><div class="src-cnt">800+ lotes</div></div>
+      <div class="src-item"><div class="src-dot"></div><div class="src-name">ZUK Leilões</div><div class="src-cnt">400+ lotes</div></div>
+      <div class="src-item"><div class="src-dot"></div><div class="src-name">Outros leiloeiros</div><div class="src-cnt">500+ lotes</div></div>
+      <div class="src-item total"><div class="src-dot" style="background:var(--gtext)"></div><div class="src-name">Total disponível</div><div class="src-cnt">1.700+ veículos</div></div>
+    </div>
+  </div>
+
+  <!-- F4: Sem login — só a foto -->
+  <div class="frame" id="f3">
+    <div class="f-eye">Sem cadastro</div>
+    <div class="f-head">Você vê <em>só a foto.</em></div>
+    <div class="f-sub">Preço, data, leiloeiro e link ficam ocultos. Grátis para entrar — assine para desbloquear.</div>
+    <div class="f-vis">
+      <div class="mc-locked mc-wrap">
+        <div class="mc-foto">
+          <span>🚗</span>
+          <div class="mc-lock-tag">
+            <svg viewBox="0 0 16 16"><rect x="4" y="7.5" width="8" height="6.5" rx="1.5"/><path d="M5.5 7.5V5.5a2.5 2.5 0 015 0v2"/></svg>
+            Assine para desbloquear
+          </div>
+        </div>
+        <div class="mc-hidden-corpo">
+          <div class="mc-bar w80"></div>
+          <div class="mc-bar w55"></div>
+          <div class="mc-bar w65"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F5: Com assinatura — vê tudo -->
+  <div class="frame" id="f4">
+    <div class="f-eye">Assinante</div>
+    <div class="f-head">Você vê <em>tudo.</em></div>
+    <div class="f-sub">Preço, custo total estimado, data do leilão e link direto ao anúncio.</div>
+    <div class="f-vis">
+      <div class="mc-unlocked mc-wrap">
+        <div class="mc-foto">
+          <span>🚗</span>
+          <div class="mc-pro-tag">ASSINANTE</div>
+        </div>
+        <div class="mc-corpo">
+          <div class="mc-title">Toyota Hilux 4x4 SRV · 2022</div>
+          <div class="mc-sub2">Sorocaba-SP · encerra em 3 dias</div>
+          <div class="mc-row"><span>2ª praça</span><strong>R$ 42.000</strong></div>
+          <div class="mc-row gold"><span>Custo total estimado</span><strong>R$ 44.295</strong></div>
+          <div class="mc-acts">
+            <div class="mc-btn1">Ver leilão →</div>
+            <div class="mc-btn2">Simular lance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F6: Rubens -->
+  <div class="frame" id="f5">
+    <div class="step-badge">Passo 3 de 3</div>
+    <div class="f-head">O Rubens faz a <em>assessoria.</em></div>
+    <div class="f-sub">Ele não vende o carro — te acompanha no processo de arrematar <strong>com segurança jurídica.</strong></div>
+    <div class="f-vis">
+      <div class="rub-card">
+        <div class="rub-top">
+          <div class="rub-av">⚖️</div>
+          <div>
+            <div class="rub-name">Dr. Rubens Filippe de Jesus</div>
+            <div class="rub-role">Advogado · OAB-SP</div>
+          </div>
+        </div>
+        <div class="rub-badge">Comissão Especial de Leilões · OAB-SP</div>
+        <div class="rub-desc">Assessora quem quer arrematar veículos em leilões judiciais com segurança.</div>
+        <div class="rub-note">A assessoria é paga e opcional. O site é gratuito para todos.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F7: CTA -->
+  <div class="frame" id="f6">
+    <div class="f-eye">Comece agora</div>
+    <div class="f-head">Acesse <em>grátis.</em></div>
+    <div class="f-sub">Veja os veículos disponíveis hoje. Sem cadastro, sem pagar nada.</div>
+    <div class="f-vis">
+      <div class="cta-pill">✦ Vitrine gratuita — sem cadastro</div>
+      <div class="cta-url">veiculojudicial.com.br</div>
+      <div class="cta-desc">Assinantes veem o custo total de cada veículo, simulam o próprio lance e falam direto com o Rubens.</div>
+    </div>
+  </div>
+
+  <div class="tap-hint">toque para avançar ›</div>
+</div>
+
+<div class="hint">← toque na esquerda para voltar · avança sozinho</div>
+
+<script>
+const frames = [...document.querySelectorAll('.frame')];
+const N = frames.length;
+const progEl = document.getElementById('prog');
+const ctrEl  = document.getElementById('counter');
+const reel   = document.getElementById('reel');
+
+// ms por frame (último fica aberto)
+const DUR = [3400, 3200, 3600, 3600, 4000, 3800, 0];
+
+let cur = 0, timer = null;
+
+// Monta barra
+const fills = Array.from({length: N}, (_, i) => {
+  const seg  = Object.assign(document.createElement('div'), {className: 'prog__seg'});
+  const fill = Object.assign(document.createElement('div'), {className: 'prog__fill'});
+  seg.appendChild(fill);
+  progEl.appendChild(seg);
+  return fill;
+});
+
+function go(idx) {
+  if (idx < 0 || idx >= N) return;
+
+  // Sai do atual
+  frames[cur].classList.remove('is-active');
+  frames[cur].classList.add('is-exit');
+  const exitIdx = cur;
+  setTimeout(() => frames[exitIdx].classList.remove('is-exit'), 380);
+
+  // Atualiza fills
+  fills.forEach((f, i) => {
+    f.style.transition = 'none';
+    f.style.width = i < idx ? '100%' : '0%';
+  });
+
+  cur = idx;
+  frames[cur].classList.add('is-active');
+  ctrEl.textContent = `${cur + 1} / ${N}`;
+
+  // Anima fill atual
+  clearTimeout(timer);
+  const d = DUR[cur];
+  if (d > 0) {
+    requestAnimationFrame(() => {
+      fills[cur].style.transition = `width ${d}ms linear`;
+      fills[cur].style.width = '100%';
+    });
+    timer = setTimeout(() => go(cur + 1), d);
+  } else {
+    // Último frame: fill completo estático
+    requestAnimationFrame(() => {
+      fills[cur].style.transition = 'width 0.4s ease';
+      fills[cur].style.width = '100%';
+    });
+  }
+}
+
+reel.addEventListener('click', e => {
+  const x = e.clientX - reel.getBoundingClientRect().left;
+  x < reel.offsetWidth * 0.3 ? go(cur - 1) : go(cur + 1);
+});
+
+// Inicia
+go(0);
+</script>

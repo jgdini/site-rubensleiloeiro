@@ -200,6 +200,16 @@ button, input, select { font: inherit; color: inherit; }
 .card__acoes .btn { flex: 1; height: 40px; padding: 0 10px; font-size: 13.5px; }
 .card__natureza { margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--linha); font-size: 12.5px; color: var(--texto-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* Card anônimo (sem login): só a foto */
+.card--anonimo { cursor: pointer; }
+.card--anonimo .card__foto { border-radius: var(--raio); }
+.card--anonimo .card__foto::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: var(--raio);
+  background: rgba(0,0,0,0); transition: background 0.2s; pointer-events: none;
+}
+.card--anonimo:hover .card__foto::after { background: rgba(0,0,0,0.42); }
+
 .card--travado { cursor: pointer; }
 .card--travado .card__valor { display: flex; align-items: center; gap: 10px; }
 .borrado { filter: blur(7px); user-select: none; opacity: 0.8; font-weight: 750; }
@@ -250,6 +260,10 @@ button, input, select { font: inherit; color: inherit; }
 .wpp-flutuante[hidden] { display: none; }
 .wpp-flutuante:hover { transform: scale(1.06); }
 .wpp-flutuante svg { width: 32px; height: 32px; fill: #fff; }
+.voltar-topo { position: fixed; right: 20px; bottom: 88px; z-index: 20; display: flex; align-items: center; gap: 6px; padding: 0 14px 0 10px; height: 40px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--linha); color: var(--texto-2); font-size: 13px; font-weight: 600; box-shadow: 0 4px 16px -4px rgb(0 0 0 / 0.4); transition: transform 0.2s, background 0.15s; cursor: pointer; }
+.voltar-topo[hidden] { display: none; }
+.voltar-topo:hover { background: var(--bg-3); transform: translateY(-2px); }
+.voltar-topo svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 /* ---------- Modais ---------- */
 .modal { width: min(440px, 100% - 32px); padding: 0; border: 1px solid var(--linha); border-radius: 18px; background: var(--bg-2); color: var(--texto); box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.8); }
@@ -353,9 +367,10 @@ button, input, select { font: inherit; color: inherit; }
 .btn--fav-cnt svg { flex: none; }
 
 /* Seção de favoritos */
-.sec-fav { margin: 48px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--linha); }
+.sec-fav { margin: 48px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--linha); scroll-margin-top: 72px; }
 .sec-fav__topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .sec-fav__titulo { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 20px; }
 .sec-fav__titulo svg { width: 18px; height: 18px; fill: var(--ouro); }
 .sec-fav__fechar { font-size: 14px; color: var(--texto-3); }
 .sec-fav__fechar:hover { color: var(--texto); }
+.fav-aviso-expirados { margin: 0 0 20px; padding: 10px 14px; background: color-mix(in srgb, var(--ouro) 12%, transparent); border: 1px solid color-mix(in srgb, var(--ouro) 30%, transparent); border-radius: 8px; font-size: 14px; color: var(--texto-2); }
