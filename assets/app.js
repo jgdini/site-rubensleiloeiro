@@ -58,6 +58,21 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 
 const estado = { q: '', fontes: new Set(), tipo: '', marca: '', uf: '', preco: '', ano: '', ordem: 'encerra', mostrando: POR_PAGINA };
 
+const PRECOS_PADRAO = [[15000,'Até R$ 15 mil'],[30000,'Até R$ 30 mil'],[50000,'Até R$ 50 mil'],[80000,'Até R$ 80 mil'],[120000,'Até R$ 120 mil']];
+const PRECOS_MOTO   = [[2000,'Até R$ 2 mil'],[3000,'Até R$ 3 mil'],[5000,'Até R$ 5 mil'],[8000,'Até R$ 8 mil'],[15000,'Até R$ 15 mil']];
+function atualizarFiltroPreco(tipo) {
+  const sel = $('#f-preco');
+  const faixas = tipo === 'moto' ? PRECOS_MOTO : PRECOS_PADRAO;
+  const vals = [...sel.options].filter(o => o.value).map(o => o.value);
+  if (vals.join(',') === faixas.map(([v]) => String(v)).join(',')) return;
+  const val = sel.value;
+  sel.querySelectorAll('option:not([value=""])').forEach(o => o.remove());
+  for (const [v, n] of faixas) sel.add(new Option(n, v));
+  const novoVal = faixas.some(([v]) => String(v) === val) ? val : '';
+  sel.value = novoVal;
+  if (novoVal !== val) estado.preco = novoVal;
+}
+
 // Tipos de veículo (mesmas chaves de scraper/classify.js).
 const TIPOS = { carro: 'Carros e utilitários', moto: 'Motos', caminhao: 'Caminhões', onibus: 'Ônibus e vans', maquina: 'Tratores e máquinas', reboque: 'Reboques e carretas', nautico: 'Barcos e jet skis', aeronave: 'Aeronaves' };
 const TIPO_CURTO = { moto: 'Moto', caminhao: 'Caminhão', onibus: 'Ônibus', maquina: 'Máquina', reboque: 'Reboque', nautico: 'Náutico', aeronave: 'Aeronave' };
@@ -276,7 +291,7 @@ function card(l) {
     }
     const msg = `Olá ${CONFIG.nomeContato}! Tenho interesse neste veículo de leilão judicial:\n${l.titulo}${l.ano ? ' ' + l.ano : ''} — ${localDe(l)}\n${p ? (l.segundaPraca ? '2º leilão: ' : 'Valor: ') + brl(p) + ' · custo total estimado: ' + brl(calcularCustos(p, l.comissao).total) + '\n' : ''}${l.url}`;
     acoes.innerHTML =
-      `<a class="btn btn--wpp btn--linha-toda" target="_blank" rel="noopener" href="${esc(linkWhats(msg))}">${ICONE_WPP}Falar com ${esc(CONFIG.nomeContato)}</a>` +
+      `<a class="btn btn--primario btn--linha-toda" href="/como-funciona/">Como Funciona ${ICONE_SETA}</a>` +
       `<button type="button" class="btn btn--linha" data-simular>${ICONE_CALC}Simular</button>` +
       `<a class="btn btn--linha" target="_blank" rel="noopener nofollow" href="${esc(l.url)}">Ver leilão ${ICONE_SETA}</a>`;
     acoes.querySelector('[data-simular]').onclick = () => abrirSimulador(l);
@@ -326,6 +341,7 @@ function card(l) {
 
 // ---------- Render ----------
 function render() {
+  atualizarFiltroPreco(estado.tipo);
   const lista = filtrar();
   $('#grade').replaceChildren(...lista.slice(0, estado.mostrando).map(card));
   $('#contagem').innerHTML = `<b>${lista.length.toLocaleString('pt-BR')}</b> ${lista.length === 1 ? 'veículo encontrado' : 'veículos encontrados'}` +
@@ -448,9 +464,6 @@ function montarConta() {
     conta.innerHTML = `<button type="button" class="btn btn--linha btn--peq" data-acao="entrar">Entrar</button><button type="button" class="btn btn--primario btn--peq" data-acao="assinar">Assinar</button>`;
   }
   $('#plano').hidden = premium();
-  const wpp = $('#wpp-flutuante');
-  wpp.hidden = !premium();
-  wpp.href = linkWhats(`Olá ${CONFIG.nomeContato}! Sou assinante do Radar de Leilões e queria uma ajuda.`);
   // Filtros/ordenações por preço só para assinantes.
   document.querySelectorAll('[data-premium]').forEach((o) => {
     if (o.tagName === 'OPTION') {
