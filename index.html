@@ -233,6 +233,25 @@
     </article>
   </template>
 
+  <!-- Modal motion Como Funciona (assinantes) -->
+  <dialog class="modal modal--motion" id="modal-motion" aria-labelledby="motion-titulo">
+    <div class="modal__caixa modal__caixa--motion">
+      <div class="modal--motion__topo">
+        <h2 id="motion-titulo" class="modal--motion__titulo">Como funciona o Veículo Judicial</h2>
+        <form method="dialog"><button class="modal__fechar" aria-label="Fechar">×</button></form>
+      </div>
+      <div class="modal--motion__frame">
+        <iframe src="motion-como-funciona.html" title="Como funciona o Veículo Judicial" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <div class="modal--motion__rodape">
+        <label class="modal--motion__nao-exibir">
+          <input type="checkbox" id="motion-nao-exibir"> Não exibir novamente
+        </label>
+        <a class="btn btn--primario btn--sm" href="como-funciona.html">Ver página completa</a>
+      </div>
+    </div>
+  </dialog>
+
   <script src="assets/app.js" type="module"></script>
   <script src="assets/aviso.js" defer></script>
 </body>

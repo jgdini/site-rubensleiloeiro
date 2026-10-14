@@ -532,6 +532,21 @@ async function iniciar() {
     return;
   }
 
+  // Popup motion "Como Funciona" para assinantes logados.
+  const modalMotion = $('#modal-motion');
+  if (modalMotion && sessao) {
+    const CHAVE_MOTION = 'vj-motion-nao-exibir';
+    if (!localStorage.getItem(CHAVE_MOTION)) {
+      modalMotion.showModal();
+    }
+    const chk = $('#motion-nao-exibir');
+    if (chk) chk.addEventListener('change', () => {
+      if (chk.checked) localStorage.setItem(CHAVE_MOTION, '1');
+      else localStorage.removeItem(CHAVE_MOTION);
+    });
+    modalMotion.addEventListener('click', (e) => e.target === modalMotion && modalMotion.close());
+  }
+
   // Botões "entrar"/"assinar" espalhados pela página.
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-acao]');

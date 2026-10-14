@@ -374,3 +374,41 @@ button, input, select { font: inherit; color: inherit; }
 .sec-fav__fechar { font-size: 14px; color: var(--texto-3); }
 .sec-fav__fechar:hover { color: var(--texto); }
 .fav-aviso-expirados { margin: 0 0 20px; padding: 10px 14px; background: color-mix(in srgb, var(--ouro) 12%, transparent); border: 1px solid color-mix(in srgb, var(--ouro) 30%, transparent); border-radius: 8px; font-size: 14px; color: var(--texto-2); }
+
+/* ── Como Funciona ── */
+.cf-page { max-width: 720px; margin-inline: auto; padding-block: 40px 80px; }
+.cf-hero { text-align: center; padding-bottom: 40px; border-bottom: 1px solid var(--linha); margin-bottom: 48px; }
+.cf-hero h1 { font-size: clamp(26px, 5vw, 38px); margin: 8px 0 12px; }
+.cf-hero__sub { color: var(--texto-2); font-size: 17px; max-width: 520px; margin-inline: auto; }
+.cf-passos { display: flex; flex-direction: column; gap: 32px; margin-bottom: 56px; }
+.cf-passo { display: flex; gap: 20px; align-items: flex-start; }
+.cf-passo__num { flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--ouro) 15%, transparent); border: 1px solid color-mix(in srgb, var(--ouro) 35%, transparent); border-radius: 50%; font-size: 13px; font-weight: 700; color: var(--ouro); letter-spacing: .04em; }
+.cf-passo__txt h2 { font-size: 18px; margin: 0 0 6px; }
+.cf-passo__txt p { margin: 0; color: var(--texto-2); font-size: 15px; line-height: 1.6; }
+.cf-conversao__titulo { font-size: 22px; margin: 0 0 24px; }
+.cf-btns { display: flex; flex-direction: column; gap: 16px; }
+.cf-btn { display: flex; flex-direction: column; gap: 4px; padding: 20px 24px; border-radius: 12px; border: 1px solid var(--linha); background: var(--card); text-decoration: none; transition: border-color .2s, background .2s; }
+.cf-btn:hover { border-color: var(--ouro); background: color-mix(in srgb, var(--ouro) 6%, var(--card)); }
+.cf-btn--destaque { border-color: color-mix(in srgb, var(--ouro) 50%, transparent); background: color-mix(in srgb, var(--ouro) 8%, var(--card)); }
+.cf-btn--pro { border-color: color-mix(in srgb, var(--azul-claro, #4a9eff) 40%, transparent); }
+.cf-btn--wpp { border-color: #25d366; flex-direction: row; align-items: flex-start; gap: 14px; }
+.cf-btn--wpp svg { flex-shrink: 0; width: 28px; height: 28px; fill: #25d366; margin-top: 2px; }
+.cf-btn--wpp .cf-btn__titulo { color: #25d366; }
+.cf-btn__titulo { font-size: 17px; font-weight: 700; color: var(--texto); }
+.cf-btn__desc { font-size: 14px; color: var(--texto-2); line-height: 1.5; }
+.cf-btn__cta { font-size: 14px; font-weight: 600; color: var(--ouro); margin-top: 4px; }
+.cf-btn--wpp .cf-btn__cta { color: #25d366; }
+
+/* ── Modal motion ── */
+.modal--motion .modal__caixa--motion { max-width: 680px; padding: 0; overflow: hidden; }
+.modal--motion__topo { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 12px; }
+.modal--motion__titulo { margin: 0; font-size: 17px; }
+.modal--motion__frame { width: 100%; aspect-ratio: 9/16; max-height: 60vh; }
+.modal--motion__frame iframe { width: 100%; height: 100%; border: none; display: block; }
+.modal--motion__rodape { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 16px; gap: 12px; flex-wrap: wrap; }
+.modal--motion__nao-exibir { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
+.modal--motion__nao-exibir input { accent-color: var(--ouro); width: 16px; height: 16px; cursor: pointer; }
+.btn--sm { padding: 8px 16px; font-size: 14px; }
+/* ── Como Funciona: iframe motion ── */
+.cf-motion-wrap { width: 100%; aspect-ratio: 9/16; max-height: 70vh; margin: 0 auto 48px; border-radius: 16px; overflow: hidden; border: 1px solid var(--linha); }
+.cf-motion { width: 100%; height: 100%; border: none; display: block; }

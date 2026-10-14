@@ -17,6 +17,11 @@ get_header();
       <p class="cf-hero__sub">Curadoria jurídica de veículos em leilão judicial — do filtro até o documento na mão.</p>
     </section>
 
+    <!-- Motion animado -->
+    <div class="cf-motion-wrap">
+      <iframe class="cf-motion" src="<?php echo esc_url(get_template_directory_uri() . '/assets/motion.html'); ?>" title="Como funciona o Veículo Judicial — animação" loading="lazy" allowfullscreen></iframe>
+    </div>
+
     <!-- Passo a passo -->
     <section class="cf-passos">
       <article class="cf-passo">

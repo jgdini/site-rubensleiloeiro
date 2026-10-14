@@ -5,7 +5,7 @@
  */
 if (!defined('ABSPATH')) exit;
 
-define('VJ_TEMA_VERSAO', '1.3.6');
+define('VJ_TEMA_VERSAO', '1.3.7');
 define('VJ_MARCA', 'Veículo Judicial');
 
 require_once __DIR__ . '/inc/seo.php';
