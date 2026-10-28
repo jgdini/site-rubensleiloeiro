@@ -73,6 +73,10 @@ get_header();
     $k = vj_seo_custos();
     $ex = vj_seo_exemplo();
 ?>
+  <div class="cf-motion-wrap">
+    <iframe class="cf-motion" src="<?php echo esc_url(get_theme_file_uri('assets/motion.html')); ?>" title="Como funciona o Veículo Judicial — animação" loading="lazy" allowfullscreen></iframe>
+  </div>
+
   <header class="seo__topo">
     <p class="hero__eyebrow">Guia · <?php echo esc_html(VJ_MARCA); ?></p>
     <h1>Como comprar veículo em leilão judicial</h1>
@@ -115,6 +119,18 @@ get_header();
         <p><?php echo wp_kses_post($q[1]); ?></p>
       </details>
     <?php endforeach; ?>
+  </section>
+
+  <!-- Botão de conversão — página para visitantes -->
+  <section class="seo__bloco cf-conversao">
+    <h2 class="cf-conversao__titulo">Por onde você quer começar?</h2>
+    <div class="cf-btns">
+      <a class="cf-btn cf-btn--destaque" href="https://pay.kiwify.com.br/RdII0jC" target="_blank" rel="noopener nofollow">
+        <span class="cf-btn__titulo">Contratação de Plataforma</span>
+        <span class="cf-btn__desc">Acesse todos os veículos com preço, leiloeiro, link do leilão e simulador de custo total.</span>
+        <span class="cf-btn__cta">Assinar agora →</span>
+      </a>
+    </div>
   </section>
 
   <section class="seo__bloco seo__autor">

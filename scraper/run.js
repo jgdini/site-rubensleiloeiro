@@ -14,11 +14,12 @@ import * as plataformaSpl from './sources/plataforma-spl.js';
 import * as plataformaB from './sources/plataforma-b.js';
 import * as zuk from './sources/zuk.js';
 import * as suporte from './sources/suporte-leiloes.js';
+import * as webleiloes from './sources/webleiloes.js';
 import * as leilaopro from './sources/leilaopro.js';
 import { aplicarFontesDoSite, resumoSites, dominio } from './fontes-site.js';
 
 // Só leilões JUDICIAIS. (sources/leilo.js existe, mas é 100% extrajudicial — fora.)
-const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl, plataformaB, zuk, suporte, leilaopro];
+const FONTES = [leiloesjudiciais, megaleiloes, lancejudicial, leilaovip, d1lance, eleiloes, plataformaSpl, plataformaB, zuk, suporte, webleiloes, leilaopro];
 const soJudicial = (l) => l.natureza === 'Judicial';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const saida = path.join(raiz, 'data', 'lotes.json');

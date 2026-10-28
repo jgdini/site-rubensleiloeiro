@@ -19,7 +19,7 @@
       }
       if ($links) echo '<p class="rodape__fontes">' . implode(' · ', $links) . '</p>';
       ?>
-      <p class="rodape__copy">&copy; <?php echo date('Y'); ?> Rubens Felippe &mdash; Desenvolvido por <a class="rodape__dev" href="https://halocompany.com.br" target="_blank" rel="noopener">Halo Company</a></p>
+      <p class="rodape__copy">&copy; <?php echo date('Y'); ?> Rubens Felippe &mdash; Desenvolvido por <a class="rodape__halo-credit" href="https://jgdini.github.io/halo-company/" target="_blank" rel="noopener"><svg class="rodape__halo-sym" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="3.2" stroke-linecap="round"><circle cx="16" cy="16" r="11" pathLength="300" stroke="#E0506F" stroke-dasharray="86 214"/><circle cx="16" cy="16" r="11" pathLength="300" stroke="#E7C493" stroke-dasharray="86 214" stroke-dashoffset="-100"/><circle cx="16" cy="16" r="11" pathLength="300" stroke="#F8F3EB" stroke-dasharray="86 214" stroke-dashoffset="-200"/></g></svg><span>halo <small>company</small></span></a></p>
     </div>
   </footer>
 <?php if (is_user_logged_in()) get_template_part('inc/popup-intro'); ?>

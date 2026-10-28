@@ -3,102 +3,85 @@
 Template Name: Como Funciona
 */
 if (!defined('ABSPATH')) exit;
-$vj  = vj_tema_config();
-$wpp = vj_link_whats('Olá ' . $vj['nome_contato'] . '! Vi o ' . VJ_MARCA . ' e gostaria de saber mais sobre como funciona a plataforma.');
-$assinante = function_exists('vj_usuario_premium') && vj_usuario_premium();
+$k  = vj_seo_custos();
+$ex = vj_seo_exemplo();
 get_header();
 ?>
-  <main class="cf-page wrap">
+<main class="wrap seo">
 
-    <!-- Herói -->
-    <section class="cf-hero">
-      <p class="hero__eyebrow">Entenda o processo</p>
-      <h1>Como funciona o <?php echo esc_html(VJ_MARCA); ?></h1>
-      <p class="cf-hero__sub">Curadoria jurídica de veículos em leilão judicial — do filtro até o documento na mão.</p>
-    </section>
+  <!-- Motion animado -->
+  <div class="cf-motion-wrap">
+    <iframe class="cf-motion" src="<?php echo esc_url(get_template_directory_uri() . '/assets/motion.html'); ?>" title="Como funciona o Veículo Judicial — animação" loading="lazy" allowfullscreen></iframe>
+  </div>
 
-    <!-- Motion animado -->
-    <div class="cf-motion-wrap">
-      <iframe class="cf-motion" src="<?php echo esc_url(get_template_directory_uri() . '/assets/motion.html'); ?>" title="Como funciona o Veículo Judicial — animação" loading="lazy" allowfullscreen></iframe>
+  <header class="seo__topo">
+    <p class="hero__eyebrow">Guia · <?php echo esc_html(VJ_MARCA); ?></p>
+    <h1>Como comprar veículo em leilão judicial</h1>
+    <p class="seo__intro">Um leilão judicial pode ser a forma mais barata de comprar um carro, uma moto ou um caminhão — desde que você saiba o que está comprando e quanto vai pagar no fim. Este guia resume o caminho, os custos reais e as dúvidas mais comuns.</p>
+  </header>
+
+  <section class="seo__bloco guia">
+    <h2>Passo a passo</h2>
+    <ol class="passos">
+      <li><b>Encontre o veículo.</b> Use a <a href="<?php echo esc_url(home_url('/')); ?>">busca do <?php echo esc_html(VJ_MARCA); ?></a> ou navegue por <a href="<?php echo esc_url(vj_seo_url('hub')); ?>">categoria, estado e marca</a>. Mostramos sempre o valor da 2ª praça.</li>
+      <li><b>Leia o edital.</b> Ele diz a data, o lance mínimo, a comissão do leiloeiro, a forma de pagamento, a situação de débitos e se há visitação.</li>
+      <li><b>Calcule o custo total.</b> O lance é só uma parte: some comissão, taxas e transferência (veja abaixo).</li>
+      <li><b>Habilite-se no site do leiloeiro.</b> Cadastro e envio de documentos, com antecedência ao leilão.</li>
+      <li><b>Dê o lance.</b> Pela internet, até o encerramento. Muitos leilões prorrogam o tempo quando entra lance no final.</li>
+      <li><b>Pague e aguarde a carta de arrematação.</b> Com ela é feita a entrega do veículo e a transferência no Detran.</li>
+    </ol>
+  </section>
+
+  <section class="seo__bloco guia">
+    <h2>Quanto custa, de verdade</h2>
+    <p>Exemplo com um lance de <b><?php echo esc_html(vj_seo_brl($ex['lance'])); ?></b> na 2ª praça:</p>
+    <div class="composicao composicao--aberta guia__conta">
+      <ul>
+        <li><span>Lance (2ª praça)</span><b><?php echo esc_html(vj_seo_brl($ex['lance'])); ?></b></li>
+        <li><span>Comissão do leiloeiro (<?php echo esc_html($k['comissao']); ?>% ou a do edital)</span><b><?php echo esc_html(vj_seo_brl($ex['comissao'])); ?></b></li>
+        <li><span>Condução do oficial de justiça</span><b><?php echo esc_html($k['oficial']); ?></b></li>
+        <li><span>Expedição da carta de arrematação</span><b><?php echo esc_html($k['carta']); ?></b></li>
+        <li><span>Transferência do veículo (aprox.)</span><b><?php echo esc_html($k['transf']); ?></b></li>
+      </ul>
+      <p class="composicao__total"><span>Custo total estimado</span><b><?php echo esc_html(vj_seo_brl($ex['total'])); ?></b></p>
     </div>
+    <p class="calc__nota">Assinantes veem esse cálculo pronto em cada veículo e podem simular qualquer lance.</p>
+  </section>
 
-    <!-- Passo a passo -->
-    <section class="cf-passos">
-      <article class="cf-passo">
-        <span class="cf-passo__num">01</span>
-        <div class="cf-passo__txt">
-          <h2>Acesse os veículos curados</h2>
-          <p>Nossa equipe filtra centenas de leilões judiciais e seleciona apenas os veículos com melhor relação entre preço de arremate e custo total estimado — sem surpresas.</p>
-        </div>
-      </article>
-      <article class="cf-passo">
-        <span class="cf-passo__num">02</span>
-        <div class="cf-passo__txt">
-          <h2>Simule o custo real</h2>
-          <p>Cada anúncio traz uma simulação do custo total: comissão do leiloeiro, ITCMD, transferência e eventuais débitos estimados. O preço que você vê é o preço que vai pagar.</p>
-        </div>
-      </article>
-      <article class="cf-passo">
-        <span class="cf-passo__num">03</span>
-        <div class="cf-passo__txt">
-          <h2>Assessoria jurídica antes e depois</h2>
-          <p>O Dr. Rubens Filippe de Jesus analisa o edital, verifica restrições (RENAJUD, penhoras, débitos) e acompanha a regularização documental até o veículo estar 100% em seu nome.</p>
-        </div>
-      </article>
-      <article class="cf-passo">
-        <span class="cf-passo__num">04</span>
-        <div class="cf-passo__txt">
-          <h2>Arremate com segurança</h2>
-          <p>Com o respaldo jurídico certo, você faz o lance sabendo exatamente o que está comprando. Sem risco oculto, sem documento pendente.</p>
-        </div>
-      </article>
-    </section>
+  <section class="seo__bloco guia faq">
+    <h2>Perguntas frequentes</h2>
+    <?php foreach (vj_seo_faq() as $i => $q) : ?>
+      <details<?php echo $i < 3 ? ' open' : ''; ?>>
+        <summary><h3><?php echo esc_html($q[0]); ?></h3></summary>
+        <p><?php echo wp_kses_post($q[1]); ?></p>
+      </details>
+    <?php endforeach; ?>
+  </section>
 
-    <!-- Botões de conversão -->
-    <section class="cf-conversao">
-      <h2 class="cf-conversao__titulo">Por onde você quer começar?</h2>
-      <div class="cf-btns">
+  <!-- Botões de conversão — página exclusiva para logados -->
+  <section class="seo__bloco cf-conversao">
+    <h2 class="cf-conversao__titulo">Por onde você quer começar?</h2>
+    <div class="cf-btns">
+      <a class="cf-btn cf-btn--pro" href="https://pay.kiwify.com.br/35YSqNf" target="_blank" rel="noopener nofollow">
+        <span class="cf-btn__titulo">Assessoria Pré-Arrematação</span>
+        <span class="cf-btn__desc">O Dr. Rubens analisa o edital e emite parecer de viabilidade antes do seu lance.</span>
+        <span class="cf-btn__cta">Contratar assessoria →</span>
+      </a>
+      <a class="cf-btn cf-btn--pro" href="https://pay.kiwify.com.br/EuqPok0" target="_blank" rel="noopener nofollow">
+        <span class="cf-btn__titulo">Assessoria Jurídica Pós-Arrematação</span>
+        <span class="cf-btn__desc">Regularização completa: carta de arrematação, baixa de restrições e transferência no Detran.</span>
+        <span class="cf-btn__cta">Contratar regularização →</span>
+      </a>
+    </div>
+  </section>
 
-        <?php if (!$assinante) : ?>
-        <!-- Não assinante: Contratação de Plataforma -->
-        <a class="cf-btn cf-btn--destaque"
-           href="https://pay.kiwify.com.br/RdII0jC"
-           target="_blank" rel="noopener nofollow">
-          <span class="cf-btn__titulo">Contratação de Plataforma</span>
-          <span class="cf-btn__desc">Acesse os veículos curados e simule lances com segurança jurídica.</span>
-          <span class="cf-btn__cta">Assinar agora →</span>
-        </a>
-        <?php else : ?>
-        <!-- Assinante: Assessoria Pré-Arrematação -->
-        <a class="cf-btn cf-btn--pro"
-           href="https://pay.kiwify.com.br/35YSqNf"
-           target="_blank" rel="noopener nofollow">
-          <span class="cf-btn__titulo">Assessoria Pré-Arrematação</span>
-          <span class="cf-btn__desc">O Dr. Rubens analisa o edital e emite parecer de viabilidade antes do seu lance.</span>
-          <span class="cf-btn__cta">Contratar assessoria →</span>
-        </a>
-        <!-- Assinante: Assessoria Jurídica Pós-Arrematação -->
-        <a class="cf-btn cf-btn--pro"
-           href="https://pay.kiwify.com.br/EuqPok0"
-           target="_blank" rel="noopener nofollow">
-          <span class="cf-btn__titulo">Assessoria Jurídica Pós-Arrematação</span>
-          <span class="cf-btn__desc">Regularização completa: carta de arrematação, baixa de restrições e transferência.</span>
-          <span class="cf-btn__cta">Contratar regularização →</span>
-        </a>
-        <?php endif; ?>
+  <section class="seo__bloco seo__autor">
+    <img src="<?php echo esc_url(vj_asset('rubens/avatar.jpg')); ?>" alt="Dr. Rubens Filippe de Jesus" width="72" height="72" loading="lazy" />
+    <div>
+      <p><b>Dr. Rubens Filippe de Jesus</b> é advogado e membro da Comissão Especial de Leilões da OAB-SP. Assessora quem quer arrematar veículos em leilões judiciais com segurança.</p>
+      <p><a class="link-ouro" href="<?php echo esc_url(vj_url_rubens()); ?>">Conheça o Rubens →</a></p>
+    </div>
+  </section>
 
-        <!-- Para todos: Contato direto com o Rubens -->
-        <a class="cf-btn cf-btn--wpp btn--wpp js-wpp"
-           href="<?php echo esc_url($wpp); ?>"
-           target="_blank" rel="noopener">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm5.9 15.7c-.3-.2-1.9-1-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.6 3.6 0 0 0-1.1 2.7 6.3 6.3 0 0 0 1.3 3.3 14.4 14.4 0 0 0 5.5 4.9c2 .9 2.8 1 3.9.8a3.3 3.3 0 0 0 2.1-1.5 2.7 2.7 0 0 0 .2-1.5c0-.2-.3-.3-.7-.5Z"/></svg>
-          <span class="cf-btn__titulo">Contato Direto com o Rubens</span>
-          <span class="cf-btn__desc">Fale diretamente com o Dr. Rubens Filippe de Jesus pelo WhatsApp.</span>
-          <span class="cf-btn__cta">Abrir WhatsApp →</span>
-        </a>
-
-      </div>
-    </section>
-
-  </main>
+</main>
 <?php get_footer();

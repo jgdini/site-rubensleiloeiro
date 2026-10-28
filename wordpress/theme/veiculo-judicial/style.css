@@ -3,7 +3,7 @@ Theme Name: Veículo Judicial
 Theme URI: https://veiculojudicial.com.br
 Author: DRLSYS
 Description: Tema do Veículo Judicial — agregador de veículos de leilão judicial com vitrine gratuita, área do assinante, calculadora de custo total e página do Dr. Rubens Filippe de Jesus. Requer o plugin "Veículo Judicial – Núcleo".
-Version: 1.3.9
+Version: 1.4.5
 Requires at least: 6.2
 Requires PHP: 7.4
 Text Domain: veiculo-judicial
@@ -90,6 +90,11 @@ Text Domain: veiculo-judicial
 .rodape__explorar { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 14px; }
 .rodape__explorar a { color: var(--texto-2); }
 .rodape__explorar a:hover { color: var(--ouro-2); }
+.rodape__halo-credit { display: inline-flex; align-items: center; gap: 7px; color: var(--texto-2); font-weight: 600; letter-spacing: -0.01em; text-decoration: none; transition: color .3s; }
+.rodape__halo-credit:hover { color: #fff; }
+.rodape__halo-credit small { font-size: .65em; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+.rodape__halo-sym { flex: none; transition: transform .8s cubic-bezier(.34,1.56,.64,1); }
+.rodape__halo-credit:hover .rodape__halo-sym { transform: rotate(120deg); }
 
 @media (max-width: 860px) {
   .lote { grid-template-columns: 1fr; gap: 20px; }

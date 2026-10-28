@@ -113,7 +113,7 @@ body {
   opacity: 0;
   pointer-events: none;
   transform: translateX(22px);
-  transition: opacity 0.32s ease, transform 0.32s ease;
+  transition: opacity 0.64s ease, transform 0.64s ease;
   will-change: opacity, transform;
 }
 .frame.is-active  { opacity: 1; pointer-events: auto; transform: none; }
@@ -122,12 +122,12 @@ body {
 /* Stagger dentro do frame */
 .f-eye, .f-head, .f-sub, .f-vis {
   opacity: 0; transform: translateY(9px);
-  transition: opacity 0.38s ease, transform 0.38s ease;
+  transition: opacity 0.76s ease, transform 0.76s ease;
 }
-.f-eye  { transition-delay: 0.06s; }
-.f-head { transition-delay: 0.14s; }
-.f-sub  { transition-delay: 0.24s; }
-.f-vis  { transition-delay: 0.32s; }
+.f-eye  { transition-delay: 0.12s; }
+.f-head { transition-delay: 0.28s; }
+.f-sub  { transition-delay: 0.48s; }
+.f-vis  { transition-delay: 0.64s; }
 .frame.is-active .f-eye,
 .frame.is-active .f-head,
 .frame.is-active .f-sub,
@@ -155,15 +155,15 @@ body {
   padding: 10px 12px; border: 1px solid var(--ln);
   font-size: 12.5px; color: var(--fg2);
   opacity: 0; transform: translateX(14px);
-  transition: opacity 0.38s ease, transform 0.38s ease;
+  transition: opacity 0.76s ease, transform 0.76s ease;
 }
 .bubble .bname {
   font-size: 9.5px; font-weight: 700; color: var(--fg3);
   letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px;
 }
-.frame.is-active .bubble:nth-child(1) { opacity:1; transform:none; transition-delay:0.42s; }
-.frame.is-active .bubble:nth-child(2) { opacity:1; transform:none; transition-delay:0.66s; }
-.frame.is-active .bubble:nth-child(3) { opacity:1; transform:none; transition-delay:0.9s; }
+.frame.is-active .bubble:nth-child(1) { opacity:1; transform:none; transition-delay:0.84s; }
+.frame.is-active .bubble:nth-child(2) { opacity:1; transform:none; transition-delay:1.32s; }
+.frame.is-active .bubble:nth-child(3) { opacity:1; transform:none; transition-delay:1.8s; }
 
 /* ── Frame 2: Não vendemos ── */
 .not-stamp {
@@ -178,7 +178,7 @@ body {
   display: flex; align-items: flex-start; gap: 10px;
   font-size: 13px; color: var(--fg2); line-height: 1.45;
   opacity: 0; transform: translateY(7px);
-  transition: opacity 0.38s ease, transform 0.38s ease;
+  transition: opacity 0.76s ease, transform 0.76s ease;
 }
 .proof-line .pi {
   width: 18px; height: 18px; border-radius: 50%;
@@ -186,9 +186,9 @@ body {
   justify-content: center; flex-shrink: 0; margin-top: 1px;
   font-size: 10px; color: var(--gtext);
 }
-.frame.is-active .proof-line:nth-child(1) { opacity:1; transform:none; transition-delay:0.38s; }
-.frame.is-active .proof-line:nth-child(2) { opacity:1; transform:none; transition-delay:0.54s; }
-.frame.is-active .proof-line:nth-child(3) { opacity:1; transform:none; transition-delay:0.7s; }
+.frame.is-active .proof-line:nth-child(1) { opacity:1; transform:none; transition-delay:0.76s; }
+.frame.is-active .proof-line:nth-child(2) { opacity:1; transform:none; transition-delay:1.08s; }
+.frame.is-active .proof-line:nth-child(3) { opacity:1; transform:none; transition-delay:1.4s; }
 
 /* ── Frame 3: Agregador ── */
 .src-item {
@@ -197,17 +197,17 @@ body {
   padding: 9px 12px; border: 1px solid var(--ln);
   font-size: 12px;
   opacity: 0; transform: translateX(10px);
-  transition: opacity 0.38s ease, transform 0.38s ease;
+  transition: opacity 0.76s ease, transform 0.76s ease;
 }
 .src-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 .src-name { flex: 1; color: var(--fg2); }
 .src-cnt { color: var(--gtext); font-weight: 600; font-variant-numeric: tabular-nums; }
 .src-item.total { border-color: rgba(200,153,26,0.22); }
 .src-item.total .src-name { color: var(--fg); font-weight: 600; }
-.frame.is-active .src-item:nth-child(1) { opacity:1; transform:none; transition-delay:0.36s; }
-.frame.is-active .src-item:nth-child(2) { opacity:1; transform:none; transition-delay:0.52s; }
-.frame.is-active .src-item:nth-child(3) { opacity:1; transform:none; transition-delay:0.68s; }
-.frame.is-active .src-item:nth-child(4) { opacity:1; transform:none; transition-delay:0.84s; }
+.frame.is-active .src-item:nth-child(1) { opacity:1; transform:none; transition-delay:0.72s; }
+.frame.is-active .src-item:nth-child(2) { opacity:1; transform:none; transition-delay:1.04s; }
+.frame.is-active .src-item:nth-child(3) { opacity:1; transform:none; transition-delay:1.36s; }
+.frame.is-active .src-item:nth-child(4) { opacity:1; transform:none; transition-delay:1.68s; }
 
 /* ── Step badge ── */
 .step-badge {
@@ -536,7 +536,7 @@ const ctrEl  = document.getElementById('counter');
 const reel   = document.getElementById('reel');
 
 // ms por frame (último fica aberto)
-const DUR = [3400, 3200, 3600, 3600, 4000, 3800, 0];
+const DUR = [6800, 6400, 7200, 7200, 8000, 7600, 0];
 
 let cur = 0, timer = null;
 
@@ -556,7 +556,7 @@ function go(idx) {
   frames[cur].classList.remove('is-active');
   frames[cur].classList.add('is-exit');
   const exitIdx = cur;
-  setTimeout(() => frames[exitIdx].classList.remove('is-exit'), 380);
+  setTimeout(() => frames[exitIdx].classList.remove('is-exit'), 760);
 
   // Atualiza fills
   fills.forEach((f, i) => {
@@ -580,7 +580,7 @@ function go(idx) {
   } else {
     // Último frame: fill completo estático
     requestAnimationFrame(() => {
-      fills[cur].style.transition = 'width 0.4s ease';
+      fills[cur].style.transition = 'width 0.8s ease';
       fills[cur].style.width = '100%';
     });
   }

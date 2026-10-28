@@ -11,7 +11,7 @@ export const SITES = [
   'gustavoreisleiloes.com.br', 'jeleiloes.com.br', 'kleiberleiloes.com.br', 'lancevip.com.br', 'leilaobrasil.com.br', 'buenoleiloes.com.br',
   'liderleiloes.com.br', 'lilianportugal.com.br', 'lutheroleiloes.com.br', 'maisleilao.com.br', 'marianoleiloes.com.br', 'peterlongo.leilao.br',
   'ricardogomesleiloes.com.br', 'sandrasantosleiloes.com.br', 'saraivaleiloes.com.br', 'serpaleiloes.com.br', 'simoesleiloes.com.br',
-  'trileiloes.com.br', 'unileiloes.com.br', 'valeroleiloes.com.br', 'vecchileiloes.com.br', 'webleiloes.com.br', 'wermelingerleiloes.com.br',
+  'trileiloes.com.br', 'unileiloes.com.br', 'valeroleiloes.com.br', 'vecchileiloes.com.br', 'wermelingerleiloes.com.br',
 ];
 
 const NOMES = { 'peterlongo.leilao.br': 'Peterlongo Leilões', 'lancevip.com.br': 'Lance VIP', 'goldenlance.com.br': 'Golden Lance', 'maisleilao.com.br': 'Mais Leilão', 'leilaobrasil.com.br': 'Leilão Brasil' };
